@@ -1,5 +1,5 @@
 
-# Career Management App Code of Conduct 
+# Career Canvas Code of Conduct 
 
 ## Our Pledge
 
