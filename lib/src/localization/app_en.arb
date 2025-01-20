@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "career_canvas",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
