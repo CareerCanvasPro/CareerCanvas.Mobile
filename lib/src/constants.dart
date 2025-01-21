@@ -4,6 +4,7 @@ const primaryBlue = Color(0xFF0052CC);
 const primaryGreen = Color(0xFF3CB371);
 const seconderyColor1 = Color(0xFFFFA07A);
 const seconderyColor2 = Color(0xFFA9A9A9);
+const scaffoldBackgroundColor = Color(0xFFF9F9F9);
 
 TextStyle getHeadlineTextStyle(
   BuildContext context,
@@ -13,8 +14,8 @@ TextStyle getHeadlineTextStyle(
   return TextStyle(
     fontSize: fontSize,
     fontFamily: "Montserrat",
-    color: color ?? Theme.of(context).colorScheme.onSurface,
-    fontWeight: FontWeight.bold,
+    color: color ?? Colors.white,
+    fontWeight: FontWeight.w700,
   );
 }
 
@@ -25,7 +26,7 @@ TextStyle getBodyTextStyle(
 }) {
   return TextStyle(
     fontSize: fontSize,
-    color: color ?? Theme.of(context).colorScheme.onSurface,
+    color: color ?? Colors.white,
     fontFamily: "Open Sans",
     fontWeight: FontWeight.normal,
   );
@@ -38,7 +39,7 @@ TextStyle getCTATextStyle(
 }) {
   return TextStyle(
     fontSize: fontSize,
-    color: color ?? Theme.of(context).colorScheme.onSurface,
+    color: color ?? Colors.white,
     fontFamily: "Poppins",
     fontWeight: FontWeight.w600,
   );
