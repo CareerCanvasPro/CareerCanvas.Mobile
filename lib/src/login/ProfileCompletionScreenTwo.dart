@@ -224,7 +224,7 @@ class _ProfileCompletionScreenTwoState
             const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/profileCompletiontwo');
+                Navigator.pushNamed(context, '/profile');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
