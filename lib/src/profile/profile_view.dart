@@ -82,146 +82,148 @@ class UserProfile extends StatelessWidget {
         top: 24,
         bottom: 8,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: 50,
-                width: 50,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        "https://lh3.googleusercontent.com/a/ACg8ocIU9q1JdFkIFbzTksW9DAg5lcEAgqtMHshLWKYfRV7MUg0P6ce1=s288-c-no"),
-                    fit: BoxFit.cover,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          "https://lh3.googleusercontent.com/a/ACg8ocIU9q1JdFkIFbzTksW9DAg5lcEAgqtMHshLWKYfRV7MUg0P6ce1=s288-c-no"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              IconButton(
-                color: Colors.white,
-                onPressed: () {},
-                icon: const Icon(Icons.ios_share),
-              ),
-              IconButton(
-                color: Colors.white,
-                onPressed: () {},
-                icon: const Icon(Icons.settings),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Tanvir AHmed Khan",
-            style: getHeadlineTextStyle(
-              context,
-              18,
-              color: Colors.white,
+                const Spacer(),
+                IconButton(
+                  color: Colors.white,
+                  onPressed: () {},
+                  icon: const Icon(Icons.ios_share),
+                ),
+                IconButton(
+                  color: Colors.white,
+                  onPressed: () {},
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Dhaka, Bangladesh",
-            style: getBodyTextStyle(context, 12, color: Colors.white),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Image.asset(
-                "assets/images/madels/Bronze_Medal.png",
-                semanticLabel: "Bronze Medal",
+            const SizedBox(height: 8),
+            Text(
+              "Tanvir AHmed Khan",
+              style: getHeadlineTextStyle(
+                context,
+                18,
+                color: Colors.white,
               ),
-              Image.asset(
-                "assets/images/madels/Silver_Medal.png",
-                semanticLabel: "Silver Medal",
-              ),
-            ],
-          ),
-          // const SizedBox(height: 8),
-          Row(
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "120k",
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: Colors.white,
-                      ),
-                    ),
-                    TextSpan(
-                      text: " Followers",
-                      style: getBodyTextStyle(
-                        context,
-                        12,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Dhaka, Bangladesh",
+              style: getBodyTextStyle(context, 12, color: Colors.white),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Image.asset(
+                  "assets/images/madels/Bronze_Medal.png",
+                  semanticLabel: "Bronze Medal",
                 ),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "23k",
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: Colors.white,
-                      ),
-                    ),
-                    TextSpan(
-                      text: " Following",
-                      style: getBodyTextStyle(
-                        context,
-                        12,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                Image.asset(
+                  "assets/images/madels/Silver_Medal.png",
+                  semanticLabel: "Silver Medal",
                 ),
-              ),
-              const Spacer(),
-              TextButton.icon(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
+              ],
+            ),
+            // const SizedBox(height: 8),
+            Row(
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "120k",
+                        style: getCTATextStyle(
+                          context,
+                          14,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " Followers",
+                        style: getBodyTextStyle(
+                          context,
+                          12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                iconAlignment: IconAlignment.end,
-                onPressed: () {},
-                label: Text(
-                  "Edit Profile",
-                  style: getBodyTextStyle(
-                    context,
-                    14,
+                const SizedBox(
+                  width: 12,
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "23k",
+                        style: getCTATextStyle(
+                          context,
+                          14,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " Following",
+                        style: getBodyTextStyle(
+                          context,
+                          12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                icon: SvgPicture.asset(
-                  "assets/svg/icons/Edit.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
+                const Spacer(),
+                TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
                   ),
-                ),
-              )
-            ],
-          )
-        ],
+                  iconAlignment: IconAlignment.end,
+                  onPressed: () {},
+                  label: Text(
+                    "Edit ",
+                    style: getBodyTextStyle(
+                      context,
+                      14,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    "assets/svg/icons/Edit.svg",
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -345,7 +347,7 @@ class UserProfile extends StatelessWidget {
             company: "Amazone, Inc.",
             startDate: DateTime.now(),
             endDate: DateTime.now().add(
-              Duration(days: 256),
+              const Duration(days: 256),
             ),
           ),
           getExperianceItem(
@@ -354,7 +356,7 @@ class UserProfile extends StatelessWidget {
             company: "Google, LLC.",
             startDate: DateTime.now(),
             endDate: DateTime.now().add(
-              Duration(days: 368),
+              const Duration(days: 368),
             ),
           ),
         ],
@@ -419,7 +421,7 @@ class UserProfile extends StatelessWidget {
             company: "Oxford University",
             startDate: DateTime.now(),
             endDate: DateTime.now().add(
-              Duration(days: 256),
+              const Duration(days: 256),
             ),
           ),
           getExperianceItem(
@@ -428,7 +430,7 @@ class UserProfile extends StatelessWidget {
             company: "Harvard University",
             startDate: DateTime.now(),
             endDate: DateTime.now().add(
-              Duration(days: 368),
+              const Duration(days: 368),
             ),
           ),
         ],
@@ -781,7 +783,7 @@ class UserProfile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${size} . ${getFormatedDateForResume(date)}",
+                  "$size . ${getFormatedDateForResume(date)}",
                   overflow: TextOverflow.ellipsis,
                   style: getBodyTextStyle(
                     context,

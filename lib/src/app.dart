@@ -1,3 +1,6 @@
+import 'package:career_canvas/src/login/LoginScreen.dart';
+import 'package:career_canvas/src/login/ProfileCompletionScreenOne.dart';
+import 'package:career_canvas/src/login/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/profile/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -60,7 +63,7 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
 
-          initialRoute: UserProfile.routeName,
+          initialRoute: LoginScreen.routeName,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -69,6 +72,12 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
+                  case LoginScreen.routeName:
+                    return LoginScreen();
+                  case ProfileCompletionScreenOne.routeName:
+                    return ProfileCompletionScreenOne();
+                  case ProfileCompletionScreenTwo.routeName:
+                    return ProfileCompletionScreenTwo();
                   case UserProfile.routeName:
                     return const UserProfile();
                   case SettingsView.routeName:
