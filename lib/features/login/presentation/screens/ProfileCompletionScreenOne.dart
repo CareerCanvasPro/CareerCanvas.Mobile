@@ -1,4 +1,4 @@
-import 'package:career_canvas/src/ImagePath/ImageAssets.dart';
+import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

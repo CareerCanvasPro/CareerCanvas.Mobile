@@ -1,6 +1,6 @@
 
-import 'package:career_canvas/src/utils/AppColors.dart';
-import 'package:career_canvas/src/utils/AppTextStyles.dart';
+import 'package:career_canvas/core/utils/AppColors.dart';
+import 'package:career_canvas/core/utils/AppTextStyles.dart';
 import 'package:flutter/material.dart';
 class CustomTextFormField extends StatelessWidget {
   final String? labelText;

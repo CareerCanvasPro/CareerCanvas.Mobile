@@ -1,8 +1,7 @@
-import 'package:career_canvas/src/login/LoginScreen.dart';
-import 'package:career_canvas/src/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:flutter/material.dart';
 
-import '../ImagePath/ImageAssets.dart';
+import '../../../../core/ImagePath/ImageAssets.dart';
 
 class ProfileCompletionScreenTwo extends StatefulWidget {
   static const String routeName = '/profileCompletiontwo';
@@ -224,7 +223,7 @@ class _ProfileCompletionScreenTwoState
             const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/profile');
+                Navigator.pushNamed(context, '/userScreen');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:career_canvas/src/ImagePath/ImageAssets.dart';
+import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 
 class SpinningLoader extends StatefulWidget {
   @override

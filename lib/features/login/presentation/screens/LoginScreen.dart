@@ -1,15 +1,15 @@
-import 'package:career_canvas/src/Controller/LoginController.dart';
-import 'package:career_canvas/src/Controller/SocialMediaLoginController.dart';
-import 'package:career_canvas/src/ImagePath/ImageAssets.dart';
-import 'package:career_canvas/src/utils/AppColors.dart';
-import 'package:career_canvas/src/utils/ScreenHeightExtension.dart';
-import 'package:career_canvas/src/utils/SpinningLoader.dart';
-import 'package:career_canvas/src/utils/VersionInfo.dart';
+import 'package:career_canvas/features/login/presentation/getx/controller/LoginController.dart';
+import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
+import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
+import 'package:career_canvas/core/utils/AppColors.dart';
+import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/core/utils/SpinningLoader.dart';
+import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:get/get.dart';
 
-import '../Controller/TabContentController.dart';
+import '../getx/controller/TabContentController.dart';
 
 class LoginScreen extends StatelessWidget {
   static const routeName = "/profile";

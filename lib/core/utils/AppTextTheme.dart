@@ -1,6 +1,6 @@
 
-import 'package:career_canvas/src/utils/AppColors.dart';
-import 'package:career_canvas/src/utils/Sizes.dart';
+import 'package:career_canvas/core/utils/AppColors.dart';
+import 'package:career_canvas/core/utils/Sizes.dart';
 import 'package:flutter/material.dart';
 
 class AppTextTheme {
