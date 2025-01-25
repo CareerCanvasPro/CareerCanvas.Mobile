@@ -11,6 +11,7 @@
 //     }
 //   }
 // }
+import 'package:career_canvas/core/utils/AppRoutes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +55,7 @@ class WhatsAppController extends GetxController {
     // Simulate async operation
     Future.delayed(const Duration(seconds: 2), () {
       isLoading.value = false;
-                  Navigator.pushNamed(context, '/profileCompletionOne',  arguments: {'type': 'WhatsApp'});
+                  Navigator.pushNamed(context,'/HomePage',  arguments: {'type': 'WhatsApp'});
 
       //Get.to(() => ProfileCompletionScreenOne(), arguments: {'type': 'WhatsApp'});
     });

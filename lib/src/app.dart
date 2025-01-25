@@ -7,6 +7,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
+import '../features/Career/presentation/screens/CareerScreen.dart';
+import '../features/DashBoard/presentation/screens/HomePage.dart';
+import '../features/DashBoard/presentation/screens/dashboardScreen.dart';
+import '../features/Networking/presentation/screens/networkingScreen.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
@@ -50,7 +54,6 @@ class MyApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
-            
           ],
           supportedLocales: AppLocalizations.supportedLocales,
 
@@ -76,7 +79,6 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: (RouteSettings routeSettings) {
             return MaterialPageRoute<void>(
               settings: routeSettings,
-              
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
                   case LoginScreen.routeName:
@@ -92,16 +94,24 @@ class MyApp extends StatelessWidget {
                   case ProfileCompletionScreenFive.routeName:
                     return ProfileCompletionScreenFive();
                   case UserScreen.routeName:
-                    return const UserScreen();
+                    return UserScreen();
                   case UserProfile.routeName:
-                    return const UserProfile();
+                    return UserProfile();
+                  case DashboardScreen.routeName:
+                    return DashboardScreen();
+                  case NetworkingScreen.routeName:
+                    return NetworkingScreen();
+                   case CareerScreen.routeName:
+                    return CareerScreen();
+                   case HomePage.routeName:
+                    return HomePage();
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
+                    return SampleItemDetailsView();
                   case SampleItemListView.routeName:
                   default:
-                    return const SampleItemListView();
+                    return SampleItemListView();
                 }
               },
             );
@@ -111,4 +121,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

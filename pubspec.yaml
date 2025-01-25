@@ -33,9 +33,18 @@ dependencies:
   image_picker: ^1.1.2
   shared_preferences: ^2.4.0
   file_picker: ^8.1.7
+  # firebase_auth: ^5.4.1
+  # firebase_core: ^3.10.1
+  # google_sign_in: ^6.2.2
 
 
 dev_dependencies:
+flutter_launcher_icons: ^0.14.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png" # Path to your app icon
   flutter_test:
     sdk: flutter
 

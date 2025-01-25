@@ -2,10 +2,13 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
+import '../../../../core/utils/AppRoutes.dart';
 
 class ProfileCompletionScreenFive extends StatefulWidget {
   static const String routeName = '/profileCompletionFive';
+  const ProfileCompletionScreenFive({Key? key}) : super(key: key);
 
+  
   @override
   _ProfileCompletionScreenFiveState createState() =>
       _ProfileCompletionScreenFiveState();
@@ -41,7 +44,7 @@ class _ProfileCompletionScreenFiveState
         'currentOccupation': TextEditingController(),
         'organizationName': TextEditingController(),
         'designation': TextEditingController(),
-        'workFrom': TextEditingController(),
+        'workFromDate': TextEditingController(),
         'workTill': TextEditingController(),
       });
      
@@ -64,7 +67,7 @@ class _ProfileCompletionScreenFiveState
         'currentOccupation': controllerMap['currentOccupation']?.text ?? '',
         'organizationName': controllerMap['organizationName']?.text ?? '',
         'designation': controllerMap['designation']?.text ?? '',
-        'workFrom': controllerMap['workFrom']?.text ?? '',
+        'workFromDate': controllerMap['workFromDate']?.text ?? '',
         'workTill': controllerMap['workTill']?.text ?? '',
       };
     }).toList();
@@ -91,7 +94,7 @@ class _ProfileCompletionScreenFiveState
                 'Designation', controllers['designation']!),
             const SizedBox(height: 16),
             _buildTextField(
-                'Expected Work From', controllers['workFrom']!),
+                'Expected Work From', controllers['workFromDate']!),
             const SizedBox(height: 16),
             _buildTextField(
                 'Work Till', controllers['workTill']!),
@@ -241,7 +244,7 @@ class _ProfileCompletionScreenFiveState
               onPressed: () {
                 // Action for skip button
                 debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/userScreen');
+                Navigator.pushNamed(context, '/HomePage');
               },
               child: const Text(
                 'Skip',
@@ -253,7 +256,7 @@ class _ProfileCompletionScreenFiveState
               onPressed: () {
                 final allValues = _getAllExperienceValues();
                 print(allValues);
-                Navigator.pushNamed(context, '/profile');
+                Navigator.pushNamed(context,  '/HomePage');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

@@ -241,7 +241,7 @@ class _ProfileCompletionScreenFourState
               onPressed: () {
                 // Action for skip button
                 debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/ProfileCompletionScreenFive');
+                Navigator.pushNamed(context, '/profileCompletionFive');
               },
               child: const Text(
                 'Skip',
@@ -253,7 +253,7 @@ class _ProfileCompletionScreenFourState
               onPressed: () {
                 final allValues = _getAllSkilssValues();
                 print(allValues);
-                Navigator.pushNamed(context, '/ProfileCompletionScreenFive');
+                Navigator.pushNamed(context, '/profileCompletionFive');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

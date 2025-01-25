@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
 
-  static const routeName = "/profile";
+  static const String routeName = "/userProfile";
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class UserProfile extends StatelessWidget {
       ),
     );
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      //backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: primaryBlue,
         automaticallyImplyLeading: false,
@@ -96,7 +96,7 @@ class UserProfile extends StatelessWidget {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: NetworkImage(
-                          "https://lh3.googleusercontent.com/a/ACg8ocIU9q1JdFkIFbzTksW9DAg5lcEAgqtMHshLWKYfRV7MUg0P6ce1=s288-c-no"),
+                          "https://ugv.edu.bd/images/teacher_images/1581406453.jpg"),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -116,7 +116,7 @@ class UserProfile extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              "Tanvir AHmed Khan",
+              "Razibul Hasan Raj",
               style: getHeadlineTextStyle(
                 context,
                 18,

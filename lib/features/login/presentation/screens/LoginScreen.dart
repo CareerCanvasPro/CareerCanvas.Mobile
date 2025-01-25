@@ -12,7 +12,9 @@ import 'package:get/get.dart';
 import '../getx/controller/TabContentController.dart';
 
 class LoginScreen extends StatelessWidget {
-  static const routeName = "/loginScreen";
+  LoginScreen({super.key});
+
+  static const String routeName = "/loginScreen";
 
   final SocialMediaLoginController _controller =
       Get.put(SocialMediaLoginController()); // Inject controller
