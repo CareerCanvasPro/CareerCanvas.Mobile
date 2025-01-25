@@ -7,6 +7,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
+import '../features/login/presentation/screens/ProfileCompletionScreenFive.dart';
+import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
+import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import '../features/user/presentation/screens/user_screen.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
@@ -82,8 +85,14 @@ class MyApp extends StatelessWidget {
                     return ProfileCompletionScreenOne();
                   case ProfileCompletionScreenTwo.routeName:
                     return ProfileCompletionScreenTwo();
+                  case ProfileCompletionScreenThree.routeName:
+                    return ProfileCompletionScreenThree();
+                  case ProfileCompletionScreenFour.routeName:
+                    return ProfileCompletionScreenFour();
+                  case ProfileCompletionScreenFive.routeName:
+                    return ProfileCompletionScreenFive();
                   case UserScreen.routeName:
-                    return UserScreen();
+                    return const UserScreen();
                   case UserProfile.routeName:
                     return const UserProfile();
                   case SettingsView.routeName:

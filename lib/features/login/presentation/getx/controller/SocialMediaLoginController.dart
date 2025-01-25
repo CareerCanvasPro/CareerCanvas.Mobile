@@ -19,7 +19,7 @@ class SocialMediaLoginController extends GetxController {
   Future<void> loginWithApple() async {
     isAppleLoading.value = true;
     try {
-      // Your Apple login logic here
+      await Future.delayed(Duration(seconds: 2)); // Simulate a delay
     } finally {
       isAppleLoading.value = false;
     }
@@ -28,7 +28,7 @@ class SocialMediaLoginController extends GetxController {
   Future<void> loginWithFacebook() async {
     isFacebookLoading.value = true;
     try {
-      // Your Facebook login logic here
+      await Future.delayed(Duration(seconds: 2)); // Simulate a delay
     } finally {
       isFacebookLoading.value = false;
     }
@@ -37,7 +37,7 @@ class SocialMediaLoginController extends GetxController {
   Future<void> loginWithGithub() async {
     isGithubLoading.value = true;
     try {
-      // Your Github login logic here
+      await Future.delayed(Duration(seconds: 2)); // Simulate a delay
     } finally {
       isGithubLoading.value = false;
     }
@@ -46,7 +46,7 @@ class SocialMediaLoginController extends GetxController {
   Future<void> loginWithLinkedIn() async {
     isLinkedInLoading.value = true;
     try {
-      // Your LinkedIn login logic here
+      await Future.delayed(Duration(seconds: 2)); // Simulate a delay
     } finally {
       isLinkedInLoading.value = false;
     }

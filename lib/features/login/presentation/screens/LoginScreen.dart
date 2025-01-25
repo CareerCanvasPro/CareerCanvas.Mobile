@@ -12,19 +12,19 @@ import 'package:get/get.dart';
 import '../getx/controller/TabContentController.dart';
 
 class LoginScreen extends StatelessWidget {
-  static const routeName = "/profile";
+  static const routeName = "/loginScreen";
 
   final SocialMediaLoginController _controller =
       Get.put(SocialMediaLoginController()); // Inject controller
   final LoginController _loginController =
       Get.put(LoginController()); // Inject controller
- final EmailController emailController = Get.put(EmailController());
-  final PhoneNumberController phoneNumberController = Get.put(PhoneNumberController());
+  final EmailController emailController = Get.put(EmailController());
+  final PhoneNumberController phoneNumberController =
+      Get.put(PhoneNumberController());
   final WhatsAppController whatsAppController = Get.put(WhatsAppController());
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: Container(
         height: context.screenHeight,
@@ -217,95 +217,92 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildTabBarViews(BuildContext context) {
- 
     return SizedBox(
       height: context.screenHeight * 0.2,
       child: TabBarView(
         children: [
           _buildTabContent(
-        'Enter your email',
-        'Next',
-        context,
-        () => emailController.onEmailButtonPressed(context), // Pass specific button logic
-        emailController.isLoading,                  // Pass isLoading state
-      ),
-      _buildTabContent(
-        'Enter your phone number',
-        'Next',
-        context,
-        () => phoneNumberController.onPhoneNumberButtonPressed(context),
-        phoneNumberController.isLoading,
-      ),
-      _buildTabContent(
-        'Enter your WhatsApp number',
-        'Next',
-        context,
-        () => whatsAppController.onWhatsAppButtonPressed(context),
-        whatsAppController.isLoading,
-      ),
+            'Enter your email',
+            'Continue with Magic Link',
+            context,
+            () => emailController
+                .onEmailButtonPressed(context), // Pass specific button logic
+            emailController.isLoading, // Pass isLoading state
+          ),
+          _buildTabContent(
+            'Enter your phone number',
+            'Get OTP',
+            context,
+            () => phoneNumberController.onPhoneNumberButtonPressed(context),
+            phoneNumberController.isLoading,
+          ),
+          _buildTabContent(
+            'Enter your WhatsApp number',
+            'Get Varified',
+            context,
+            () => whatsAppController.onWhatsAppButtonPressed(context),
+            whatsAppController.isLoading,
+          ),
         ],
       ),
     );
   }
 
-Widget _buildTabContent(
-  String hintText,
-  String buttonText,
-  BuildContext context,
-  VoidCallback onPressed, // Pass a specific onPressed callback
-  RxBool isLoading,       // Pass isLoading from the controller
-) {
-  return Column(
-    children: [
-      TextField(
-        decoration: InputDecoration(
-          hintText: hintText,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: const BorderSide(
-              color: AppColors.secondaryColor,
+  Widget _buildTabContent(
+    String hintText,
+    String buttonText,
+    BuildContext context,
+    VoidCallback onPressed, // Pass a specific onPressed callback
+    RxBool isLoading, // Pass isLoading from the controller
+  ) {
+    return Column(
+      children: [
+        TextField(
+          decoration: InputDecoration(
+            hintText: hintText,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
             ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: const BorderSide(color: AppColors.secondaryColor),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32.0),
+              borderSide: const BorderSide(
+                color: AppColors.secondaryColor,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32.0),
+              borderSide: const BorderSide(color: AppColors.secondaryColor),
+            ),
           ),
         ),
-      ),
-      SizedBox(height: context.screenHeight * 0.02),
-      Obx(() {
-        return ElevatedButton(
-          onPressed: isLoading.value ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
-            minimumSize: const Size(double.infinity, 48),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
+        SizedBox(height: context.screenHeight * 0.02),
+        Obx(() {
+          return ElevatedButton(
+            onPressed: isLoading.value ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              minimumSize: const Size(double.infinity, 48),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
             ),
-          ),
-          child: isLoading.value
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.0,
+            child: isLoading.value
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : Text(
+                    buttonText,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
-                )
-              : Text(
-                  buttonText,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
-        );
-      }),
-    ],
-  );
-}
-
-
-
+          );
+        }),
+      ],
+    );
+  }
 }

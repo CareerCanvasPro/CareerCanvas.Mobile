@@ -3,97 +3,77 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
-class ProfileCompletionScreenTwo extends StatefulWidget {
-  static const String routeName = '/profileCompletiontwo';
+class ProfileCompletionScreenFour extends StatefulWidget {
+  static const String routeName = '/profileCompletionFour';
 
   @override
-  _ProfileCompletionScreenTwoState createState() =>
-      _ProfileCompletionScreenTwoState();
+  _ProfileCompletionScreenFourState createState() =>
+      _ProfileCompletionScreenFourState();
 }
 
-class _ProfileCompletionScreenTwoState
-    extends State<ProfileCompletionScreenTwo> {
+class _ProfileCompletionScreenFourState
+    extends State<ProfileCompletionScreenFour> {
   //final _formKey = GlobalKey<FormState>();
-// List to hold the education form fields
-  final TextEditingController currentEducationController =
+// List to hold the skills form fields
+  final TextEditingController hardSkillsController =
       TextEditingController();
-  final TextEditingController instituteNameController = TextEditingController();
-  final TextEditingController fieldOfEducationController =
+  final TextEditingController firstSkillsController = TextEditingController();
+  final TextEditingController secondSkillsController =
       TextEditingController();
-  final TextEditingController expectedGraduationDateController =
+  final TextEditingController thirdSkillsController =
       TextEditingController();
-  final TextEditingController academicAchievementsController =
+  final TextEditingController fourSkilssController =
       TextEditingController();
 
-// List to hold controllers for each dynamic education field
-  List<Map<String, TextEditingController>> _educationControllers = [];
-  final List<String?> _uploadedFiles =
-      []; // List to store file paths for uploads
+  // List to hold controllers for each dynamic skills field
+  List<Map<String, TextEditingController>> _skillsControllers = [];
+ 
   @override
   void initState() {
     super.initState();
-    _addEducationField(); // Add one initial education section
+    _addSkilssField(); // Add one initial skills section
   }
 
-  // Method to add a new education field
-  void _addEducationField() {
+  // Method to add a new skills field
+  void _addSkilssField() {
     setState(() {
-      _educationControllers.add({
-        'currentEducation': TextEditingController(),
-        'instituteName': TextEditingController(),
-        'fieldOfEducation': TextEditingController(),
-        'graduationDate': TextEditingController(),
-        'achievements': TextEditingController(),
+      _skillsControllers.add({
+        'hardSkills': TextEditingController(),
+        'firstSkills': TextEditingController(),
+        'secondSkills': TextEditingController(),
+        'thirdSkills': TextEditingController(),
+        'fourSkilss': TextEditingController(),
       });
-      _uploadedFiles
-          .add(null); // Add an empty slot for the new education section
+   
     });
   }
 
-  // Method to remove the last education field
-  void _removeEducationField() {
-    if (_educationControllers.isNotEmpty) {
+  // Method to remove the last skills field
+  void _removeSkilssField() {
+    if (_skillsControllers.isNotEmpty) {
       setState(() {
-        _educationControllers.removeLast();
-        _uploadedFiles.removeLast();
+        _skillsControllers.removeLast();
       });
     }
   }
 
-  Future<void> _uploadCertificate(int index) async {
-    // Simulate file picking (replace with actual file picker logic)
-    final String? filePath = await _pickFile();
-    if (filePath != null) {
-      setState(() {
-        _uploadedFiles[index] =
-            filePath; // Update the file path for the specific section
-      });
-    }
-  }
-
-  Future<String?> _pickFile() async {
-    // Replace with actual file picker logic using a package like `file_picker`
-    // For now, we'll simulate picking a file:
-    return Future.value("certificate.pdf"); // Simulated file path
-  }
-
-  // Method to retrieve all values from education fields
-  List<Map<String, String>> _getAllEducationValues() {
-    return _educationControllers.map((controllerMap) {
+  // Method to retrieve all values from skills fields
+  List<Map<String, String>> _getAllSkilssValues() {
+    return _skillsControllers.map((controllerMap) {
       return {
-        'currentEducation': controllerMap['currentEducation']?.text ?? '',
-        'instituteName': controllerMap['instituteName']?.text ?? '',
-        'fieldOfEducation': controllerMap['fieldOfEducation']?.text ?? '',
-        'graduationDate': controllerMap['graduationDate']?.text ?? '',
-        'achievements': controllerMap['achievements']?.text ?? '',
+        'hardSkills': controllerMap['hardSkills']?.text ?? '',
+        'firstSkills': controllerMap['firstSkills']?.text ?? '',
+        'secondSkills': controllerMap['secondSkills']?.text ?? '',
+        'thirdSkills': controllerMap['thirdSkills']?.text ?? '',
+        'fourSkilss': controllerMap['fourSkilss']?.text ?? '',
       };
     }).toList();
   }
 
   final Map<String, String?> uploadedFiles = {};
 
-  Widget _buildEducationCard(int index) {
-    final controllers = _educationControllers[index];
+  Widget _buildSkilssCard(int index) {
+    final controllers = _skillsControllers[index];
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
       elevation: 2,
@@ -103,39 +83,21 @@ class _ProfileCompletionScreenTwoState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTextField(
-                'Current Education', controllers['currentEducation']!),
+                'Hard Skills', controllers['hardSkills']!),
             const SizedBox(height: 16),
-            _buildTextField('Institute Name', controllers['instituteName']!),
-            const SizedBox(height: 16),
-            _buildTextField(
-                'Field of Education', controllers['fieldOfEducation']!),
+            _buildTextField('First Skills', controllers['firstSkills']!),
             const SizedBox(height: 16),
             _buildTextField(
-                'Expected Graduation Date', controllers['graduationDate']!),
+                'Second Skills', controllers['secondSkills']!),
             const SizedBox(height: 16),
             _buildTextField(
-                'Academic Achievements', controllers['achievements']!),
+                'Expected Third Skills', controllers['thirdSkills']!),
+            const SizedBox(height: 16),
+            _buildTextField(
+                'Four Skilss', controllers['fourSkilss']!),
             const SizedBox(height: 16),
 
-            // Upload Certificate Section
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => _uploadCertificate(index),
-                  child: const Text('Upload Certificate'),
-                ),
-                const SizedBox(width: 16),
-                Text(
-                  _uploadedFiles[index] ?? 'No file uploaded',
-                  style: TextStyle(
-                    color: _uploadedFiles[index] == null
-                        ? Colors.grey
-                        : Colors.green,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
+            
           ],
         ),
       ),
@@ -176,7 +138,7 @@ class _ProfileCompletionScreenTwoState
                 ),
                 const SizedBox(height: 16),
                 // Progress Bar
-                buildProgressBar(progress: 0.4),
+                buildProgressBar(progress: 0.8),
                 SizedBox(height: 10),
                 Text(
                   'hello! Complete your profile for onboard!',
@@ -184,27 +146,27 @@ class _ProfileCompletionScreenTwoState
                 ),
 
                 // Form fields
-                // Dynamic list of education fields
+                // Dynamic list of skills fields
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _educationControllers.length,
+                  itemCount: _skillsControllers.length,
                   itemBuilder: (context, index) {
-                    return _buildEducationCard(index);
+                    return _buildSkilssCard(index);
                   },
                 ),
 
-                // Add and Remove Education Buttons
+                // Add and Remove Skilss Buttons
                 Row(
                   children: [
                     TextButton(
-                      onPressed: _addEducationField,
-                      child: Text('+ Add Education'),
+                      onPressed: _addSkilssField,
+                      child: Text('+ Add Skilss'),
                     ),
                     const SizedBox(width: 10),
                     TextButton(
-                      onPressed: _removeEducationField,
-                      child: Text('- Remove Education'),
+                      onPressed: _removeSkilssField,
+                      child: Text('- Remove Skilss'),
                     ),
                   ],
                 ),
@@ -279,7 +241,7 @@ class _ProfileCompletionScreenTwoState
               onPressed: () {
                 // Action for skip button
                 debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/profileCompletionThree');
+                Navigator.pushNamed(context, '/ProfileCompletionScreenFive');
               },
               child: const Text(
                 'Skip',
@@ -289,9 +251,9 @@ class _ProfileCompletionScreenTwoState
             const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
-                final allValues = _getAllEducationValues();
+                final allValues = _getAllSkilssValues();
                 print(allValues);
-                Navigator.pushNamed(context, '/profileCompletionThree');
+                Navigator.pushNamed(context, '/ProfileCompletionScreenFive');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

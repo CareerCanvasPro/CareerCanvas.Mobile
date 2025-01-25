@@ -3,97 +3,77 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
-class ProfileCompletionScreenTwo extends StatefulWidget {
-  static const String routeName = '/profileCompletiontwo';
+class ProfileCompletionScreenFive extends StatefulWidget {
+  static const String routeName = '/profileCompletionFive';
 
   @override
-  _ProfileCompletionScreenTwoState createState() =>
-      _ProfileCompletionScreenTwoState();
+  _ProfileCompletionScreenFiveState createState() =>
+      _ProfileCompletionScreenFiveState();
 }
 
-class _ProfileCompletionScreenTwoState
-    extends State<ProfileCompletionScreenTwo> {
+class _ProfileCompletionScreenFiveState
+    extends State<ProfileCompletionScreenFive> {
   //final _formKey = GlobalKey<FormState>();
-// List to hold the education form fields
-  final TextEditingController currentEducationController =
+// List to hold the experience form fields
+  final TextEditingController currentOccupationController =
       TextEditingController();
-  final TextEditingController instituteNameController = TextEditingController();
-  final TextEditingController fieldOfEducationController =
+  final TextEditingController organizationNameController = TextEditingController();
+  final TextEditingController designationController =
       TextEditingController();
-  final TextEditingController expectedGraduationDateController =
+  final TextEditingController workFromDateController =
       TextEditingController();
-  final TextEditingController academicAchievementsController =
+  final TextEditingController workTillController =
       TextEditingController();
 
-// List to hold controllers for each dynamic education field
-  List<Map<String, TextEditingController>> _educationControllers = [];
-  final List<String?> _uploadedFiles =
-      []; // List to store file paths for uploads
+// List to hold controllers for each dynamic experience field
+  List<Map<String, TextEditingController>> _experienceControllers = [];
+ 
   @override
   void initState() {
     super.initState();
-    _addEducationField(); // Add one initial education section
+    _addExperienceField(); // Add one initial experience section
   }
 
-  // Method to add a new education field
-  void _addEducationField() {
+  // Method to add a new experience field
+  void _addExperienceField() {
     setState(() {
-      _educationControllers.add({
-        'currentEducation': TextEditingController(),
-        'instituteName': TextEditingController(),
-        'fieldOfEducation': TextEditingController(),
-        'graduationDate': TextEditingController(),
-        'achievements': TextEditingController(),
+      _experienceControllers.add({
+        'currentOccupation': TextEditingController(),
+        'organizationName': TextEditingController(),
+        'designation': TextEditingController(),
+        'workFrom': TextEditingController(),
+        'workTill': TextEditingController(),
       });
-      _uploadedFiles
-          .add(null); // Add an empty slot for the new education section
+     
     });
   }
 
-  // Method to remove the last education field
-  void _removeEducationField() {
-    if (_educationControllers.isNotEmpty) {
+  // Method to remove the last experience field
+  void _removeExperienceField() {
+    if (_experienceControllers.isNotEmpty) {
       setState(() {
-        _educationControllers.removeLast();
-        _uploadedFiles.removeLast();
+        _experienceControllers.removeLast();
       });
     }
   }
 
-  Future<void> _uploadCertificate(int index) async {
-    // Simulate file picking (replace with actual file picker logic)
-    final String? filePath = await _pickFile();
-    if (filePath != null) {
-      setState(() {
-        _uploadedFiles[index] =
-            filePath; // Update the file path for the specific section
-      });
-    }
-  }
-
-  Future<String?> _pickFile() async {
-    // Replace with actual file picker logic using a package like `file_picker`
-    // For now, we'll simulate picking a file:
-    return Future.value("certificate.pdf"); // Simulated file path
-  }
-
-  // Method to retrieve all values from education fields
-  List<Map<String, String>> _getAllEducationValues() {
-    return _educationControllers.map((controllerMap) {
+  // Method to retrieve all values from experience fields
+  List<Map<String, String>> _getAllExperienceValues() {
+    return _experienceControllers.map((controllerMap) {
       return {
-        'currentEducation': controllerMap['currentEducation']?.text ?? '',
-        'instituteName': controllerMap['instituteName']?.text ?? '',
-        'fieldOfEducation': controllerMap['fieldOfEducation']?.text ?? '',
-        'graduationDate': controllerMap['graduationDate']?.text ?? '',
-        'achievements': controllerMap['achievements']?.text ?? '',
+        'currentOccupation': controllerMap['currentOccupation']?.text ?? '',
+        'organizationName': controllerMap['organizationName']?.text ?? '',
+        'designation': controllerMap['designation']?.text ?? '',
+        'workFrom': controllerMap['workFrom']?.text ?? '',
+        'workTill': controllerMap['workTill']?.text ?? '',
       };
     }).toList();
   }
 
   final Map<String, String?> uploadedFiles = {};
 
-  Widget _buildEducationCard(int index) {
-    final controllers = _educationControllers[index];
+  Widget _buildExperienceCard(int index) {
+    final controllers = _experienceControllers[index];
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
       elevation: 2,
@@ -103,39 +83,21 @@ class _ProfileCompletionScreenTwoState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTextField(
-                'Current Education', controllers['currentEducation']!),
+                'Current Occupation', controllers['currentOccupation']!),
             const SizedBox(height: 16),
-            _buildTextField('Institute Name', controllers['instituteName']!),
-            const SizedBox(height: 16),
-            _buildTextField(
-                'Field of Education', controllers['fieldOfEducation']!),
+            _buildTextField('Organization Name', controllers['organizationName']!),
             const SizedBox(height: 16),
             _buildTextField(
-                'Expected Graduation Date', controllers['graduationDate']!),
+                'Designation', controllers['designation']!),
             const SizedBox(height: 16),
             _buildTextField(
-                'Academic Achievements', controllers['achievements']!),
+                'Expected Work From', controllers['workFrom']!),
+            const SizedBox(height: 16),
+            _buildTextField(
+                'Work Till', controllers['workTill']!),
             const SizedBox(height: 16),
 
-            // Upload Certificate Section
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => _uploadCertificate(index),
-                  child: const Text('Upload Certificate'),
-                ),
-                const SizedBox(width: 16),
-                Text(
-                  _uploadedFiles[index] ?? 'No file uploaded',
-                  style: TextStyle(
-                    color: _uploadedFiles[index] == null
-                        ? Colors.grey
-                        : Colors.green,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
+           
           ],
         ),
       ),
@@ -176,7 +138,7 @@ class _ProfileCompletionScreenTwoState
                 ),
                 const SizedBox(height: 16),
                 // Progress Bar
-                buildProgressBar(progress: 0.4),
+                buildProgressBar(progress: 1),
                 SizedBox(height: 10),
                 Text(
                   'hello! Complete your profile for onboard!',
@@ -184,27 +146,27 @@ class _ProfileCompletionScreenTwoState
                 ),
 
                 // Form fields
-                // Dynamic list of education fields
+                // Dynamic list of experience fields
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _educationControllers.length,
+                  itemCount: _experienceControllers.length,
                   itemBuilder: (context, index) {
-                    return _buildEducationCard(index);
+                    return _buildExperienceCard(index);
                   },
                 ),
 
-                // Add and Remove Education Buttons
+                // Add and Remove Experience Buttons
                 Row(
                   children: [
                     TextButton(
-                      onPressed: _addEducationField,
-                      child: Text('+ Add Education'),
+                      onPressed: _addExperienceField,
+                      child: Text('+ Add Experience'),
                     ),
                     const SizedBox(width: 10),
                     TextButton(
-                      onPressed: _removeEducationField,
-                      child: Text('- Remove Education'),
+                      onPressed: _removeExperienceField,
+                      child: Text('- Remove Experience'),
                     ),
                   ],
                 ),
@@ -279,7 +241,7 @@ class _ProfileCompletionScreenTwoState
               onPressed: () {
                 // Action for skip button
                 debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/profileCompletionThree');
+                Navigator.pushNamed(context, '/userScreen');
               },
               child: const Text(
                 'Skip',
@@ -289,9 +251,9 @@ class _ProfileCompletionScreenTwoState
             const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
-                final allValues = _getAllEducationValues();
+                final allValues = _getAllExperienceValues();
                 print(allValues);
-                Navigator.pushNamed(context, '/profileCompletionThree');
+                Navigator.pushNamed(context, '/profile');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
