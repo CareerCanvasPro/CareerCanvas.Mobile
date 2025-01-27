@@ -3,6 +3,7 @@ import 'package:career_canvas/features/user/data/datasources/user_local_data_sou
 import 'package:career_canvas/features/user/data/models/user_model.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'src/app.dart';
@@ -10,11 +11,12 @@ import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());
-  await VersionInfo.init();  // Initialize version information
+  await VersionInfo.init(); // Initialize version information
 
   // Load the user's preferred theme while the splash screen is displayed.
   // This prevents a sudden theme change when the app is first displayed.
@@ -38,20 +40,14 @@ void main() async {
   // Log table data
   await logUsersTableData();
 
-
   //-------------
   runApp(MyApp(settingsController: settingsController));
 }
-
-
-
-
 
 Future<void> insertExampleData(UserLocalDataSource userLocalDataSource) async {
   // Example user data
   final exampleUsers = [
     UserModel(
-     
       name: 'taj',
       email: 'john.doe@example.com',
       birthDate: '1990-01-01',
@@ -60,7 +56,6 @@ Future<void> insertExampleData(UserLocalDataSource userLocalDataSource) async {
       syncStatus: 'pending',
     ),
     UserModel(
-    
       name: 'raz',
       email: 'jane.doe@example.com',
       birthDate: '1992-05-10',
@@ -77,6 +72,7 @@ Future<void> insertExampleData(UserLocalDataSource userLocalDataSource) async {
 
   print('Example users inserted.');
 }
+
 Future<void> resetDatabase(Database database) async {
   await database.execute('DROP TABLE IF EXISTS users');
   await database.execute('''
@@ -97,12 +93,11 @@ Future<void> logUsersTableData() async {
   final db = await openDatabase('$dbPath/app.db');
 
   // Log all tables
-  final tables = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
+  final tables =
+      await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
   print('Tables in the database: $tables');
 
   // Query data from the "users" table
   final usersData = await db.rawQuery('SELECT * FROM users');
   print('Data in the users table: $usersData');
 }
-
-
