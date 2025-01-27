@@ -92,29 +92,38 @@ class CareerScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Personalised Career Guided',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/PersonalityTestScreen');
+                      },
+                      child: const Text(
+                        'Personalised Career Guided',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     SizedBox(height: 10),
                     Text('Assessment', style: TextStyle(fontSize: 14)),
                     Text('Manual Input (Goal)', style: TextStyle(fontSize: 14)),
                     Text('Who am I', style: TextStyle(fontSize: 14)),
-                    Text('Personalise Experience', style: TextStyle(fontSize: 14)),
+                    Text('Personalise Experience',
+                        style: TextStyle(fontSize: 14)),
                     Text('Timeline', style: TextStyle(fontSize: 14)),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            const Text('Jobs for you', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Jobs for you',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             FutureBuilder<List<Job>>(
               future: jobService.fetchJobs(),
@@ -145,7 +154,8 @@ class CareerScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
-            const Text('Latest Job', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Latest Job',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             FutureBuilder<List<Job>>(
               future: jobService.fetchJobs(),
@@ -204,9 +214,12 @@ class JobCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(job.role, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(job.role,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
                     Text('${job.company} • ${job.location}',
-                        style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey)),
                   ],
                 ),
               ],
@@ -225,8 +238,11 @@ class JobCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('25 minutes ago', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                Text(job.salary, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text('25 minutes ago',
+                    style: TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(job.salary,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),
           ],

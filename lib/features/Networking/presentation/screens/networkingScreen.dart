@@ -1,9 +1,7 @@
+import 'package:career_canvas/features/Networking/presentation/screens/Mentions/MentionsTab.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/utils/AppColors.dart';
-import 'Mentors/CommunityTab.dart';
-import 'Mentors/MentionsTab.dart';
-import 'Mentors/MyFeedTab.dart';
+import 'Community/CommunityTab.dart';
+import 'Feeds/MyFeedTab.dart';
 import 'Mentors/MyMentorsTab.dart';
 
 

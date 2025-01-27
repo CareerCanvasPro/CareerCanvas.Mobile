@@ -8,8 +8,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
+import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
+import '../features/Career/presentation/screens/PersonalityTest/JobRecommendationScreen.dart';
+import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
+import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
 import '../features/DashBoard/presentation/screens/HomePage.dart';
 import '../features/DashBoard/presentation/screens/dashboardScreen.dart';
+import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
+import '../features/Networking/presentation/screens/Mentors/MyMentorsTab.dart';
 import '../features/Networking/presentation/screens/networkingScreen.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
@@ -101,10 +107,23 @@ class MyApp extends StatelessWidget {
                     return DashboardScreen();
                   case NetworkingScreen.routeName:
                     return NetworkingScreen();
-                   case CareerScreen.routeName:
+                  case CareerScreen.routeName:
                     return CareerScreen();
-                   case HomePage.routeName:
+                  case HomePage.routeName:
                     return HomePage();
+                  case MyMentorsTab.routeName:
+                    return MyMentorsTab(); 
+                  case ChatScreen.routeName:
+                    return ChatScreen();
+                   case PersonalityTestScreen.routeName:
+                    return PersonalityTestScreen();
+                   case PersonalityTestScreen1.routeName:
+                    return PersonalityTestScreen1();
+                  case AnalyzingResultsScreen.routeName:
+                    return AnalyzingResultsScreen();
+                   case JobRecommendationScreen.routeName:
+                    return JobRecommendationScreen();
+                  //
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:

@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Mentor {
   final String name;
   final String role;
   final String location;
   final String imageUrl;
+  final String status;
 
-  Mentor({
-    required this.name,
-    required this.role,
-    required this.location,
-    required this.imageUrl,
-  });
+  Mentor(
+      {required this.name,
+      required this.role,
+      required this.location,
+      required this.imageUrl,
+      required this.status});
 
   // Factory method to create a Mentor object from JSON
   factory Mentor.fromJson(Map<String, dynamic> json) {
     return Mentor(
-      name: json['name'],
-      role: json['role'],
-      location: json['location'],
-      imageUrl: json['imageUrl'],
-    );
+        name: json['name'],
+        role: json['role'],
+        location: json['location'],
+        imageUrl: json['imageUrl'],
+        status: json['status']);
   }
 }
 
 class MyMentorsTab extends StatefulWidget {
+  static const String routeName = "/MyMentorsTab";
+
+  const MyMentorsTab({Key? key}) : super(key: key);
   @override
   _MyMentorsTabState createState() => _MyMentorsTabState();
 }
@@ -38,39 +43,47 @@ class _MyMentorsTabState extends State<MyMentorsTab> {
     final mockResponse = [
       {
         'name': 'Ziauddin Ahmed, MD, FASN',
-        'role': 'Professor, Clinical Medicine, Lewis Katz School of Medicine at Temple University',
+        'role':
+            'Professor, Clinical Medicine, Lewis Katz School of Medicine at Temple University',
         'location': '@in.philadelphia',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
       {
         'name': 'Jane Doe',
         'role': 'Associate Professor, Harvard Medical School',
         'location': '@in.boston',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
       {
         'name': 'John Smith',
         'role': 'Director of Research, Stanford University',
         'location': '@in.palo.alto',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
       {
         'name': 'Ziauddin Ahmed, MD, FASN',
-        'role': 'Professor, Clinical Medicine, Lewis Katz School of Medicine at Temple University',
+        'role':
+            'Professor, Clinical Medicine, Lewis Katz School of Medicine at Temple University',
         'location': '@in.philadelphia',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
       {
         'name': 'Jane Doe',
         'role': 'Associate Professor, Harvard Medical School',
         'location': '@in.boston',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
       {
         'name': 'John Smith',
         'role': 'Director of Research, Stanford University',
         'location': '@in.palo.alto',
         'imageUrl': 'assets/images/Banking_ic_user1.jpeg',
+        'status': 'Online'
       },
     ];
 
@@ -99,7 +112,7 @@ class _MyMentorsTabState extends State<MyMentorsTab> {
             final mentor = mentors[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: MentorCard(mentor: mentor),
+              child: MentorCard(context, mentor: mentor),
             );
           },
         );
@@ -110,8 +123,7 @@ class _MyMentorsTabState extends State<MyMentorsTab> {
 
 class MentorCard extends StatelessWidget {
   final Mentor mentor;
-
-  const MentorCard({required this.mentor});
+  MentorCard(BuildContext context, {required this.mentor});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +141,8 @@ class MentorCard extends StatelessWidget {
             children: [
               Text(
                 mentor.name,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Text(
@@ -144,7 +157,21 @@ class MentorCard extends StatelessWidget {
             ],
           ),
         ),
-        const Icon(Icons.arrow_forward, color: Colors.blue),
+
+        IconButton(
+          icon: const Icon(Icons.arrow_forward, color: Colors.blue),
+          onPressed: () {
+            Navigator.pushNamed(context, '/ChatScreen', arguments: {
+              'name': mentor.name,
+              'role': mentor.role,
+              'location': mentor.location,
+              'imageUrl': mentor.imageUrl,
+              'status': mentor.status,
+            }); // Navigate to catscreen
+          },
+        ),
+
+        //const Icon(Icons.arrow_forward, color: Colors.blue,),
       ],
     );
   }
