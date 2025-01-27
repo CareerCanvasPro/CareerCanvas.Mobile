@@ -53,12 +53,14 @@ class _MyAppState extends State<MyApp> {
         print('Deep link received: ${uri.path}');
         // TODO: Handle the deep link here. Will need to change the token and isNewUser
         String token = uri.queryParameters['token'] ?? '';
+        // TODO: Save the token for letter use
         print('Token: $token');
         bool isNewUser = uri.queryParameters['isNewUser'].toString() == 'true';
         print('Is new user: $isNewUser');
         if (isNewUser) {
           Navigator.of(context).pushNamed(ProfileCompletionScreenOne.routeName);
         } else {
+          // TODO: Have to check if theres any loggedin user if not send to login screen.
           Navigator.of(context).pushNamed(DashboardScreen.routeName);
         }
       } else {
