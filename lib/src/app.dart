@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
@@ -5,6 +7,7 @@ import 'package:career_canvas/src/profile/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
@@ -19,9 +22,10 @@ import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
+import 'package:uni_links/uni_links.dart';
 
 /// The Widget that configures your application.
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({
     super.key,
     required this.settingsController,
@@ -30,13 +34,49 @@ class MyApp extends StatelessWidget {
   final SettingsController settingsController;
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late StreamSubscription _deepLinkSubscription;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _initDeepLinkListener(context);
+    });
+  }
+
+  void _initDeepLinkListener(BuildContext context) {
+    _deepLinkSubscription = uriLinkStream.listen((Uri? uri) {
+      if (uri != null && uri.path.endsWith("/callback")) {
+        print('Deep link received: ${uri.path}');
+        // TODO: Handle the deep link here. Will need to change the token and isNewUser
+        String token = uri.queryParameters['token'] ?? '';
+        print('Token: $token');
+        bool isNewUser = uri.queryParameters['isNewUser'].toString() == 'true';
+        print('Is new user: $isNewUser');
+        if (isNewUser) {
+          Navigator.of(context).pushNamed(ProfileCompletionScreenOne.routeName);
+        } else {
+          Navigator.of(context).pushNamed(DashboardScreen.routeName);
+        }
+      } else {
+        print('Deep link received but not handled: ${uri.toString()}');
+      }
+    }, onError: (err) {
+      print('Failed to receive deep link: $err');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Glue the SettingsController to the MaterialApp.
     //
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     return ListenableBuilder(
-      listenable: settingsController,
+      listenable: widget.settingsController,
       builder: (BuildContext context, Widget? child) {
         return GetMaterialApp(
           // Providing a restorationScopeId allows the Navigator built by the
@@ -70,7 +110,7 @@ class MyApp extends StatelessWidget {
           // SettingsController to display the correct theme.
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
-          themeMode: settingsController.themeMode,
+          themeMode: widget.settingsController.themeMode,
 
           initialRoute: LoginScreen.routeName,
 
@@ -101,12 +141,12 @@ class MyApp extends StatelessWidget {
                     return DashboardScreen();
                   case NetworkingScreen.routeName:
                     return NetworkingScreen();
-                   case CareerScreen.routeName:
+                  case CareerScreen.routeName:
                     return CareerScreen();
-                   case HomePage.routeName:
+                  case HomePage.routeName:
                     return HomePage();
                   case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
+                    return SettingsView(controller: widget.settingsController);
                   case SampleItemDetailsView.routeName:
                     return SampleItemDetailsView();
                   case SampleItemListView.routeName:
