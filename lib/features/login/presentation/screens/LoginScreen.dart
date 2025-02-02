@@ -1,4 +1,4 @@
-import 'package:career_canvas/features/login/presentation/getx/controller/LoginController.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
 import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
@@ -18,8 +18,6 @@ class LoginScreen extends StatelessWidget {
 
   final SocialMediaLoginController _controller =
       Get.put(SocialMediaLoginController()); // Inject controller
-  final LoginController _loginController =
-      Get.put(LoginController()); // Inject controller
   final EmailController emailController = Get.put(EmailController());
   final PhoneNumberController phoneNumberController =
       Get.put(PhoneNumberController());
@@ -171,18 +169,19 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildTabBar(BuildContext context) {
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.primaryColor, // Background for unselected tabs
-        borderRadius: BorderRadius.circular(32.0), // Rounded corners
+        borderRadius: BorderRadius.circular(50.0), // Rounded corners
       ),
       child: TabBar(
         indicator: BoxDecoration(
           color: Colors.white, // Background color for the selected tab
           borderRadius:
-              BorderRadius.circular(24.0), // Rounded corners for the button
+              BorderRadius.circular(18.0), // Rounded corners for the button
         ),
         indicatorPadding:
-            const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         labelColor: AppColors.primaryColor, // Text color for the selected tab
         unselectedLabelColor:
             AppColortext.white, // Text color for unselected tabs
@@ -204,7 +203,7 @@ class LoginScreen extends StatelessWidget {
           Tab(
             child: SizedBox(
               width: context.screenWidth / 3, // Fixed width for each tab
-              child: const Text('Phone Number', textAlign: TextAlign.center),
+              child: const Text('Phone', textAlign: TextAlign.center),
             ),
           ),
           Tab(
@@ -222,14 +221,47 @@ class LoginScreen extends StatelessWidget {
     return SizedBox(
       height: context.screenHeight * 0.2,
       child: TabBarView(
+        clipBehavior: Clip.antiAlias,
         children: [
           _buildTabContent(
             'Enter your email',
             'Continue with Magic Link',
             context,
-            () => emailController
-                .onEmailButtonPressed(context), // Pass specific button logic
+            () {
+              FocusScope.of(context).unfocus();
+              emailController.onEmailButtonPressed(
+                context,
+                onDone: (String? message) {
+                  emailController.emailController.clear();
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Success",
+                    content: message ??
+                        'Please check your email for magic link. Click on the link to continue.',
+                  );
+                },
+                onError: (String error) {
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Error",
+                    content: error,
+                  );
+                },
+              );
+            }, // Pass specific button logic
             emailController.isLoading, // Pass isLoading state
+            controller: emailController.emailController,
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'Email is required';
+              } else if (!RegExp(
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                  .hasMatch(value)) {
+                return 'Invalid email address';
+              }
+              return null;
+            },
+            formKey: emailController.formKey,
           ),
           _buildTabContent(
             'Enter your phone number',
@@ -237,6 +269,16 @@ class LoginScreen extends StatelessWidget {
             context,
             () => phoneNumberController.onPhoneNumberButtonPressed(context),
             phoneNumberController.isLoading,
+            controller: phoneNumberController.phoneNumberController,
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'Phone number is required';
+              } else if (!RegExp(r"^[0-9]{10,}$").hasMatch(value)) {
+                return 'Invalid phone number';
+              }
+              return null;
+            },
+            formKey: phoneNumberController.formKey,
           ),
           _buildTabContent(
             'Enter your WhatsApp number',
@@ -244,6 +286,16 @@ class LoginScreen extends StatelessWidget {
             context,
             () => whatsAppController.onWhatsAppButtonPressed(context),
             whatsAppController.isLoading,
+            controller: whatsAppController.whatsAppController,
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'WhatsApp number is required';
+              } else if (!RegExp(r"^[0-9]{10,}$").hasMatch(value)) {
+                return 'Invalid WhatsApp number';
+              }
+              return null;
+            },
+            formKey: whatsAppController.formKey,
           ),
         ],
       ),
@@ -256,25 +308,36 @@ class LoginScreen extends StatelessWidget {
     BuildContext context,
     VoidCallback onPressed, // Pass a specific onPressed callback
     RxBool isLoading, // Pass isLoading from the controller
-  ) {
+    {
+    required TextEditingController controller,
+    String? Function(String?)? validator,
+    required GlobalKey<FormState> formKey,
+  }) {
     return Column(
       children: [
-        TextField(
-          decoration: InputDecoration(
-            hintText: hintText,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(32.0),
-              borderSide: const BorderSide(
-                color: AppColors.secondaryColor,
+        Form(
+          key: formKey,
+          child: TextFormField(
+            validator: validator,
+            controller: controller,
+            autofocus: false,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: InputDecoration(
+              hintText: hintText,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(32.0),
-              borderSide: const BorderSide(color: AppColors.secondaryColor),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(32.0),
+                borderSide: const BorderSide(
+                  color: AppColors.secondaryColor,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(32.0),
+                borderSide: const BorderSide(color: AppColors.secondaryColor),
+              ),
             ),
           ),
         ),

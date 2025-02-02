@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
@@ -28,7 +29,6 @@ import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
-import 'package:uni_links/uni_links.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatefulWidget {
@@ -44,37 +44,63 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late StreamSubscription _deepLinkSubscription;
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
+    FlutterNativeSplash.remove();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _initDeepLinkListener(context);
+      initDeepLinks();
     });
   }
 
-  void _initDeepLinkListener(BuildContext context) {
-    _deepLinkSubscription = uriLinkStream.listen((Uri? uri) {
-      if (uri != null && uri.path.endsWith("/callback")) {
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+
+    super.dispose();
+  }
+
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    // Handle links
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      debugPrint('onAppLink: $uri');
+
+      if (uri.host == 'auth') {
         print('Deep link received: ${uri.path}');
         // TODO: Handle the deep link here. Will need to change the token and isNewUser
         String token = uri.queryParameters['token'] ?? '';
         // TODO: Save the token for letter use
         print('Token: $token');
         bool isNewUser = uri.queryParameters['isNewUser'].toString() == 'true';
+        String email = uri.queryParameters['email'] ?? '';
         print('Is new user: $isNewUser');
         if (isNewUser) {
-          Navigator.of(context).pushNamed(ProfileCompletionScreenOne.routeName);
+          openAppLink(
+            ProfileCompletionScreenOne.routeName,
+            arguments: {
+              'type': 'Email',
+              'email': email,
+              'token': token,
+            },
+          );
         } else {
           // TODO: Have to check if theres any loggedin user if not send to login screen.
-          Navigator.of(context).pushNamed(DashboardScreen.routeName);
+          openAppLink(DashboardScreen.routeName);
         }
       } else {
         print('Deep link received but not handled: ${uri.toString()}');
       }
-    }, onError: (err) {
-      print('Failed to receive deep link: $err');
     });
+  }
+
+  void openAppLink(String routeName, {Object? arguments}) {
+    _navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
   }
 
   @override
@@ -122,6 +148,8 @@ class _MyAppState extends State<MyApp> {
 
           initialRoute: LoginScreen.routeName,
 
+          navigatorKey: _navigatorKey,
+
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
@@ -154,16 +182,16 @@ class _MyAppState extends State<MyApp> {
                   case HomePage.routeName:
                     return HomePage();
                   case MyMentorsTab.routeName:
-                    return MyMentorsTab(); 
+                    return MyMentorsTab();
                   case ChatScreen.routeName:
                     return ChatScreen();
-                   case PersonalityTestScreen.routeName:
+                  case PersonalityTestScreen.routeName:
                     return PersonalityTestScreen();
-                   case PersonalityTestScreen1.routeName:
+                  case PersonalityTestScreen1.routeName:
                     return PersonalityTestScreen1();
                   case AnalyzingResultsScreen.routeName:
                     return AnalyzingResultsScreen();
-                   case JobRecommendationScreen.routeName:
+                  case JobRecommendationScreen.routeName:
                     return JobRecommendationScreen();
                   //
                   case SettingsView.routeName:

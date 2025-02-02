@@ -2,12 +2,11 @@ import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardS
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/AppColors.dart';
 import '../../../../src/profile/profile_view.dart';
 import '../../../Career/presentation/screens/CareerScreen.dart';
 
 class HomePage extends StatefulWidget {
-   const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   static const String routeName = "/HomePage";
 
@@ -25,7 +24,6 @@ class _HomePageState extends State<HomePage> {
     SkillsPage(),
     NetworkingScreen(),
     UserProfile(),
-
   ];
 
   void _onItemTapped(int index) {
@@ -37,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -47,11 +44,11 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.business_center), label: 'Career'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.business_center), label: 'Career'),
           BottomNavigationBarItem(icon: Icon(Icons.bolt), label: 'Skills'),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Networking'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-
         ],
       ),
     );
@@ -70,4 +67,3 @@ class SkillsPage extends StatelessWidget {
     );
   }
 }
-

@@ -2,13 +2,11 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
-import '../../../../core/utils/AppRoutes.dart';
 
 class ProfileCompletionScreenFive extends StatefulWidget {
   static const String routeName = '/profileCompletionFive';
   const ProfileCompletionScreenFive({Key? key}) : super(key: key);
 
-  
   @override
   _ProfileCompletionScreenFiveState createState() =>
       _ProfileCompletionScreenFiveState();
@@ -20,17 +18,15 @@ class _ProfileCompletionScreenFiveState
 // List to hold the experience form fields
   final TextEditingController currentOccupationController =
       TextEditingController();
-  final TextEditingController organizationNameController = TextEditingController();
-  final TextEditingController designationController =
+  final TextEditingController organizationNameController =
       TextEditingController();
-  final TextEditingController workFromDateController =
-      TextEditingController();
-  final TextEditingController workTillController =
-      TextEditingController();
+  final TextEditingController designationController = TextEditingController();
+  final TextEditingController workFromDateController = TextEditingController();
+  final TextEditingController workTillController = TextEditingController();
 
 // List to hold controllers for each dynamic experience field
   List<Map<String, TextEditingController>> _experienceControllers = [];
- 
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +43,6 @@ class _ProfileCompletionScreenFiveState
         'workFromDate': TextEditingController(),
         'workTill': TextEditingController(),
       });
-     
     });
   }
 
@@ -88,19 +83,15 @@ class _ProfileCompletionScreenFiveState
             _buildTextField(
                 'Current Occupation', controllers['currentOccupation']!),
             const SizedBox(height: 16),
-            _buildTextField('Organization Name', controllers['organizationName']!),
-            const SizedBox(height: 16),
             _buildTextField(
-                'Designation', controllers['designation']!),
+                'Organization Name', controllers['organizationName']!),
             const SizedBox(height: 16),
-            _buildTextField(
-                'Expected Work From', controllers['workFromDate']!),
+            _buildTextField('Designation', controllers['designation']!),
             const SizedBox(height: 16),
-            _buildTextField(
-                'Work Till', controllers['workTill']!),
+            _buildTextField('Expected Work From', controllers['workFromDate']!),
             const SizedBox(height: 16),
-
-           
+            _buildTextField('Work Till', controllers['workTill']!),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -256,7 +247,7 @@ class _ProfileCompletionScreenFiveState
               onPressed: () {
                 final allValues = _getAllExperienceValues();
                 print(allValues);
-                Navigator.pushNamed(context,  '/HomePage');
+                Navigator.pushNamed(context, '/HomePage');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

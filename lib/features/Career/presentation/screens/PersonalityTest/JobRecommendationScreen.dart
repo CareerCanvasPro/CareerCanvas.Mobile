@@ -1,9 +1,8 @@
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
 class JobRecommendationScreen extends StatefulWidget {
-      static const String routeName = "/JobRecommendationScreen";
+  static const String routeName = "/JobRecommendationScreen";
 
   const JobRecommendationScreen({Key? key}) : super(key: key);
 
@@ -165,6 +164,7 @@ class _JobRecommendationScreenState extends State<JobRecommendationScreen> {
     );
   }
 }
+
 class JobCard extends StatelessWidget {
   final String title;
   final String company;
@@ -192,7 +192,8 @@ class JobCard extends StatelessWidget {
             height: 40,
             width: 40,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error),
           )
         : Icon(
             logo,

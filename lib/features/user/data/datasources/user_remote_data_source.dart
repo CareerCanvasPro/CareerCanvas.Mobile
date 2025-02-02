@@ -11,14 +11,15 @@ class UserRemoteDataSource {
 
   /// Syncs the user data to the remote server.
   Future<Response> syncUser(UserModel user) async {
-     final response =await apiClient.post(Constants.usersEndpoint, user.toJson());
-      return response;
-
+    final response =
+        await apiClient.post(Constants.usersEndpoint, data: user.toJson());
+    return response;
   }
 
   /// Retrieves a user by username from the remote server.
   Future<Response> getUserByUserName(String userName) async {
-    final response = await apiClient.get('${Constants.usersEndpoint}/$userName');
+    final response =
+        await apiClient.get('${Constants.usersEndpoint}/$userName');
     return response;
   }
 

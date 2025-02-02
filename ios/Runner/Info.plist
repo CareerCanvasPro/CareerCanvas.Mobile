@@ -56,6 +56,8 @@
 	<string>We need access to your microphone to record audio for videos.</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>We need access to your media library to play music in the app.</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 	  <string>https</string>
