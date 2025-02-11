@@ -1,4 +1,5 @@
 import 'package:career_canvas/core/utils/AppColors.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../src/settings/settings_view.dart';
@@ -11,9 +12,11 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primaryColor,
+        foregroundColor: Colors.white,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(

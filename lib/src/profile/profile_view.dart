@@ -20,7 +20,7 @@ class UserProfile extends StatelessWidget {
       ),
     );
     return Scaffold(
-      //backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: primaryBlue,
         automaticallyImplyLeading: false,

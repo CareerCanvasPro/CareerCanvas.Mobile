@@ -5,6 +5,8 @@ import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/SpinningLoader.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:get/get.dart';
@@ -26,6 +28,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       body: Container(
         height: context.screenHeight,
         child: SingleChildScrollView(
@@ -238,6 +241,10 @@ class LoginScreen extends StatelessWidget {
                     title: "Success",
                     content: message ??
                         'Please check your email for magic link. Click on the link to continue.',
+                    onPressed: () {
+                      Get.back();
+                      Get.toNamed(ProfileCompletionScreenOne.routeName);
+                    },
                   );
                 },
                 onError: (String error) {

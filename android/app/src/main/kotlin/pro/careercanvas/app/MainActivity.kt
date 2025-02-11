@@ -1,4 +1,4 @@
-package pro.careercanvas.career_canvas
+package pro.careercanvas.app
 
 import io.flutter.embedding.android.FlutterActivity
 

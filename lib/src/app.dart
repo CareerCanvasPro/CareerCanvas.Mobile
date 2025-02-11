@@ -21,7 +21,6 @@ import '../features/DashBoard/presentation/screens/dashboardScreen.dart';
 import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
 import '../features/Networking/presentation/screens/Mentors/MyMentorsTab.dart';
 import '../features/Networking/presentation/screens/networkingScreen.dart';
-import '../features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import '../features/user/presentation/screens/user_screen.dart';
@@ -167,8 +166,6 @@ class _MyAppState extends State<MyApp> {
                     return ProfileCompletionScreenThree();
                   case ProfileCompletionScreenFour.routeName:
                     return ProfileCompletionScreenFour();
-                  case ProfileCompletionScreenFive.routeName:
-                    return ProfileCompletionScreenFive();
                   case UserScreen.routeName:
                     return UserScreen();
                   case UserProfile.routeName:

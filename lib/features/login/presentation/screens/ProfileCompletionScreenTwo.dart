@@ -1,5 +1,8 @@
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenThree.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
@@ -51,11 +54,11 @@ class _ProfileCompletionScreenTwoState
   }
 
   // Method to remove the last education field
-  void _removeEducationField() {
-    if (_educationControllers.isNotEmpty) {
+  void _removeEducationField(int index) {
+    if (_educationControllers.isNotEmpty &&
+        index < _educationControllers.length) {
       setState(() {
-        _educationControllers.removeLast();
-        _uploadedFiles.removeLast();
+        _educationControllers.removeAt(index);
       });
     }
   }
@@ -96,12 +99,28 @@ class _ProfileCompletionScreenTwoState
     final controllers = _educationControllers[index];
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
+      color: scaffoldBackgroundColor,
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (index > 0)
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(),
+                  ),
+                  IconButton(
+                    onPressed: () => _removeEducationField(index),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
             _buildTextField(
                 'Current Education', controllers['currentEducation']!),
             const SizedBox(height: 16),
@@ -122,7 +141,21 @@ class _ProfileCompletionScreenTwoState
               children: [
                 ElevatedButton(
                   onPressed: () => _uploadCertificate(index),
-                  child: const Text('Upload Certificate'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: scaffoldBackgroundColor,
+                    side: BorderSide(color: primaryBlue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                  ),
+                  child: Text(
+                    'Upload Certificate',
+                    style: getCTATextStyle(
+                      context,
+                      14,
+                      color: primaryBlue,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Text(
@@ -145,8 +178,9 @@ class _ProfileCompletionScreenTwoState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        //title: Text('Career Canvas'),
+        backgroundColor: scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -179,9 +213,10 @@ class _ProfileCompletionScreenTwoState
                 buildProgressBar(progress: 0.4),
                 SizedBox(height: 10),
                 Text(
-                  'hello! Complete your profile for onboard!',
+                  'Hello! Please add your education details below.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
+                SizedBox(height: 16),
 
                 // Form fields
                 // Dynamic list of education fields
@@ -195,20 +230,37 @@ class _ProfileCompletionScreenTwoState
                 ),
 
                 // Add and Remove Education Buttons
+                // Row(
+                //   children: [
+                //     TextButton(
+                //       onPressed: _addEducationField,
+                //       child: Text('+ Add Education'),
+                //     ),
+                //   ],
+                // ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: _addEducationField,
-                      child: Text('+ Add Education'),
-                    ),
-                    const SizedBox(width: 10),
-                    TextButton(
-                      onPressed: _removeEducationField,
-                      child: Text('- Remove Education'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: scaffoldBackgroundColor,
+                        side: BorderSide(color: primaryBlue),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                      ),
+                      child: Text(
+                        '+ Add Education',
+                        style: getCTATextStyle(
+                          context,
+                          14,
+                          color: primaryBlue,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-
                 SizedBox(height: 30),
 
                 // Action buttons
@@ -266,45 +318,64 @@ class _ProfileCompletionScreenTwoState
   }
 
   Widget _buildFooter(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          'Earn 5 coins',
-          style: TextStyle(color: Colors.green, fontSize: 14),
-        ),
-        Row(
-          children: [
-            TextButton(
-              onPressed: () {
-                // Action for skip button
-                debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/profileCompletionThree');
-              },
-              child: const Text(
-                'Skip',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                final allValues = _getAllEducationValues();
-                print(allValues);
-                Navigator.pushNamed(context, '/profileCompletionThree');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SvgPicture.asset(
+            'assets/svg/icons/icon_coin_5.svg',
+          ),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // Action for skip button
+                  debugPrint("Skip button clicked");
+                  Navigator.pushNamed(
+                      context, ProfileCompletionScreenThree.routeName);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: scaffoldBackgroundColor,
+                  side: BorderSide(color: primaryBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  minimumSize: const Size(80, 48),
                 ),
-                minimumSize: const Size(80, 48),
+                child: Text(
+                  'Skip',
+                  style: getCTATextStyle(
+                    context,
+                    16,
+                    color: primaryBlue,
+                  ),
+                ),
               ),
-              child: const Text('Next'),
-            ),
-          ],
-        ),
-      ],
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  final allValues = _getAllEducationValues();
+                  print(allValues);
+                  Navigator.pushNamed(
+                      context, ProfileCompletionScreenThree.routeName);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  minimumSize: const Size(80, 48),
+                ),
+                child: Text(
+                  'Next',
+                  style: getCTATextStyle(context, 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

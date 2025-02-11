@@ -1,13 +1,13 @@
 import 'package:career_canvas/features/Networking/presentation/screens/Mentions/MentionsTab.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'Community/CommunityTab.dart';
 import 'Feeds/MyFeedTab.dart';
 import 'Mentors/MyMentorsTab.dart';
 
-
-
 class NetworkingScreen extends StatelessWidget {
-    NetworkingScreen({super.key});
+  NetworkingScreen({super.key});
 
   static const String routeName = "/networking";
 
@@ -16,17 +16,26 @@ class NetworkingScreen extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
+        backgroundColor: scaffoldBackgroundColor,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          leading: Icon(Icons.arrow_back, color: Colors.black),
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
-              Icon(Icons.group, color: Colors.black),
+              SvgPicture.asset(
+                "assets/svg/icons/icon_networking_page.svg",
+                height: 30,
+                fit: BoxFit.fitHeight,
+              ),
               SizedBox(width: 8),
               Text(
                 "Networking",
-                style: TextStyle(color: Colors.black),
+                style: getCTATextStyle(
+                  context,
+                  24,
+                  color: Colors.black,
+                ),
               ),
             ],
           ),
@@ -61,7 +70,6 @@ class NetworkingScreen extends StatelessWidget {
             Mentionstab()
           ],
         ),
-        
       ),
     );
   }

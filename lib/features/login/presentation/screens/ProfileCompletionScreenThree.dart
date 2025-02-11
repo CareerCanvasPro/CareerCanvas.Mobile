@@ -1,5 +1,8 @@
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFour.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
@@ -17,18 +20,15 @@ class _ProfileCompletionScreenThreeState
 // List to hold the experience form fields
   final TextEditingController currentOccupationController =
       TextEditingController();
-  final TextEditingController organizationNameController = TextEditingController();
-  final TextEditingController designationController =
+  final TextEditingController organizationNameController =
       TextEditingController();
-  final TextEditingController workFromDateController =
-      TextEditingController();
-  final TextEditingController workTillController =
-      TextEditingController();
+  final TextEditingController designationController = TextEditingController();
+  final TextEditingController workFromDateController = TextEditingController();
+  final TextEditingController workTillController = TextEditingController();
 
 // List to hold controllers for each dynamic experience field
   List<Map<String, TextEditingController>> _experienceControllers = [];
-  final List<String?> _uploadedFiles =
-      []; // List to store file paths for uploads
+  List<bool> _isCurrent = [];
   @override
   void initState() {
     super.initState();
@@ -45,41 +45,25 @@ class _ProfileCompletionScreenThreeState
         'workFromDate': TextEditingController(),
         'workTill': TextEditingController(),
       });
-      _uploadedFiles
-          .add(null); // Add an empty slot for the new experience section
+      _isCurrent.add(false);
     });
   }
 
   // Method to remove the last experience field
-  void _removeExperienceField() {
-    if (_experienceControllers.isNotEmpty) {
+  void _removeExperienceField(int index) {
+    if (_experienceControllers.isNotEmpty &&
+        index < _experienceControllers.length) {
       setState(() {
-        _experienceControllers.removeLast();
-        _uploadedFiles.removeLast();
+        _experienceControllers.removeAt(index);
+        _isCurrent.removeAt(index);
       });
     }
-  }
-
-  Future<void> _uploadCertificate(int index) async {
-    // Simulate file picking (replace with actual file picker logic)
-    final String? filePath = await _pickFile();
-    if (filePath != null) {
-      setState(() {
-        _uploadedFiles[index] =
-            filePath; // Update the file path for the specific section
-      });
-    }
-  }
-
-  Future<String?> _pickFile() async {
-    // Replace with actual file picker logic using a package like `file_picker`
-    // For now, we'll simulate picking a file:
-    return Future.value("certificate.pdf"); // Simulated file path
   }
 
   // Method to retrieve all values from experience fields
-  List<Map<String, String>> _getAllExperienceValues() {
-    return _experienceControllers.map((controllerMap) {
+  List<Map<String, dynamic>> _getAllExperienceValues() {
+    List<Map<String, dynamic>> experiances =
+        _experienceControllers.map((controllerMap) {
       return {
         'currentOccupation': controllerMap['currentOccupation']?.text ?? '',
         'organizationName': controllerMap['organizationName']?.text ?? '',
@@ -88,6 +72,11 @@ class _ProfileCompletionScreenThreeState
         'workTill': controllerMap['workTill']?.text ?? '',
       };
     }).toList();
+    experiances.forEach((experience) {
+      experience['isCurrent'] =
+          _isCurrent[experiances.indexOf(experience)].toString();
+    });
+    return experiances;
   }
 
   final Map<String, String?> uploadedFiles = {};
@@ -96,42 +85,59 @@ class _ProfileCompletionScreenThreeState
     final controllers = _experienceControllers[index];
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
+      color: scaffoldBackgroundColor,
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (index > 0)
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(),
+                  ),
+                  IconButton(
+                    onPressed: () => _removeExperienceField(index),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
             _buildTextField(
                 'Current Occupation', controllers['currentOccupation']!),
             const SizedBox(height: 16),
-            _buildTextField('Organization Name', controllers['organizationName']!),
-            const SizedBox(height: 16),
             _buildTextField(
-                'Designation', controllers['designation']!),
+                'Organization Name', controllers['organizationName']!),
             const SizedBox(height: 16),
-            _buildTextField(
-                'Expected Work From', controllers['workFromDate']!),
+            _buildTextField('Designation', controllers['designation']!),
             const SizedBox(height: 16),
-            _buildTextField(
-                'Work Till', controllers['workTill']!),
+            _buildTextField('Expected Work From', controllers['workFromDate']!),
             const SizedBox(height: 16),
-
-            // Upload Certificate Section
+            _buildTextField('Work Till', controllers['workTill']!),
+            const SizedBox(height: 16),
+            // Add a check box for the current experience
             Row(
               children: [
-                ElevatedButton(
-                  onPressed: () => _uploadCertificate(index),
-                  child: const Text('Upload Certificate'),
+                Checkbox(
+                  value: _isCurrent[index],
+                  activeColor: primaryBlue,
+                  onChanged: (value) {
+                    setState(() {
+                      _isCurrent[index] = value ?? false;
+                    });
+                  },
                 ),
-                const SizedBox(width: 16),
+                // const SizedBox(width: 4),
                 Text(
-                  _uploadedFiles[index] ?? 'No file uploaded',
-                  style: TextStyle(
-                    color: _uploadedFiles[index] == null
-                        ? Colors.grey
-                        : Colors.green,
-                    fontSize: 14,
+                  'Current Occupation',
+                  style: getCTATextStyle(
+                    context,
+                    14,
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -145,8 +151,10 @@ class _ProfileCompletionScreenThreeState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         //title: Text('Career Canvas'),
+        backgroundColor: scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -179,7 +187,7 @@ class _ProfileCompletionScreenThreeState
                 buildProgressBar(progress: 0.6),
                 SizedBox(height: 10),
                 Text(
-                  'hello! Complete your profile for onboard!',
+                  'Hello! Please add your experience details below.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
 
@@ -193,18 +201,26 @@ class _ProfileCompletionScreenThreeState
                     return _buildExperienceCard(index);
                   },
                 ),
-
-                // Add and Remove Experience Buttons
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: _addExperienceField,
-                      child: Text('+ Add Experience'),
-                    ),
-                    const SizedBox(width: 10),
-                    TextButton(
-                      onPressed: _removeExperienceField,
-                      child: Text('- Remove Experience'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: scaffoldBackgroundColor,
+                        side: BorderSide(color: primaryBlue),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                      ),
+                      child: Text(
+                        '+ Add Experience',
+                        style: getCTATextStyle(
+                          context,
+                          14,
+                          color: primaryBlue,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -269,21 +285,35 @@ class _ProfileCompletionScreenThreeState
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
-          'Earn 5 coins',
-          style: TextStyle(color: Colors.green, fontSize: 14),
+        SvgPicture.asset(
+          'assets/svg/icons/icon_coin_5.svg',
         ),
         Row(
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 // Action for skip button
                 debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/profileCompletionFour');
+                Navigator.pushNamed(
+                  context,
+                  ProfileCompletionScreenFour.routeName,
+                );
               },
-              child: const Text(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: scaffoldBackgroundColor,
+                side: BorderSide(color: primaryBlue),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                minimumSize: const Size(80, 48),
+              ),
+              child: Text(
                 'Skip',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
+                style: getCTATextStyle(
+                  context,
+                  16,
+                  color: primaryBlue,
+                ),
               ),
             ),
             const SizedBox(width: 8),
@@ -291,16 +321,22 @@ class _ProfileCompletionScreenThreeState
               onPressed: () {
                 final allValues = _getAllExperienceValues();
                 print(allValues);
-                Navigator.pushNamed(context, '/profileCompletionFour');
+                Navigator.pushNamed(
+                  context,
+                  ProfileCompletionScreenFour.routeName,
+                );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: primaryBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24.0),
                 ),
                 minimumSize: const Size(80, 48),
               ),
-              child: const Text('Next'),
+              child: Text(
+                'Next',
+                style: getCTATextStyle(context, 16),
+              ),
             ),
           ],
         ),

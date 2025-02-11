@@ -1,8 +1,12 @@
 import 'dart:io';
 
 import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,12 +41,45 @@ class _ProfileCompletionScreenOneState
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('imagePath', pickedFile.path);
-      setState(() {
-        _imagePath = pickedFile.path;
-      });
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: primaryBlue,
+            toolbarWidgetColor: Colors.white,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+            ],
+          ),
+          IOSUiSettings(
+            title: 'Cropper',
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+            ],
+          ),
+          WebUiSettings(
+            context: context,
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        // final image = File(croppedFile.path);
+        // debugPrint("Image picked: ${image.path}");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('imagePath', pickedFile.path);
+        setState(() {
+          _imagePath = croppedFile.path;
+        });
+      }
     }
+    // if (pickedFile != null) {
+    //   final prefs = await SharedPreferences.getInstance();
+    //   await prefs.setString('imagePath', pickedFile.path);
+    //   setState(() {
+    //     _imagePath = pickedFile.path;
+    //   });
+    // }
   }
 
   Future<void> _loadImage() async {
@@ -113,9 +150,12 @@ class _ProfileCompletionScreenOneState
 
   Widget _buildEducationCard(int index) {
     final controllers = _skillsControllers[index];
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 6.0),
-      elevation: 2,
+      decoration: BoxDecoration(
+        color: scaffoldBackgroundColor,
+        // color: Colors.white,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -126,17 +166,17 @@ class _ProfileCompletionScreenOneState
             const SizedBox(height: 16),
             // Input Fields with Controllers
             _buildTextField('Full Name', controllers['fullName']!),
+            // const SizedBox(height: 10),
+            // _buildTextField('Date of Birth', controllers['dob']! ),
             const SizedBox(height: 10),
-            _buildTextField('Date of Birth', controllers['dob']! ),
+            _buildTextField('Present Address', controllers['address']!),
             const SizedBox(height: 10),
-            _buildTextField('Present Address', controllers['address']! ),
+            _buildTextField('+880 1775560632', controllers['mobile']!),
             const SizedBox(height: 10),
-            _buildTextField('+880 1775560632', controllers['mobile']! ),
+            _buildTextField('razibul@gmail.com', controllers['email']!),
             const SizedBox(height: 10),
-            _buildTextField('razibul@gmail.com', controllers['email']! ),
-            const SizedBox(height: 10),
-            _buildTextField('Contact Information', controllers['contactInfo']! ),
-            const SizedBox(height: 10),
+            // _buildTextField('Contact Information', controllers['contactInfo']! ),
+            // const SizedBox(height: 10),
           ],
         ),
       ),
@@ -158,9 +198,10 @@ class _ProfileCompletionScreenOneState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        //backgroundColor: Colors.white,
+        backgroundColor: scaffoldBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
@@ -212,7 +253,7 @@ class _ProfileCompletionScreenOneState
                 return _buildEducationCard(index);
               },
             ),
-            const SizedBox(height: 4),
+            // const SizedBox(height: 4),
             // Footer
             _buildFooter(context),
           ],
@@ -295,10 +336,7 @@ class _ProfileCompletionScreenOneState
           bottom: 5,
           right: 5,
           child: GestureDetector(
-            onTap: () {
-              // Placeholder for profile image upload
-              debugPrint("Profile image upload clicked");
-            },
+            onTap: _pickImage,
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
@@ -337,52 +375,83 @@ class _ProfileCompletionScreenOneState
   }
 
   Widget _buildFooter(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          'Earn 5 coins',
-          style: TextStyle(color: Colors.green, fontSize: 14),
-        ),
-        Row(
-          children: [
-            TextButton(
-              onPressed: () {
-                // Action for skip button
-                debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, '/home');
-              },
-              child: const Text(
-                'Skip',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                final allValues = _getAllEducationValues();
-                print(allValues);
-                // Example: Access user inputs
-                debugPrint("Full Name: ${fullNameController.text}");
-                debugPrint("Date of Birth: ${dobController.text}");
-                debugPrint("Address: ${addressController.text}");
-                debugPrint("Mobile: ${mobileController.text}");
-                debugPrint("Email: ${emailController.text}");
-                debugPrint("Contact Info: ${contactInfoController.text}");
-                Navigator.pushNamed(context, '/profileCompletiontwo');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // const Text(
+          //   'Earn 5 coins',
+          //   style: TextStyle(color: Colors.green, fontSize: 14),
+          // ),
+          SvgPicture.asset(
+            'assets/svg/icons/icon_coin_5.svg',
+          ),
+          Row(
+            children: [
+              // TextButton(
+              //   onPressed: () {},
+              //   child: const Text(
+              //     'Skip',
+              //     style: TextStyle(color: primaryBlue, fontSize: 16),
+              //   ),
+              // ),
+              ElevatedButton(
+                onPressed: () {
+                  // Action for skip button
+                  debugPrint("Skip button clicked");
+                  Navigator.pushNamed(
+                    context,
+                    ProfileCompletionScreenTwo.routeName,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: scaffoldBackgroundColor,
+                  side: BorderSide(color: primaryBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  minimumSize: const Size(80, 48),
                 ),
-                minimumSize: const Size(80, 48),
+                child: Text(
+                  'Skip',
+                  style: getCTATextStyle(
+                    context,
+                    16,
+                    color: primaryBlue,
+                  ),
+                ),
               ),
-              child: const Text('Next'),
-            ),
-          ],
-        ),
-      ],
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  final allValues = _getAllEducationValues();
+                  print(allValues);
+                  // Example: Access user inputs
+                  debugPrint("Full Name: ${fullNameController.text}");
+                  debugPrint("Date of Birth: ${dobController.text}");
+                  debugPrint("Address: ${addressController.text}");
+                  debugPrint("Mobile: ${mobileController.text}");
+                  debugPrint("Email: ${emailController.text}");
+                  debugPrint("Contact Info: ${contactInfoController.text}");
+                  Navigator.pushNamed(context, '/profileCompletiontwo');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  minimumSize: const Size(80, 48),
+                ),
+                child: Text(
+                  'Next',
+                  style: getCTATextStyle(context, 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
