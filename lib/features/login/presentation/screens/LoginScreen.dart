@@ -243,7 +243,8 @@ class LoginScreen extends StatelessWidget {
                         'Please check your email for magic link. Click on the link to continue.',
                     onPressed: () {
                       Get.back();
-                      Get.toNamed(ProfileCompletionScreenOne.routeName);
+                      Get.toNamed(ProfileCompletionScreenOne
+                          .routeName); // TODO: Test Only
                     },
                   );
                 },
@@ -252,6 +253,11 @@ class LoginScreen extends StatelessWidget {
                     context,
                     title: "Error",
                     content: error,
+                    onPressed: () {
+                      Get.back();
+                      Get.toNamed(ProfileCompletionScreenOne
+                          .routeName); // TODO: Test Only
+                    },
                   );
                 },
               );
