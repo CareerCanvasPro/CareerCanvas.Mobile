@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       debugPrint('onAppLink: $uri');
 
-      if (uri.host == 'auth') {
+      if (uri.path == '/auth/callback') {
         print('Deep link received: ${uri.path}');
         // TODO: Handle the deep link here. Will need to change the token and isNewUser
         String token = uri.queryParameters['token'] ?? '';

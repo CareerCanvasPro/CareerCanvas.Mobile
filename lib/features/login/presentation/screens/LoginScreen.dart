@@ -8,6 +8,7 @@ import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:get/get.dart';
 
@@ -35,38 +36,15 @@ class LoginScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: context.screenHeight * 0.1),
                 // Logo and Title
-                Center(
-                  // Centers the content in the middle of the screen
-                  child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center, // Centers horizontally
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Centers vertically
-                    children: [
-                      // Image with height and width based on screen size
-                      Image.asset(
-                        ImageAssets.logo,
-                        height: MediaQuery.of(context).size.height *
-                            0.08, // Dynamic height based on screen height
-                        width: MediaQuery.of(context).size.height *
-                            0.08, // Dynamic width based on screen height
-                      ),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width *
-                              0.01), // Horizontal spacing between the image and text
-                      // Text next to the image
-                      const Text(
-                        'Career\nCanvas',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                SvgPicture.asset(
+                  "assets/svg/Career_Canvas_Logo_black.svg",
+                  width: 200,
+                  fit: BoxFit.fitWidth,
+                  color: primaryBlue,
                 ),
                 SizedBox(height: context.screenHeight * 0.12),
                 // Input Method Tabs
@@ -126,32 +104,27 @@ class LoginScreen extends StatelessWidget {
         alignment: WrapAlignment.center,
         children: [
           _buildIcon(
-            FontAwesomeIcons.google,
-            AppColortext.googleRed,
+            "assets/svg/icons/google_login.svg",
             _controller.isGoogleLoading,
             _controller.loginWithGoogle,
           ),
           _buildIcon(
-            Icons.apple,
-            AppColortext.blue,
+            "assets/svg/icons/apple_login.svg",
             _controller.isAppleLoading,
             _controller.loginWithApple,
           ),
           _buildIcon(
-            Icons.facebook,
-            AppColortext.facebookBlue,
+            "assets/svg/icons/facebook_login.svg",
             _controller.isFacebookLoading,
             _controller.loginWithFacebook,
           ),
           _buildIcon(
-            FontAwesomeIcons.github,
-            AppColortext.black,
+            "assets/icons/github_login.png",
             _controller.isGithubLoading,
             _controller.loginWithGithub,
           ),
           _buildIcon(
-            FontAwesomeIcons.linkedin,
-            AppColortext.linkedInBlue,
+            "assets/icons/linkedin_login.png",
             _controller.isLinkedInLoading,
             _controller.loginWithLinkedIn,
           ),
@@ -160,14 +133,25 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(
-      IconData icon, Color color, RxBool isLoading, void Function()? onTap) {
-    return Obx(() => GestureDetector(
-          onTap: isLoading.value ? null : onTap,
-          child: isLoading.value
-              ? SpinningLoader()
-              : Icon(icon, size: 36, color: color),
-        ));
+  Widget _buildIcon(String icon, RxBool isLoading, void Function()? onTap) {
+    return Obx(
+      () => GestureDetector(
+        onTap: isLoading.value ? null : onTap,
+        child: isLoading.value
+            ? SpinningLoader()
+            : icon.endsWith(".svg")
+                ? SvgPicture.asset(
+                    icon,
+                    width: 36,
+                    height: 36,
+                  )
+                : Image.asset(
+                    icon,
+                    width: 38,
+                    height: 38,
+                  ),
+      ),
+    );
   }
 
   Widget _buildTabBar(BuildContext context) {

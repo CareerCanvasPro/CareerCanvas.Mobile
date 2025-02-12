@@ -62,6 +62,7 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/
+    - assets/icons/
     - assets/images/
     - assets/images/madels/
     - assets/svg/
