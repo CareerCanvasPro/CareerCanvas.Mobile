@@ -5,8 +5,12 @@ class ApiClient {
 
   ApiClient(this.dio);
 
-  static String authBase = "http://13.229.30.167:5000";
-  static String userBase = "http://13.229.30.167:8000";
+  static String authBase = "https://auth.api.careercanvas.pro";
+  static String userBase = "https://users.api.careercanvas.pro";
+  static String mediaBase = "https://media.api.careercanvas.pro";
+  static String personalityBase = "https://personality.api.careercanvas.pro";
+  static String jobsBase = "https://jobs.api.careercanvas.pro";
+  static String coursesBase = "https://courses.api.careercanvas.pro";
 
   Future<Response> post(
     String path, {

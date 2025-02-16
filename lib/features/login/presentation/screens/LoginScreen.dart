@@ -1,6 +1,7 @@
+import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/SpinningLoader.dart';
@@ -9,8 +10,8 @@ import 'package:career_canvas/features/login/presentation/screens/ProfileComplet
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../getx/controller/TabContentController.dart';
 
@@ -212,23 +213,46 @@ class LoginScreen extends StatelessWidget {
         children: [
           _buildTabContent(
             'Enter your email',
-            'Continue with Magic Link',
+            // 'Continue with Magic Link',
+            "Get OTP",
             context,
             () {
               FocusScope.of(context).unfocus();
+              // CustomDialog.showCustomOTPDialog(
+              //   context,
+              //   to: emailController.emailController.text,
+              //   onPressedSubmit: (String pin) {},
+              // );
               emailController.onEmailButtonPressed(
                 context,
-                onDone: (String? message) {
-                  emailController.emailController.clear();
-                  CustomDialog.showCustomDialog(
+                onDone: (String? message) async {
+                  await CustomDialog.showCustomOTPDialog(
                     context,
-                    title: "Success",
-                    content: message ??
-                        'Please check your email for magic link. Click on the link to continue.',
-                    onPressed: () {
-                      Get.back();
-                      Get.toNamed(ProfileCompletionScreenOne
-                          .routeName); // TODO: Test Only
+                    to: emailController.emailController.text,
+                    onPressedSubmit: (Otpverificationresponse response) async {
+                      emailController.emailController.clear();
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('token', response.accessToken);
+                      await prefs.setString('email', response.email);
+                      if (response.isNewUser) {
+                        Get.to(
+                          () => ProfileCompletionScreenOne(),
+                          arguments: {
+                            'type': 'Email',
+                            'email': response.email,
+                            'token': response.accessToken
+                          },
+                        );
+                      } else {
+                        Get.to(
+                          () => DashboardScreen(),
+                          arguments: {
+                            'type': 'Email',
+                            'email': response.email,
+                            'token': response.accessToken
+                          },
+                        );
+                      }
                     },
                   );
                 },
@@ -239,8 +263,6 @@ class LoginScreen extends StatelessWidget {
                     content: error,
                     onPressed: () {
                       Get.back();
-                      Get.toNamed(ProfileCompletionScreenOne
-                          .routeName); // TODO: Test Only
                     },
                   );
                 },

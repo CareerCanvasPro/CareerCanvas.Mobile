@@ -33,7 +33,7 @@ class EmailController extends GetxController {
       );
 
       final response = await apiClient.post(
-        ApiClient.authBase + "/auth",
+        ApiClient.authBase + "/auth-otp",
         data: {
           'email': emailController.text,
         },
@@ -43,7 +43,7 @@ class EmailController extends GetxController {
         isLoading.value = false;
         onDone(response.data['message'].toString());
       } else {
-        throw "Failed to send magic link";
+        throw "Failed to send otp";
       }
     } catch (e) {
       isLoading.value = false;

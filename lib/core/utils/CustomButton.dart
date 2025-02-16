@@ -9,21 +9,18 @@ class CustomButton extends StatelessWidget {
   final BorderSide? borderSide;
   final TextStyle? textStyle;
   final double? elevation;
-    final double? height;
+  final double? height;
 
-  
-
-  CustomButton({
-    required this.title,
-    required this.onPressed,
-    this.hasIcon = false,
-    this.icon,
-    this.color = Colors.blue,
-    this.borderSide,
-    this.textStyle,
-    this.elevation = 2.0,
-    this.height
-  });
+  CustomButton(
+      {required this.title,
+      required this.onPressed,
+      this.hasIcon = false,
+      this.icon,
+      this.color = Colors.blue,
+      this.borderSide,
+      this.textStyle,
+      this.elevation = 2.0,
+      this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +29,7 @@ class CustomButton extends StatelessWidget {
       icon: hasIcon ? icon ?? SizedBox.shrink() : SizedBox.shrink(),
       label: Text(title, style: textStyle),
       style: ElevatedButton.styleFrom(
-        elevation: elevation, 
+        elevation: elevation,
         backgroundColor: color,
         side: borderSide,
         padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
@@ -43,7 +40,7 @@ class CustomButton extends StatelessWidget {
 
 class CustomTextButton extends StatelessWidget {
   final String title;
-  final VoidCallback onPressed;
+  final void Function()? onPressed;
   final TextStyle? textStyle;
   final EdgeInsets? padding;
   final Color? backgroundColor;
@@ -61,7 +58,8 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        padding: padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        padding:
+            padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         backgroundColor: backgroundColor,
       ),
       child: Text(
@@ -92,8 +90,10 @@ class CustomOutlinedButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        side: borderSide ?? BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
-        padding: padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        side: borderSide ??
+            BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+        padding:
+            padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       ),
       child: Text(
         title,
