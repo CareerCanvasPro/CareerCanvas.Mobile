@@ -5,7 +5,7 @@ class ApiClient {
 
   ApiClient(this.dio);
 
-  static String authBase = "https://auth.api.careercanvas.pro";
+  static String authBase = "https://auth.api.careercanvas.pro/auth";
   static String userBase = "https://users.api.careercanvas.pro";
   static String mediaBase = "https://media.api.careercanvas.pro";
   static String personalityBase = "https://personality.api.careercanvas.pro";

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:career_canvas/core/models/mainRouting.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
@@ -31,9 +34,11 @@ import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatefulWidget {
+  final MainRouteData mainRouteData;
   const MyApp({
     super.key,
     required this.settingsController,
+    required this.mainRouteData,
   });
 
   final SettingsController settingsController;
@@ -52,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     FlutterNativeSplash.remove();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      initDeepLinks();
+      initDeepLinks(context);
     });
   }
 
@@ -63,37 +68,57 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  Future<void> initDeepLinks() async {
+  Future<void> initDeepLinks(BuildContext context) async {
     _appLinks = AppLinks();
 
     // Handle links
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
       debugPrint('onAppLink: $uri');
 
       if (uri.path == '/auth/callback') {
-        print('Deep link received: ${uri.path}');
-        // TODO: Handle the deep link here. Will need to change the token and isNewUser
-        String token = uri.queryParameters['token'] ?? '';
-        // TODO: Save the token for letter use
-        print('Token: $token');
-        bool isNewUser = uri.queryParameters['isNewUser'].toString() == 'true';
-        String email = uri.queryParameters['email'] ?? '';
-        print('Is new user: $isNewUser');
-        if (isNewUser) {
-          openAppLink(
-            ProfileCompletionScreenOne.routeName,
-            arguments: {
-              'type': 'Email',
-              'email': email,
-              'token': token,
-            },
+        try {
+          print('Deep link received: ${uri.path}');
+          String token = uri.queryParameters['token'] ?? '';
+          print('Token: $token');
+          bool isNewUser =
+              uri.queryParameters['isNewUser'].toString() == 'true';
+          String email = uri.queryParameters['email'] ?? '';
+          DateTime expiry = DateTime.fromMillisecondsSinceEpoch(
+            uri.queryParameters["expiresAt"] as int,
           );
-        } else {
-          // TODO: Have to check if theres any loggedin user if not send to login screen.
-          openAppLink(DashboardScreen.routeName);
+
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+          await prefs.setString('type', "Email");
+          await prefs.setString('email', email);
+          await prefs.setInt('expiresAt', expiry.millisecondsSinceEpoch);
+          print('Is new user: $isNewUser');
+          if (isNewUser) {
+            openAppLink(
+              ProfileCompletionScreenOne.routeName,
+              arguments: {
+                'type': 'Email',
+                'email': email,
+                'token': token,
+              },
+            );
+          } else {
+            openAppLink(DashboardScreen.routeName);
+          }
+        } catch (e) {
+          CustomDialog.showCustomDialog(
+            context,
+            title: 'Error in deeplink',
+            content: e.toString(),
+          );
         }
       } else {
         print('Deep link received but not handled: ${uri.toString()}');
+        CustomDialog.showCustomDialog(
+          context,
+          title: 'Error in deeplink',
+          content: 'Deep link received but not handled: ${uri.toString()}',
+        );
       }
     });
   }
@@ -145,14 +170,13 @@ class _MyAppState extends State<MyApp> {
           darkTheme: ThemeData.dark(),
           themeMode: widget.settingsController.themeMode,
 
-          initialRoute: LoginScreen.routeName,
+          initialRoute: widget.mainRouteData.initialRoute,
 
           navigatorKey: _navigatorKey,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
-            final arguments = routeSettings.arguments;
             return MaterialPageRoute<void>(
               settings: routeSettings,
               builder: (BuildContext context) {
@@ -170,7 +194,9 @@ class _MyAppState extends State<MyApp> {
                   case UserScreen.routeName:
                     return UserScreen();
                   case UserProfile.routeName:
-                    return UserProfile();
+                    return UserProfile(
+                      userProfileData: widget.mainRouteData.userProfile,
+                    );
                   case DashboardScreen.routeName:
                     return DashboardScreen();
                   case NetworkingScreen.routeName:
@@ -191,7 +217,6 @@ class _MyAppState extends State<MyApp> {
                     return AnalyzingResultsScreen();
                   case JobRecommendationScreen.routeName:
                     return JobRecommendationScreen();
-                  //
                   case SettingsView.routeName:
                     return SettingsView(controller: widget.settingsController);
                   case SampleItemDetailsView.routeName:

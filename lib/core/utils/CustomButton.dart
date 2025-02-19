@@ -72,7 +72,7 @@ class CustomTextButton extends StatelessWidget {
 
 class CustomOutlinedButton extends StatelessWidget {
   final String title;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final TextStyle? textStyle;
   final EdgeInsets? padding;
   final BorderSide? borderSide;

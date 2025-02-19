@@ -207,7 +207,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildTabBarViews(BuildContext context) {
     return SizedBox(
-      height: context.screenHeight * 0.2,
+      height: 190,
       child: TabBarView(
         clipBehavior: Clip.antiAlias,
         children: [
@@ -234,6 +234,12 @@ class LoginScreen extends StatelessWidget {
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setString('token', response.accessToken);
                       await prefs.setString('email', response.email);
+                      await prefs.setString('type', "Email");
+                      await prefs.setInt(
+                        'expiresAt',
+                        response.expiresAt.millisecondsSinceEpoch,
+                      );
+                      Get.back();
                       if (response.isNewUser) {
                         Get.to(
                           () => ProfileCompletionScreenOne(),
@@ -270,6 +276,38 @@ class LoginScreen extends StatelessWidget {
             }, // Pass specific button logic
             emailController.isLoading, // Pass isLoading state
             controller: emailController.emailController,
+            onSecondaryPressed: () async {
+              FocusScope.of(context).unfocus();
+              // CustomDialog.showCustomOTPDialog(
+              //   context,
+              //   to: emailController.emailController.text,
+              //   onPressedSubmit: (String pin) {},
+              // );
+              emailController.onEmailButtonPressed(
+                context,
+                type: EmailLoginType.MagicLink,
+                onDone: (String? message) async {
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Magic Link Sent",
+                    content:
+                        "Please check your email for the magic link. Click on the Login button and it will automaticly take you into the app.",
+                  );
+                },
+                onError: (String error) {
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Error",
+                    content: error,
+                    onPressed: () {
+                      Get.back();
+                    },
+                  );
+                },
+              );
+            },
+            isSecondaryLoading: emailController.isSecondaryLoading,
+            secondaryButtonText: "Passwordless Login",
             validator: (String? value) {
               if (value == null || value.isEmpty) {
                 return 'Email is required';
@@ -325,9 +363,11 @@ class LoginScreen extends StatelessWidget {
     String hintText,
     String buttonText,
     BuildContext context,
-    VoidCallback onPressed, // Pass a specific onPressed callback
-    RxBool isLoading, // Pass isLoading from the controller
-    {
+    VoidCallback onPressed,
+    RxBool isLoading, {
+    VoidCallback? onSecondaryPressed,
+    RxBool? isSecondaryLoading,
+    String? secondaryButtonText,
     required TextEditingController controller,
     String? Function(String?)? validator,
     required GlobalKey<FormState> formKey,
@@ -363,7 +403,10 @@ class LoginScreen extends StatelessWidget {
         SizedBox(height: context.screenHeight * 0.02),
         Obx(() {
           return ElevatedButton(
-            onPressed: isLoading.value ? null : onPressed,
+            onPressed: (isLoading.value == true ||
+                    (isSecondaryLoading != null && isSecondaryLoading == true))
+                ? null
+                : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               minimumSize: const Size(double.infinity, 48),
@@ -386,6 +429,41 @@ class LoginScreen extends StatelessWidget {
                   ),
           );
         }),
+        if (isSecondaryLoading != null &&
+            onSecondaryPressed != null &&
+            secondaryButtonText != null)
+          SizedBox(height: 8),
+        if (isSecondaryLoading != null &&
+            onSecondaryPressed != null &&
+            secondaryButtonText != null)
+          Obx(() {
+            return ElevatedButton(
+              onPressed:
+                  (isLoading.value == true || isSecondaryLoading.value == true)
+                      ? null
+                      : onSecondaryPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                minimumSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              child: isSecondaryLoading.value
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.0,
+                      ),
+                    )
+                  : Text(
+                      secondaryButtonText,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+            );
+          }),
       ],
     );
   }

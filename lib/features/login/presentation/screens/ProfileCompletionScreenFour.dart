@@ -1,9 +1,15 @@
+import 'package:career_canvas/core/models/skills.dart';
+import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
@@ -21,6 +27,8 @@ class _ProfileCompletionScreenFourState
 // List to hold the skills form fields
   final TextEditingController skillsController = TextEditingController();
   List<String> _skills = [];
+
+  bool isUploadingData = false;
 
   @override
   void initState() {
@@ -42,30 +50,6 @@ class _ProfileCompletionScreenFourState
       });
     }
   }
-
-  // Method to retrieve all values from skills fields
-  List<Map<String, String>> _getAllSkilssValues() {
-    return [];
-  }
-
-  final Map<String, String?> uploadedFiles = {};
-
-  // Widget _buildSkilssCard(int index) {
-  //   return Card(
-  //     margin: const EdgeInsets.only(bottom: 16.0),
-  //     elevation: 2,
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           _buildTextField('Add Skill', skillsController),
-  //           const SizedBox(height: 16),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   // Skills will be in a chieps style design with a x button to remove the skill
   Widget _buildSkilssCard(int index) {
@@ -98,11 +82,84 @@ class _ProfileCompletionScreenFourState
   }
 
   List<String> skillsList = [
+    // Existing skills
     'Flutter',
     'App Development',
     'Web Development',
     'UI/UX',
-    "AI",
+    'AI',
+
+    // Technical Skills
+    // Frontend Development
+    'React/React Native',
+    'JavaScript/TypeScript',
+    'HTML5/CSS3',
+    'Redux/State Management',
+    'Mobile UI/UX',
+
+    // Backend Development
+    'Node.js/Express',
+    'RESTful APIs',
+    'GraphQL',
+    'Microservices',
+    'AWS Services',
+
+    // Database
+    'MongoDB',
+    'PostgreSQL',
+    'Redis',
+    'Database Design',
+    'Query Optimization',
+
+    // DevOps
+    'Docker',
+    'Kubernetes',
+    'CI/CD',
+    'AWS Infrastructure',
+    'Linux Systems',
+
+    // Testing
+    'Jest',
+    'React Testing Library',
+    'Integration Testing',
+    'E2E Testing',
+    'Performance Testing',
+
+    // Soft Skills
+    // Leadership
+    'Team Management',
+    'Decision Making',
+    'Strategic Planning',
+    'Mentoring',
+    'Conflict Resolution',
+
+    // Communication
+    'Technical Writing',
+    'Presentation Skills',
+    'Client Communication',
+    'Team Collaboration',
+    'Documentation',
+
+    // Project Management
+    'Agile Methodologies',
+    'Sprint Planning',
+    'Risk Management',
+    'Resource Allocation',
+    'Stakeholder Management',
+
+    // Problem Solving
+    'Analytical Thinking',
+    'Debugging',
+    'System Design',
+    'Performance Optimization',
+    'Root Cause Analysis',
+
+    // Personal Development
+    'Continuous Learning',
+    'Time Management',
+    'Adaptability',
+    'Work Ethics',
+    'Innovation',
   ];
   List<String> searchSkills(String input) {
     return skillsList
@@ -158,16 +215,6 @@ class _ProfileCompletionScreenFourState
                         .map((e) => _buildSkilssCard(_skills.indexOf(e)))
                         .toList(),
                   ),
-                // Form fields
-                // Dynamic list of skills fields
-                // ListView.builder(
-                //   shrinkWrap: true,
-                //   physics: const NeverScrollableScrollPhysics(),
-                //   itemCount: _skills.length,
-                //   itemBuilder: (context, index) {
-                //     return _buildSkilssCard(index);
-                //   },
-                // ),
 
                 SizedBox(height: 30),
                 FieldSuggestion<String>(
@@ -220,32 +267,6 @@ class _ProfileCompletionScreenFourState
                       ),
                     );
                   },
-                  // itemBuilder: (BuildContext context, int index) {
-                  //   return GestureDetector(
-                  //     onTap: () {
-                  //       setState(() {
-                  //         textController.text = suggestions[index].email!;
-                  //       });
-
-                  //       textController.selection = TextSelection.fromPosition(
-                  //         TextPosition(offset: textController.text.length),
-                  //       );
-                  //     },
-                  //     child: Card(
-                  //       child: ListTile(
-                  //         title: Text(suggestions[index].username!),
-                  //         subtitle: Text(suggestions[index].email!),
-                  //         trailing: IconButton(
-                  //           icon: const Icon(Icons.clear),
-                  //           onPressed: () {
-                  //             suggestions.removeAt(index);
-                  //             boxController.refresh?.call();
-                  //           },
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
                 ),
 
                 SizedBox(height: 30),
@@ -255,25 +276,6 @@ class _ProfileCompletionScreenFourState
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String hintText, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade500),
         ),
       ),
     );
@@ -314,11 +316,13 @@ class _ProfileCompletionScreenFourState
         Row(
           children: [
             ElevatedButton(
-              onPressed: () {
-                // Action for skip button
-                debugPrint("Skip button clicked");
-                Navigator.pushNamed(context, HomePage.routeName);
-              },
+              onPressed: isUploadingData
+                  ? null
+                  : () {
+                      // Action for skip button
+                      debugPrint("Skip button clicked");
+                      Navigator.pushNamed(context, HomePage.routeName);
+                    },
               style: ElevatedButton.styleFrom(
                 backgroundColor: scaffoldBackgroundColor,
                 side: BorderSide(color: primaryBlue),
@@ -338,11 +342,85 @@ class _ProfileCompletionScreenFourState
             ),
             const SizedBox(width: 8),
             ElevatedButton(
-              onPressed: () {
-                // final allValues = _getAllEducationValues();
-                print(_skills);
-                Navigator.pushNamed(context, HomePage.routeName);
-              },
+              onPressed: isUploadingData
+                  ? null
+                  : () async {
+                      // final allValues = _getAllEducationValues();
+                      // print(_skills);
+                      // Navigator.pushNamed(context, HomePage.routeName);
+                      if (_skills.isEmpty) {
+                        return;
+                      }
+                      try {
+                        setState(() {
+                          isUploadingData = true;
+                        });
+                        final dio = Dio(
+                          BaseOptions(
+                            baseUrl: ApiClient.userBase,
+                            connectTimeout: const Duration(seconds: 3000),
+                            receiveTimeout: const Duration(seconds: 3000),
+                          ),
+                        );
+                        final prefs = await SharedPreferences.getInstance();
+                        String token = prefs.getString('token') ?? '';
+                        UploadSkills uploadSkills =
+                            UploadSkills(skills: _skills);
+
+                        final response = await dio.put(
+                          "${ApiClient.userBase}/user/profile",
+                          data: uploadSkills.toJson(),
+                          options: Options(
+                            headers: {
+                              'Content-Type': "application/json",
+                              "Authorization": "Bearer $token",
+                            },
+                          ),
+                        );
+                        debugPrint(response.data['message']);
+                        setState(() {
+                          isUploadingData = false;
+                        });
+                        Get.to(
+                          () => HomePage(),
+                        );
+                      } on DioException catch (e) {
+                        setState(() {
+                          isUploadingData = false;
+                        });
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx and is also not 304.
+                        if (e.response != null) {
+                          print(e.response!.data["message"]);
+                          print(e.response!.headers);
+                          print(e.response!.requestOptions);
+                          CustomDialog.showCustomDialog(
+                            context,
+                            title: "Error",
+                            content: e.response!.data["message"].toString(),
+                          );
+                        } else {
+                          // Something happened in setting up or sending the request that triggered an Error
+                          print(e.requestOptions);
+                          print(e.message);
+                          CustomDialog.showCustomDialog(
+                            context,
+                            title: "Error",
+                            content: e.message.toString(),
+                          );
+                        }
+                      } catch (e) {
+                        debugPrint(e.toString());
+                        setState(() {
+                          isUploadingData = false;
+                        });
+                        CustomDialog.showCustomDialog(
+                          context,
+                          title: "Error",
+                          content: e.toString(),
+                        );
+                      }
+                    },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryBlue,
                 shape: RoundedRectangleBorder(

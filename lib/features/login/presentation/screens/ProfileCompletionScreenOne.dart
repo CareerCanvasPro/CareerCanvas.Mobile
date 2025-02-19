@@ -1,18 +1,28 @@
-import 'dart:io';
-
 import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
+import 'package:career_canvas/core/models/onBoardingOne.dart';
+import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as getIt;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileCompletionScreenOne extends StatefulWidget {
+  final String? type;
+  final String? email;
+  final String? token;
+  final String? phone;
   ProfileCompletionScreenOne({
     super.key,
+    this.type,
+    this.email,
+    this.token,
+    this.phone,
   });
 
   static const String routeName = '/profileCompletionOne';
@@ -26,16 +36,13 @@ class _ProfileCompletionScreenOneState
     extends State<ProfileCompletionScreenOne> {
   // Controllers for input fields
   final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController contactInfoController = TextEditingController();
-  String type = '';
-// late String _imagePath =
-//       'ImagePath/ImageAssets.dart';
-  late String _imagePath =
-      'package:career_canvas/core/ImagePath/ImageAssets.dart'; // Initialize with an empty string
+  bool imageUploading = false;
+  String imageUrl = '';
+
+  bool isUploadingData = false;
 
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
@@ -43,20 +50,27 @@ class _ProfileCompletionScreenOneState
     if (pickedFile != null) {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: primaryBlue,
             toolbarWidgetColor: Colors.white,
+            lockAspectRatio: true,
+            cropStyle: CropStyle.rectangle,
             aspectRatioPresets: [
               CropAspectRatioPreset.square,
             ],
+            hideBottomControls: true,
           ),
           IOSUiSettings(
             title: 'Cropper',
+            aspectRatioLockEnabled: true,
             aspectRatioPresets: [
               CropAspectRatioPreset.square,
             ],
+            aspectRatioPickerButtonHidden: true,
+            hidesNavigationBar: true,
           ),
           WebUiSettings(
             context: context,
@@ -64,13 +78,67 @@ class _ProfileCompletionScreenOneState
         ],
       );
       if (croppedFile != null) {
-        // final image = File(croppedFile.path);
-        // debugPrint("Image picked: ${image.path}");
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('imagePath', pickedFile.path);
-        setState(() {
-          _imagePath = croppedFile.path;
-        });
+        try {
+          setState(() {
+            imageUploading = true;
+          });
+          final dio = Dio(
+            BaseOptions(
+              baseUrl: ApiClient.mediaBase,
+              connectTimeout: const Duration(seconds: 3000),
+              receiveTimeout: const Duration(seconds: 3000),
+            ),
+          );
+          String fileName = croppedFile.path.split('/').last;
+          print(fileName);
+          FormData formData = FormData.fromMap(
+            {
+              "file": await MultipartFile.fromFile(
+                croppedFile.path,
+                filename: fileName,
+                contentType: DioMediaType.parse("image/jpeg"),
+              ),
+            },
+          );
+          final prefs = await SharedPreferences.getInstance();
+          String token = prefs.getString('token') ?? '';
+
+          final response = await dio.post(
+            "${ApiClient.mediaBase}/media/profile-picture",
+            data: formData,
+            options: Options(
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                "Authorization": "Bearer $token",
+              },
+            ),
+          );
+          debugPrint(response.data['message']);
+          setState(() {
+            imageUploading = false;
+            imageUrl = response.data['data']['url'];
+          });
+        } on DioException catch (e) {
+          setState(() {
+            imageUploading = false;
+          });
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx and is also not 304.
+          if (e.response != null) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          } else {
+            // Something happened in setting up or sending the request that triggered an Error
+            print(e.requestOptions);
+            print(e.message);
+          }
+        } catch (e) {
+          debugPrint(e.toString());
+          setState(() {
+            imageUploading = false;
+          });
+        }
       }
     }
     // if (pickedFile != null) {
@@ -82,74 +150,42 @@ class _ProfileCompletionScreenOneState
     // }
   }
 
-  Future<void> _loadImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final imagePath = prefs.getString('imagePath');
-    if (imagePath != null) {
-      setState(() {
-        _imagePath = imagePath;
-      });
-    }
-  }
-
+  Map<String, dynamic> arguments = {};
   @override
   void initState() {
     super.initState();
-    _addEducationField(); // Add one initial skills section
-
-    _imagePath = '';
-    _loadImage();
-    // Access the passed arguments when the screen is initialized
-    final Map<String, dynamic>? arguments = Get.arguments;
-    if (arguments != null) {
-      type = arguments['type'] ?? 'Unknown';
-    }
-  }
-
-  // List to hold controllers for each dynamic skills field
-  List<Map<String, TextEditingController>> _skillsControllers = [];
-
-  // Method to add a new skills field
-  void _addEducationField() {
-    setState(() {
-      _skillsControllers.add({
-        'fullName': TextEditingController(),
-        'dob': TextEditingController(),
-        'address': TextEditingController(),
-        'mobile': TextEditingController(),
-        'email': TextEditingController(),
-        'contactInfo': TextEditingController(),
-      });
+    // run after ui build
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getExistingData(); // Add one initial experience section
     });
   }
 
-  // Method to remove the last skills field
-  void _removeEducationField() {
-    if (_skillsControllers.isNotEmpty) {
-      setState(() {
-        _skillsControllers.removeLast();
-      });
-    }
-  }
+  String type = "Unknown";
 
-  // Method to retrieve all values from skills fields
-  List<Map<String, String>> _getAllEducationValues() {
-    return _skillsControllers.map((controllerMap) {
-      return {
-        'fullName': controllerMap['fullName']?.text ?? '',
-        'dob': controllerMap['dob']?.text ?? '',
-        'address': controllerMap['address']?.text ?? '',
-        'mobile': controllerMap['mobile']?.text ?? '',
-        'email': controllerMap['email']?.text ?? '',
-        'contactInfo': controllerMap['contactInfo']?.text ?? '',
-      };
-    }).toList();
+  getExistingData() async {
+    if (getIt.Get.arguments != null) {
+      arguments = getIt.Get.arguments;
+    }
+    if (arguments.isNotEmpty) {
+      type = arguments['type'] ?? 'Unknown';
+      emailController.text = arguments['email'] ?? '';
+      mobileController.text = arguments['phone'] ?? '';
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      emailController.text = prefs.getString('email') ?? '';
+      mobileController.text = prefs.getString('phone') ?? '';
+      if (prefs.getString('email') != null) {
+        type = "Email";
+      } else if (prefs.getString('phone') != null) {
+        type = "Phone";
+      }
+    }
+    setState(() {});
   }
 
   final Map<String, String?> uploadedFiles = {};
 
-  Widget _buildEducationCard(int index) {
-    final controllers = _skillsControllers[index];
+  Widget _buildEducationCard() {
     return Container(
       margin: const EdgeInsets.only(bottom: 6.0),
       decoration: BoxDecoration(
@@ -165,15 +201,23 @@ class _ProfileCompletionScreenOneState
             Center(child: buildProfileImage()),
             const SizedBox(height: 16),
             // Input Fields with Controllers
-            _buildTextField('Full Name', controllers['fullName']!),
+            _buildTextField('Full Name', fullNameController),
             // const SizedBox(height: 10),
             // _buildTextField('Date of Birth', controllers['dob']! ),
             const SizedBox(height: 10),
-            _buildTextField('Present Address', controllers['address']!),
+            _buildTextField('Present Address', addressController),
             const SizedBox(height: 10),
-            _buildTextField('+880 1775560632', controllers['mobile']!),
+            _buildTextField(
+              'Phone',
+              mobileController,
+              isEnabled: !(type == 'Phone'),
+            ),
             const SizedBox(height: 10),
-            _buildTextField('razibul@gmail.com', controllers['email']!),
+            _buildTextField(
+              'Email',
+              emailController,
+              isEnabled: !(type == 'Email'),
+            ),
             const SizedBox(height: 10),
             // _buildTextField('Contact Information', controllers['contactInfo']! ),
             // const SizedBox(height: 10),
@@ -187,11 +231,9 @@ class _ProfileCompletionScreenOneState
   void dispose() {
     // Dispose controllers when the widget is removed from the widget tree
     fullNameController.dispose();
-    dobController.dispose();
     addressController.dispose();
     mobileController.dispose();
     emailController.dispose();
-    contactInfoController.dispose();
     super.dispose();
   }
 
@@ -245,14 +287,7 @@ class _ProfileCompletionScreenOneState
             ),
             const SizedBox(height: 24),
 
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _skillsControllers.length,
-              itemBuilder: (context, index) {
-                return _buildEducationCard(index);
-              },
-            ),
+            _buildEducationCard(),
             // const SizedBox(height: 4),
             // Footer
             _buildFooter(context),
@@ -293,45 +328,34 @@ class _ProfileCompletionScreenOneState
       children: [
         GestureDetector(
           onTap: _pickImage, // Pick image when tapped
-          child: CircleAvatar(
-            radius: 50, // Set the radius of the outer CircleAvatar
-            backgroundColor:
-                Colors.grey.shade300, // Background color of the CircleAvatar
-            child: _imagePath.isNotEmpty && File(_imagePath).existsSync()
-                ? ClipOval(
-                    child: Image.file(
-                      File(_imagePath),
-                      width: 100, // Set the width of the image
-                      height: 100, // Set the height of the image
-                      fit: BoxFit.cover, // Ensure the image fits properly
+          child: Container(
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              shape: BoxShape.circle,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: imageUploading == true
+                ? Center(
+                    child: const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        primaryBlue,
+                      ),
                     ),
                   )
-                : const Icon(
-                    Icons.person, // Default icon if no image is set
-                    size: 50,
-                    color: Colors.grey,
-                  ),
+                : imageUrl.isNotEmpty
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(
+                        Icons.person, // Default icon if no image is set
+                        size: 50,
+                        color: Colors.grey,
+                      ),
           ),
         ),
-
-        // CircleAvatar(
-        //   radius: 50,
-        //   backgroundColor: Colors.grey.shade300,
-        //   child: const Icon(Icons.person, size: 50, color: Colors.grey),
-        // ),
-        // GestureDetector(
-        //             onTap: _pickImage,
-        //             child: CircleAvatar(
-        //               backgroundImage:
-        //                   _imagePath.isNotEmpty && File(_imagePath).existsSync()
-        //                       ? FileImage(File(_imagePath))
-        //                           as ImageProvider<Object>?
-        //                       : AssetImage(ImageAssets.dp),
-        //               radius: 24,
-        //               backgroundColor: Color.fromARGB(255, 255, 254, 254),
-        //               foregroundColor: AppColors.secondaryColor,
-        //             ),
-        //           ),
         Positioned(
           bottom: 5,
           right: 5,
@@ -355,9 +379,14 @@ class _ProfileCompletionScreenOneState
     );
   }
 
-  Widget _buildTextField(String hintText, TextEditingController controller) {
+  Widget _buildTextField(
+    String hintText,
+    TextEditingController controller, {
+    bool isEnabled = true,
+  }) {
     return TextField(
       controller: controller,
+      enabled: isEnabled,
       decoration: InputDecoration(
         hintText: hintText,
         contentPadding:
@@ -397,14 +426,16 @@ class _ProfileCompletionScreenOneState
               //   ),
               // ),
               ElevatedButton(
-                onPressed: () {
-                  // Action for skip button
-                  debugPrint("Skip button clicked");
-                  Navigator.pushNamed(
-                    context,
-                    ProfileCompletionScreenTwo.routeName,
-                  );
-                },
+                onPressed: isUploadingData
+                    ? null
+                    : () {
+                        // Action for skip button
+                        debugPrint("Skip button clicked");
+                        Navigator.pushNamed(
+                          context,
+                          ProfileCompletionScreenTwo.routeName,
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: scaffoldBackgroundColor,
                   side: BorderSide(color: primaryBlue),
@@ -424,20 +455,95 @@ class _ProfileCompletionScreenOneState
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {
-                  final allValues = _getAllEducationValues();
-                  print(allValues);
-                  // Example: Access user inputs
-                  debugPrint("Full Name: ${fullNameController.text}");
-                  debugPrint("Date of Birth: ${dobController.text}");
-                  debugPrint("Address: ${addressController.text}");
-                  debugPrint("Mobile: ${mobileController.text}");
-                  debugPrint("Email: ${emailController.text}");
-                  debugPrint("Contact Info: ${contactInfoController.text}");
-                  Navigator.pushNamed(context, '/profileCompletiontwo');
-                },
+                onPressed: isUploadingData
+                    ? null
+                    : () async {
+                        FocusScope.of(context).unfocus();
+                        // final allValues = _getAllEducationValues();
+                        // print(allValues);
+                        // Example: Access user inputs
+                        Onboardingone onboardingone = Onboardingone(
+                          profilePicture: imageUrl,
+                          name: fullNameController.text,
+                          phone: mobileController.text,
+                          address: addressController.text,
+                          email: emailController.text,
+                        );
+                        try {
+                          setState(() {
+                            isUploadingData = true;
+                          });
+                          final dio = Dio(
+                            BaseOptions(
+                              baseUrl: ApiClient.userBase,
+                              connectTimeout: const Duration(seconds: 3000),
+                              receiveTimeout: const Duration(seconds: 3000),
+                            ),
+                          );
+                          final prefs = await SharedPreferences.getInstance();
+                          String token = prefs.getString('token') ?? '';
+                          await dio.post(
+                            "${ApiClient.userBase}/user/profile",
+                            data: onboardingone.toJson(),
+                            options: Options(
+                              headers: {
+                                'Content-Type': "application/json",
+                                "Authorization": "Bearer $token",
+                              },
+                            ),
+                          );
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          // Navigator.pushNamed(context, '/profileCompletiontwo');
+                          getIt.Get.to(
+                            () => ProfileCompletionScreenTwo(),
+                            arguments: {
+                              'type': 'Email',
+                              'email': arguments['email'] ?? "",
+                              'token': arguments['token'] ?? "",
+                              'phone': arguments['phone'] ?? "",
+                            },
+                          );
+                        } on DioException catch (e) {
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          // The request was made and the server responded with a status code
+                          // that falls out of the range of 2xx and is also not 304.
+                          if (e.response != null) {
+                            print(e.response!.data["message"]);
+                            print(e.response!.headers);
+                            print(e.response!.requestOptions);
+                            CustomDialog.showCustomDialog(
+                              context,
+                              title: "Error",
+                              content: e.response!.data["message"].toString(),
+                            );
+                          } else {
+                            // Something happened in setting up or sending the request that triggered an Error
+                            print(e.requestOptions);
+                            print(e.message);
+                            CustomDialog.showCustomDialog(
+                              context,
+                              title: "Error",
+                              content: e.message.toString(),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint(e.toString());
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          CustomDialog.showCustomDialog(
+                            context,
+                            title: "Error",
+                            content: e.toString(),
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryBlue,
+                  backgroundColor: isUploadingData ? Colors.grey : primaryBlue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
                   ),
