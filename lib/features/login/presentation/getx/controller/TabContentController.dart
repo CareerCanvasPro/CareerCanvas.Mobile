@@ -44,7 +44,7 @@ class EmailController extends GetxController {
       );
 
       final response = await apiClient.post(
-        "${ApiClient.authBase}${type == EmailLoginType.Otp ? "/otp/email/request" : "/magic-link/request"}",
+        "${ApiClient.authBase}${type == EmailLoginType.Otp ? "/otp/request/email" : "/magic-link/request"}",
         data: {
           'email': emailController.text,
         },

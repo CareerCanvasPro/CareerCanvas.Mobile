@@ -766,7 +766,7 @@ class _getOTPVerificationDialogState extends State<getOTPVerificationDialog> {
       );
 
       final response = await apiClient.get(
-        ApiClient.authBase + "/otp/email/verify?otp=${pin}",
+        ApiClient.authBase + "/otp/verify?otp=${pin}",
       );
       print(response.data);
       setState(() {
