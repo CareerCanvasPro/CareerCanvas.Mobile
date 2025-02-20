@@ -158,13 +158,15 @@ class _ProfileCompletionScreenTwoState
                   ),
                 ),
                 const SizedBox(width: 16),
-                Text(
-                  _uploadedFiles[index] ?? 'No file uploaded',
-                  style: TextStyle(
-                    color: _uploadedFiles[index] == null
-                        ? Colors.grey
-                        : Colors.green,
-                    fontSize: 14,
+                Expanded(
+                  child: Text(
+                    _uploadedFiles[index] ?? 'No file uploaded',
+                    style: TextStyle(
+                      color: _uploadedFiles[index] == null
+                          ? Colors.grey
+                          : Colors.green,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],

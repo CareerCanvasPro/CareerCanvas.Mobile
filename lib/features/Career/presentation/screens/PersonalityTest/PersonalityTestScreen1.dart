@@ -136,127 +136,130 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                   ),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Transform.scale(
-                                    scale: 1.5,
-                                    child: Radio(
-                                      value: 3,
-                                      activeColor: Colors.green,
-                                      hoverColor: Colors.green,
-                                      groupValue:
-                                          currentQuestions[index].answer,
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Transform.scale(
+                                      scale: 1.5,
+                                      child: Radio(
+                                        value: 3,
+                                        activeColor: Colors.green,
+                                        hoverColor: Colors.green,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              3,
+                                            );
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Transform.scale(
+                                      scale: 1.3,
+                                      child: Radio(
+                                        value: 2,
+                                        activeColor: Colors.green,
+                                        hoverColor: Colors.green,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              2,
+                                            );
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Transform.scale(
+                                      scale: 1.1,
+                                      child: Radio(
+                                        value: 1,
+                                        activeColor: Colors.green,
+                                        hoverColor: Colors.green,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              1,
+                                            );
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Radio(
+                                      value: 0,
+                                      activeColor: Colors.grey,
+                                      hoverColor: Colors.grey,
+                                      groupValue: currentQuestions[index].answer,
                                       onChanged: (value) {
                                         setState(() {
                                           onAnswerSelected(
                                             currentQuestions[index].questionID,
-                                            3,
+                                            0,
                                           );
                                         });
                                       },
                                     ),
-                                  ),
-                                  Transform.scale(
-                                    scale: 1.3,
-                                    child: Radio(
-                                      value: 2,
-                                      activeColor: Colors.green,
-                                      hoverColor: Colors.green,
-                                      groupValue:
-                                          currentQuestions[index].answer,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          onAnswerSelected(
-                                            currentQuestions[index].questionID,
-                                            2,
-                                          );
-                                        });
-                                      },
+                                    Transform.scale(
+                                      scale: 1.1,
+                                      child: Radio(
+                                        value: -1,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              -1,
+                                            );
+                                          });
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  Transform.scale(
-                                    scale: 1.1,
-                                    child: Radio(
-                                      value: 1,
-                                      activeColor: Colors.green,
-                                      hoverColor: Colors.green,
-                                      groupValue:
-                                          currentQuestions[index].answer,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          onAnswerSelected(
-                                            currentQuestions[index].questionID,
-                                            1,
-                                          );
-                                        });
-                                      },
+                                    Transform.scale(
+                                      scale: 1.3,
+                                      child: Radio(
+                                        value: -2,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              -2,
+                                            );
+                                          });
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  Radio(
-                                    value: 0,
-                                    activeColor: Colors.grey,
-                                    hoverColor: Colors.grey,
-                                    groupValue: currentQuestions[index].answer,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        onAnswerSelected(
-                                          currentQuestions[index].questionID,
-                                          0,
-                                        );
-                                      });
-                                    },
-                                  ),
-                                  Transform.scale(
-                                    scale: 1.1,
-                                    child: Radio(
-                                      value: -1,
-                                      groupValue:
-                                          currentQuestions[index].answer,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          onAnswerSelected(
-                                            currentQuestions[index].questionID,
-                                            -1,
-                                          );
-                                        });
-                                      },
+                                    Transform.scale(
+                                      scale: 1.5,
+                                      child: Radio(
+                                        value: -3,
+                                        groupValue:
+                                            currentQuestions[index].answer,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            onAnswerSelected(
+                                              currentQuestions[index].questionID,
+                                              -3,
+                                            );
+                                          });
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  Transform.scale(
-                                    scale: 1.3,
-                                    child: Radio(
-                                      value: -2,
-                                      groupValue:
-                                          currentQuestions[index].answer,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          onAnswerSelected(
-                                            currentQuestions[index].questionID,
-                                            -2,
-                                          );
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  Transform.scale(
-                                    scale: 1.5,
-                                    child: Radio(
-                                      value: -3,
-                                      groupValue:
-                                          currentQuestions[index].answer,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          onAnswerSelected(
-                                            currentQuestions[index].questionID,
-                                            -3,
-                                          );
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),

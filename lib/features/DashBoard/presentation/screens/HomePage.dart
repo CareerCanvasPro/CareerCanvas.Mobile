@@ -1,5 +1,6 @@
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
+import 'package:career_canvas/features/Skill/presentations/screens/SkillsScreen.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     DashboardScreen(),
     CareerScreen(),
-    SkillsPage(),
+    SkillsScreen(),
     NetworkingScreen(),
     UserProfile(),
   ];
