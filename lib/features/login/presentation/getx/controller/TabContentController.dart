@@ -3,17 +3,28 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+enum EmailLoginType {
+  Otp,
+  MagicLink,
+}
+
 class EmailController extends GetxController {
   var isLoading = false.obs;
+  var isSecondaryLoading = false.obs;
   TextEditingController emailController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void onEmailButtonPressed(
     BuildContext context, {
+    EmailLoginType type = EmailLoginType.Otp,
     required Function(String?) onDone,
     required Function(String) onError,
   }) async {
-    isLoading.value = true;
+    if (type == EmailLoginType.MagicLink) {
+      isSecondaryLoading.value = true;
+    } else {
+      isLoading.value = true;
+    }
 
     try {
       if (emailController.text.isEmpty) {
@@ -33,20 +44,28 @@ class EmailController extends GetxController {
       );
 
       final response = await apiClient.post(
-        ApiClient.authBase + "/auth",
+        "${ApiClient.authBase}${type == EmailLoginType.Otp ? "/otp/request/email" : "/magic-link/request"}",
         data: {
           'email': emailController.text,
         },
       );
       debugPrint(response.data['message']);
       if (response.data['message'].toString().isNotEmpty) {
-        isLoading.value = false;
+        if (type == EmailLoginType.MagicLink) {
+          isSecondaryLoading.value = false;
+        } else {
+          isLoading.value = false;
+        }
         onDone(response.data['message'].toString());
       } else {
-        throw "Failed to send magic link";
+        throw "Failed to send. Please try again.";
       }
     } catch (e) {
-      isLoading.value = false;
+      if (type == EmailLoginType.MagicLink) {
+        isSecondaryLoading.value = false;
+      } else {
+        isLoading.value = false;
+      }
       debugPrint(e.toString());
       onError(e.toString());
     }

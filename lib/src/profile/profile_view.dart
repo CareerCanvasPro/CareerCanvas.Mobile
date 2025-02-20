@@ -1,14 +1,24 @@
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-class UserProfile extends StatelessWidget {
-  const UserProfile({super.key});
+class UserProfile extends StatefulWidget {
+  const UserProfile({
+    super.key,
+    this.userProfileData,
+  });
+  final UserProfileData? userProfileData;
 
   static const String routeName = "/userProfile";
 
+  @override
+  State<UserProfile> createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     ScrollController? controller = ScrollController();
@@ -30,7 +40,7 @@ class UserProfile extends StatelessWidget {
       ),
       body: Column(
         children: [
-          _profileHeaderSection(context),
+          _profileHeaderSection(context, widget.userProfileData),
           Expanded(
             child: SingleChildScrollView(
               controller: controller,
@@ -65,7 +75,8 @@ class UserProfile extends StatelessWidget {
     );
   }
 
-  Container _profileHeaderSection(BuildContext context) {
+  Container _profileHeaderSection(
+      BuildContext context, UserProfileData? userProfileData) {
     return Container(
       height: 270,
       width: double.infinity,
@@ -76,7 +87,7 @@ class UserProfile extends StatelessWidget {
           bottomEnd: Radius.circular(25),
         ),
       ),
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
         left: 24,
         right: 24,
         top: 24,
@@ -92,11 +103,14 @@ class UserProfile extends StatelessWidget {
                 Container(
                   height: 50,
                   width: 50,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: NetworkImage(
-                          "https://ugv.edu.bd/images/teacher_images/1581406453.jpg"),
+                        userProfileData != null
+                            ? userProfileData.profilePicture
+                            : "https://ugv.edu.bd/images/teacher_images/1581406453.jpg",
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -116,7 +130,7 @@ class UserProfile extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              "Razibul Hasan Raj",
+              userProfileData != null ? userProfileData.name : "",
               style: getHeadlineTextStyle(
                 context,
                 18,

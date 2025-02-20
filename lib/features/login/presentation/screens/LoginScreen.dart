@@ -1,6 +1,7 @@
+import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/SpinningLoader.dart';
@@ -8,8 +9,9 @@ import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../getx/controller/TabContentController.dart';
 
@@ -35,38 +37,15 @@ class LoginScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: context.screenHeight * 0.1),
                 // Logo and Title
-                Center(
-                  // Centers the content in the middle of the screen
-                  child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center, // Centers horizontally
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Centers vertically
-                    children: [
-                      // Image with height and width based on screen size
-                      Image.asset(
-                        ImageAssets.logo,
-                        height: MediaQuery.of(context).size.height *
-                            0.08, // Dynamic height based on screen height
-                        width: MediaQuery.of(context).size.height *
-                            0.08, // Dynamic width based on screen height
-                      ),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width *
-                              0.01), // Horizontal spacing between the image and text
-                      // Text next to the image
-                      const Text(
-                        'Career\nCanvas',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                SvgPicture.asset(
+                  "assets/svg/Career_Canvas_Logo_black.svg",
+                  width: 200,
+                  fit: BoxFit.fitWidth,
+                  color: primaryBlue,
                 ),
                 SizedBox(height: context.screenHeight * 0.12),
                 // Input Method Tabs
@@ -126,32 +105,27 @@ class LoginScreen extends StatelessWidget {
         alignment: WrapAlignment.center,
         children: [
           _buildIcon(
-            FontAwesomeIcons.google,
-            AppColortext.googleRed,
+            "assets/svg/icons/google_login.svg",
             _controller.isGoogleLoading,
             _controller.loginWithGoogle,
           ),
           _buildIcon(
-            Icons.apple,
-            AppColortext.blue,
+            "assets/svg/icons/apple_login.svg",
             _controller.isAppleLoading,
             _controller.loginWithApple,
           ),
           _buildIcon(
-            Icons.facebook,
-            AppColortext.facebookBlue,
+            "assets/svg/icons/facebook_login.svg",
             _controller.isFacebookLoading,
             _controller.loginWithFacebook,
           ),
           _buildIcon(
-            FontAwesomeIcons.github,
-            AppColortext.black,
+            "assets/icons/github_login.png",
             _controller.isGithubLoading,
             _controller.loginWithGithub,
           ),
           _buildIcon(
-            FontAwesomeIcons.linkedin,
-            AppColortext.linkedInBlue,
+            "assets/icons/linkedin_login.png",
             _controller.isLinkedInLoading,
             _controller.loginWithLinkedIn,
           ),
@@ -160,14 +134,25 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(
-      IconData icon, Color color, RxBool isLoading, void Function()? onTap) {
-    return Obx(() => GestureDetector(
-          onTap: isLoading.value ? null : onTap,
-          child: isLoading.value
-              ? SpinningLoader()
-              : Icon(icon, size: 36, color: color),
-        ));
+  Widget _buildIcon(String icon, RxBool isLoading, void Function()? onTap) {
+    return Obx(
+      () => GestureDetector(
+        onTap: isLoading.value ? null : onTap,
+        child: isLoading.value
+            ? SpinningLoader()
+            : icon.endsWith(".svg")
+                ? SvgPicture.asset(
+                    icon,
+                    width: 36,
+                    height: 36,
+                  )
+                : Image.asset(
+                    icon,
+                    width: 38,
+                    height: 38,
+                  ),
+      ),
+    );
   }
 
   Widget _buildTabBar(BuildContext context) {
@@ -222,29 +207,58 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildTabBarViews(BuildContext context) {
     return SizedBox(
-      height: context.screenHeight * 0.2,
+      height: 190,
       child: TabBarView(
         clipBehavior: Clip.antiAlias,
         children: [
           _buildTabContent(
             'Enter your email',
-            'Continue with Magic Link',
+            // 'Continue with Magic Link',
+            "Get OTP",
             context,
             () {
               FocusScope.of(context).unfocus();
+              // CustomDialog.showCustomOTPDialog(
+              //   context,
+              //   to: emailController.emailController.text,
+              //   onPressedSubmit: (String pin) {},
+              // );
               emailController.onEmailButtonPressed(
                 context,
-                onDone: (String? message) {
-                  emailController.emailController.clear();
-                  CustomDialog.showCustomDialog(
+                onDone: (String? message) async {
+                  await CustomDialog.showCustomOTPDialog(
                     context,
-                    title: "Success",
-                    content: message ??
-                        'Please check your email for magic link. Click on the link to continue.',
-                    onPressed: () {
+                    to: emailController.emailController.text,
+                    onPressedSubmit: (Otpverificationresponse response) async {
+                      emailController.emailController.clear();
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('token', response.accessToken);
+                      await prefs.setString('email', response.email);
+                      await prefs.setString('type', "Email");
+                      await prefs.setInt(
+                        'expiresAt',
+                        response.expiresAt.millisecondsSinceEpoch,
+                      );
                       Get.back();
-                      Get.toNamed(ProfileCompletionScreenOne
-                          .routeName); // TODO: Test Only
+                      if (response.isNewUser) {
+                        Get.to(
+                          () => ProfileCompletionScreenOne(),
+                          arguments: {
+                            'type': 'Email',
+                            'email': response.email,
+                            'token': response.accessToken
+                          },
+                        );
+                      } else {
+                        Get.to(
+                          () => DashboardScreen(),
+                          arguments: {
+                            'type': 'Email',
+                            'email': response.email,
+                            'token': response.accessToken
+                          },
+                        );
+                      }
                     },
                   );
                 },
@@ -255,8 +269,6 @@ class LoginScreen extends StatelessWidget {
                     content: error,
                     onPressed: () {
                       Get.back();
-                      Get.toNamed(ProfileCompletionScreenOne
-                          .routeName); // TODO: Test Only
                     },
                   );
                 },
@@ -264,6 +276,38 @@ class LoginScreen extends StatelessWidget {
             }, // Pass specific button logic
             emailController.isLoading, // Pass isLoading state
             controller: emailController.emailController,
+            onSecondaryPressed: () async {
+              FocusScope.of(context).unfocus();
+              // CustomDialog.showCustomOTPDialog(
+              //   context,
+              //   to: emailController.emailController.text,
+              //   onPressedSubmit: (String pin) {},
+              // );
+              emailController.onEmailButtonPressed(
+                context,
+                type: EmailLoginType.MagicLink,
+                onDone: (String? message) async {
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Magic Link Sent",
+                    content:
+                        "Please check your email for the magic link. Click on the Login button and it will automaticly take you into the app.",
+                  );
+                },
+                onError: (String error) {
+                  CustomDialog.showCustomDialog(
+                    context,
+                    title: "Error",
+                    content: error,
+                    onPressed: () {
+                      Get.back();
+                    },
+                  );
+                },
+              );
+            },
+            isSecondaryLoading: emailController.isSecondaryLoading,
+            secondaryButtonText: "Passwordless Login",
             validator: (String? value) {
               if (value == null || value.isEmpty) {
                 return 'Email is required';
@@ -319,9 +363,11 @@ class LoginScreen extends StatelessWidget {
     String hintText,
     String buttonText,
     BuildContext context,
-    VoidCallback onPressed, // Pass a specific onPressed callback
-    RxBool isLoading, // Pass isLoading from the controller
-    {
+    VoidCallback onPressed,
+    RxBool isLoading, {
+    VoidCallback? onSecondaryPressed,
+    RxBool? isSecondaryLoading,
+    String? secondaryButtonText,
     required TextEditingController controller,
     String? Function(String?)? validator,
     required GlobalKey<FormState> formKey,
@@ -357,7 +403,10 @@ class LoginScreen extends StatelessWidget {
         SizedBox(height: context.screenHeight * 0.02),
         Obx(() {
           return ElevatedButton(
-            onPressed: isLoading.value ? null : onPressed,
+            onPressed: (isLoading.value == true ||
+                    (isSecondaryLoading != null && isSecondaryLoading == true))
+                ? null
+                : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               minimumSize: const Size(double.infinity, 48),
@@ -380,6 +429,41 @@ class LoginScreen extends StatelessWidget {
                   ),
           );
         }),
+        if (isSecondaryLoading != null &&
+            onSecondaryPressed != null &&
+            secondaryButtonText != null)
+          SizedBox(height: 8),
+        if (isSecondaryLoading != null &&
+            onSecondaryPressed != null &&
+            secondaryButtonText != null)
+          Obx(() {
+            return ElevatedButton(
+              onPressed:
+                  (isLoading.value == true || isSecondaryLoading.value == true)
+                      ? null
+                      : onSecondaryPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                minimumSize: const Size(double.infinity, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              child: isSecondaryLoading.value
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.0,
+                      ),
+                    )
+                  : Text(
+                      secondaryButtonText,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+            );
+          }),
       ],
     );
   }

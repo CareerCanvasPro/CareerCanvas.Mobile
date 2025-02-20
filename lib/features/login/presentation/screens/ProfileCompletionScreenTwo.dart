@@ -1,8 +1,18 @@
+import 'package:career_canvas/core/models/education.dart';
+import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart' as getIt;
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:mime/mime.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
@@ -16,163 +26,192 @@ class ProfileCompletionScreenTwo extends StatefulWidget {
 
 class _ProfileCompletionScreenTwoState
     extends State<ProfileCompletionScreenTwo> {
-  //final _formKey = GlobalKey<FormState>();
-// List to hold the education form fields
-  final TextEditingController currentEducationController =
-      TextEditingController();
-  final TextEditingController instituteNameController = TextEditingController();
-  final TextEditingController fieldOfEducationController =
-      TextEditingController();
-  final TextEditingController expectedGraduationDateController =
-      TextEditingController();
-  final TextEditingController academicAchievementsController =
-      TextEditingController();
-
-// List to hold controllers for each dynamic education field
-  List<Map<String, TextEditingController>> _educationControllers = [];
-  final List<String?> _uploadedFiles =
-      []; // List to store file paths for uploads
+  List<Education> _educationList = [];
+  bool isUploadingData = false;
+  bool isUploadingCertificate = false;
+  int selectedIndex = 0;
   @override
   void initState() {
     super.initState();
-    _addEducationField(); // Add one initial education section
-  }
-
-  // Method to add a new education field
-  void _addEducationField() {
-    setState(() {
-      _educationControllers.add({
-        'currentEducation': TextEditingController(),
-        'instituteName': TextEditingController(),
-        'fieldOfEducation': TextEditingController(),
-        'graduationDate': TextEditingController(),
-        'achievements': TextEditingController(),
-      });
-      _uploadedFiles
-          .add(null); // Add an empty slot for the new education section
+    // Run after ui build
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _addEducationField(); // Add one initial education section
     });
   }
 
-  // Method to remove the last education field
-  void _removeEducationField(int index) {
-    if (_educationControllers.isNotEmpty &&
-        index < _educationControllers.length) {
-      setState(() {
-        _educationControllers.removeAt(index);
-      });
-    }
+  // Method to add a new education field
+  void _addEducationField() async {
+    CustomDialog.showAddEducationDialog(
+      context,
+      onPressedSubmit: (education) {
+        getIt.Get.back();
+        _educationList.add(education);
+        setState(() {});
+      },
+    );
   }
 
-  Future<void> _uploadCertificate(int index) async {
-    // Simulate file picking (replace with actual file picker logic)
-    final String? filePath = await _pickFile();
-    if (filePath != null) {
-      setState(() {
-        _uploadedFiles[index] =
-            filePath; // Update the file path for the specific section
-      });
-    }
+  String formatDate(DateTime date) {
+    return DateFormat().add_yMMMMd().format(date);
   }
-
-  Future<String?> _pickFile() async {
-    // Replace with actual file picker logic using a package like `file_picker`
-    // For now, we'll simulate picking a file:
-    return Future.value("certificate.pdf"); // Simulated file path
-  }
-
-  // Method to retrieve all values from education fields
-  List<Map<String, String>> _getAllEducationValues() {
-    return _educationControllers.map((controllerMap) {
-      return {
-        'currentEducation': controllerMap['currentEducation']?.text ?? '',
-        'instituteName': controllerMap['instituteName']?.text ?? '',
-        'fieldOfEducation': controllerMap['fieldOfEducation']?.text ?? '',
-        'graduationDate': controllerMap['graduationDate']?.text ?? '',
-        'achievements': controllerMap['achievements']?.text ?? '',
-      };
-    }).toList();
-  }
-
-  final Map<String, String?> uploadedFiles = {};
 
   Widget _buildEducationCard(int index) {
-    final controllers = _educationControllers[index];
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
       color: scaffoldBackgroundColor,
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (index > 0)
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(),
-                  ),
-                  IconButton(
-                    onPressed: () => _removeEducationField(index),
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: Colors.red,
-                    ),
-                  )
-                ],
+      elevation: 5,
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        initiallyExpanded: index == selectedIndex,
+        trailing: IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.delete_forever_rounded,
+          ),
+        ),
+        collapsedBackgroundColor: primaryBlue,
+        collapsedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        collapsedTextColor: Colors.white,
+        collapsedIconColor: Colors.white,
+        controlAffinity: ListTileControlAffinity.leading,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        onExpansionChanged: (value) {
+          setState(() {
+            selectedIndex = value ? index : 0;
+          });
+        },
+        expandedAlignment: Alignment.topLeft,
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        childrenPadding: const EdgeInsets.only(
+          left: 24,
+          bottom: 16,
+          right: 24,
+        ),
+        title: Text(
+          _educationList[index].field,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        children: [
+          Row(
+            children: [
+              Text(
+                "Institute : ",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            _buildTextField(
-                'Current Education', controllers['currentEducation']!),
-            const SizedBox(height: 16),
-            _buildTextField('Institute Name', controllers['instituteName']!),
-            const SizedBox(height: 16),
-            _buildTextField(
-                'Field of Education', controllers['fieldOfEducation']!),
-            const SizedBox(height: 16),
-            _buildTextField(
-                'Expected Graduation Date', controllers['graduationDate']!),
-            const SizedBox(height: 16),
-            _buildTextField(
-                'Academic Achievements', controllers['achievements']!),
-            const SizedBox(height: 16),
-
-            // Upload Certificate Section
+              Expanded(
+                child: Text(
+                  "${_educationList[index].institute}",
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          if (_educationList[index].graduationDate != null)
             Row(
               children: [
-                ElevatedButton(
-                  onPressed: () => _uploadCertificate(index),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: scaffoldBackgroundColor,
-                    side: BorderSide(color: primaryBlue),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                  ),
-                  child: Text(
-                    'Upload Certificate',
-                    style: getCTATextStyle(
-                      context,
-                      14,
-                      color: primaryBlue,
-                    ),
+                Text(
+                  "Graduation Date : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    _uploadedFiles[index] ?? 'No file uploaded',
-                    style: TextStyle(
-                      color: _uploadedFiles[index] == null
-                          ? Colors.grey
-                          : Colors.green,
-                      fontSize: 14,
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        _educationList[index].graduationDate!,
+                      ),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          Row(
+            children: [
+              Text(
+                "Current Education : ",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  _educationList[index].isCurrent ? 'Current' : 'Past',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text(
+                "Achievements : ",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  _educationList[index].achievements,
+                ),
+              ),
+            ],
+          ),
+          if (_educationList[index].certificate != null)
+            Row(
+              children: [
+                Text(
+                  "Certificate : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () async {
+                      print(_educationList[index].certificate!.url);
+                      try {
+                        await launchUrl(
+                          Uri.parse(
+                            _educationList[index].certificate!.url,
+                          ),
+                          mode: LaunchMode.inAppWebView,
+                        );
+                      } catch (e) {
+                        print(e.toString());
+                      }
+                    },
+                    child: Text(
+                      "Certificate.${extensionFromMime(_educationList[index].certificate!.type)}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                        color: primaryBlue,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -190,105 +229,87 @@ class _ProfileCompletionScreenTwoState
       ),
       body: Container(
         height: context.screenHeight,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        ImageAssets.logo, // Replace with your logo path
-                        height: 50,
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      Text("Career\nCanvas")
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Progress Bar
-                buildProgressBar(progress: 0.4),
-                SizedBox(height: 10),
-                Text(
-                  'Hello! Please add your education details below.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                SizedBox(height: 16),
-
-                // Form fields
-                // Dynamic list of education fields
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _educationControllers.length,
-                  itemBuilder: (context, index) {
-                    return _buildEducationCard(index);
-                  },
-                ),
-
-                // Add and Remove Education Buttons
-                // Row(
-                //   children: [
-                //     TextButton(
-                //       onPressed: _addEducationField,
-                //       child: Text('+ Add Education'),
-                //     ),
-                //   ],
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: _addEducationField,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: scaffoldBackgroundColor,
-                        side: BorderSide(color: primaryBlue),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                      ),
-                      child: Text(
-                        '+ Add Education',
-                        style: getCTATextStyle(
-                          context,
-                          14,
-                          color: primaryBlue,
-                        ),
-                      ),
+                    Image.asset(
+                      ImageAssets.logo, // Replace with your logo path
+                      height: 50,
                     ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Text("Career\nCanvas")
                   ],
                 ),
-                SizedBox(height: 30),
+              ),
+              const SizedBox(height: 16),
+              // Progress Bar
+              buildProgressBar(progress: 0.4),
+              SizedBox(height: 10),
+              Text(
+                'Hello! Please add your education details below.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
 
-                // Action buttons
-                _buildFooter(context),
-              ],
-            ),
+              // Form fields
+              // Dynamic list of education fields
+              if (_educationList.isNotEmpty)
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _educationList.length,
+                    itemBuilder: (context, index) {
+                      return _buildEducationCard(index);
+                    },
+                  ),
+                ),
+
+              // Add and Remove Education Buttons
+              // Row(
+              //   children: [
+              //     TextButton(
+              //       onPressed: _addEducationField,
+              //       child: Text('+ Add Education'),
+              //     ),
+              //   ],
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: _addEducationField,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: scaffoldBackgroundColor,
+                      side: BorderSide(color: primaryBlue),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                    ),
+                    child: Text(
+                      '+ Add Education',
+                      style: getCTATextStyle(
+                        context,
+                        14,
+                        color: primaryBlue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+
+              // Action buttons
+              _buildFooter(context),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String hintText, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade500),
         ),
       ),
     );
@@ -331,12 +352,14 @@ class _ProfileCompletionScreenTwoState
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {
-                  // Action for skip button
-                  debugPrint("Skip button clicked");
-                  Navigator.pushNamed(
-                      context, ProfileCompletionScreenThree.routeName);
-                },
+                onPressed: isUploadingData
+                    ? null
+                    : () {
+                        // Action for skip button
+                        debugPrint("Skip button clicked");
+                        Navigator.pushNamed(
+                            context, ProfileCompletionScreenThree.routeName);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: scaffoldBackgroundColor,
                   side: BorderSide(color: primaryBlue),
@@ -356,12 +379,85 @@ class _ProfileCompletionScreenTwoState
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {
-                  final allValues = _getAllEducationValues();
-                  print(allValues);
-                  Navigator.pushNamed(
-                      context, ProfileCompletionScreenThree.routeName);
-                },
+                onPressed: isUploadingData
+                    ? null
+                    : () async {
+                        if (_educationList.isEmpty) {
+                          return;
+                        }
+                        try {
+                          setState(() {
+                            isUploadingData = true;
+                          });
+                          final dio = Dio(
+                            BaseOptions(
+                              baseUrl: ApiClient.userBase,
+                              connectTimeout: const Duration(seconds: 3000),
+                              receiveTimeout: const Duration(seconds: 3000),
+                            ),
+                          );
+                          final prefs = await SharedPreferences.getInstance();
+                          String token = prefs.getString('token') ?? '';
+                          UploadEducation uploadEducation = UploadEducation(
+                            education: _educationList,
+                          );
+
+                          final response = await dio.put(
+                            "${ApiClient.userBase}/user/profile",
+                            data: uploadEducation.toJson(),
+                            options: Options(
+                              headers: {
+                                'Content-Type': "application/json",
+                                "Authorization": "Bearer $token",
+                              },
+                            ),
+                          );
+                          debugPrint(response.data['message']);
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          Get.to(
+                            () => ProfileCompletionScreenThree(),
+                          );
+                        } on DioException catch (e) {
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          // The request was made and the server responded with a status code
+                          // that falls out of the range of 2xx and is also not 304.
+                          if (e.response != null) {
+                            print(e.response!.data["message"]);
+                            print(e.response!.headers);
+                            print(e.response!.requestOptions);
+                            CustomDialog.showCustomDialog(
+                              context,
+                              title: "Error",
+                              content: e.response!.data["message"].toString(),
+                            );
+                          } else {
+                            // Something happened in setting up or sending the request that triggered an Error
+                            print(e.requestOptions);
+                            print(e.message);
+                            CustomDialog.showCustomDialog(
+                              context,
+                              title: "Error",
+                              content: e.message.toString(),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint(e.toString());
+                          setState(() {
+                            isUploadingData = false;
+                          });
+                          CustomDialog.showCustomDialog(
+                            context,
+                            title: "Error",
+                            content: e.toString(),
+                          );
+                        }
+                        // Navigator.pushNamed(
+                        //     context, ProfileCompletionScreenThree.routeName);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryBlue,
                   shape: RoundedRectangleBorder(

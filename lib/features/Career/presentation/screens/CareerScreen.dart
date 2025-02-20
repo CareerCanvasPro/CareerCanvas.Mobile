@@ -103,22 +103,22 @@ class CareerScreen extends StatelessWidget {
   final JobService jobService = JobService();
   final List<UserGoal> userGoals = [
     UserGoal(
-      title: 'Complete Bachelor\'s Degree',
+      title: 'Master a New Programming Language',
       description: 'Bachelor\'s Degree, Career Canvas',
       date: DateTime.now().add(Duration(days: 10)).millisecondsSinceEpoch,
     ),
     UserGoal(
-      title: 'Internship',
+      title: 'Build and Deploy a Full-Stack App',
       description: 'Internship, Career Canvas',
       date: DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch,
     ),
     UserGoal(
-      title: 'Start MBA',
+      title: 'Improve Code Quality',
       description: 'MBA, Career Canvas',
       date: DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch,
     ),
     UserGoal(
-      title: 'Become a Manager',
+      title: 'Automate a Repetitive Task',
       description: 'MBA, Career Canvas',
       date: DateTime.now().subtract(Duration(days: 3)).millisecondsSinceEpoch,
     ),

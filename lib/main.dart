@@ -1,9 +1,18 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/models/mainRouting.dart';
+import 'package:career_canvas/core/models/profile.dart';
+import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
+import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/user/data/datasources/user_local_data_source.dart';
 import 'package:career_canvas/features/user/data/models/user_model.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
+import 'package:career_canvas/src/profile/profile_view.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'src/app.dart';
@@ -39,9 +48,73 @@ void main() async {
 
   // Log table data
   await logUsersTableData();
+  final mainRouteData = await checkIfUserLoggedIn();
 
   //-------------
-  runApp(MyApp(settingsController: settingsController));
+  runApp(
+    MyApp(
+      settingsController: settingsController,
+      mainRouteData: mainRouteData,
+    ),
+  );
+}
+
+Future<MainRouteData> checkIfUserLoggedIn() async {
+  final prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? '';
+  int expiresAt = prefs.getInt('expiresAt') ?? 0;
+  DateTime expiry = DateTime.fromMillisecondsSinceEpoch(expiresAt);
+  MainRouteData routeData = MainRouteData(
+    initialRoute: LoginScreen.routeName,
+  );
+  if (token.isNotEmpty) {
+    try {
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: ApiClient.userBase,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        ),
+      );
+      final prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? '';
+
+      final response = await dio.get(
+        "${ApiClient.userBase}/user/profile",
+        options: Options(
+          headers: {
+            'Content-Type': "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      print(response.data['data']);
+      UserProfileData profile = UserProfileData.fromMap(response.data['data']);
+      print(profile.toString());
+      routeData.userProfile = profile;
+      routeData.initialRoute = HomePage.routeName;
+      return routeData;
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response!.data["message"]);
+        print(e.response!.headers);
+        print(e.response!.requestOptions);
+        routeData.initialRoute = ProfileCompletionScreenOne.routeName;
+        return routeData;
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+        routeData.initialRoute = HomePage.routeName;
+        return routeData;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+  return routeData;
 }
 
 Future<void> insertExampleData(UserLocalDataSource userLocalDataSource) async {
