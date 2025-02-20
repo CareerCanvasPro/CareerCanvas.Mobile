@@ -67,7 +67,7 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
   MainRouteData routeData = MainRouteData(
     initialRoute: LoginScreen.routeName,
   );
-  if (token.isNotEmpty) {
+  if (token.isNotEmpty && expiry.isAfter(DateTime.now())) {
     try {
       final dio = Dio(
         BaseOptions(
@@ -99,9 +99,12 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
         print(e.response!.data["message"]);
+        print(e.response!.statusCode);
         print(e.response!.headers);
         print(e.response!.requestOptions);
-        routeData.initialRoute = ProfileCompletionScreenOne.routeName;
+        if (e.response!.statusCode != null && e.response!.statusCode == 404) {
+          routeData.initialRoute = ProfileCompletionScreenOne.routeName;
+        }
         return routeData;
       } else {
         // Something happened in setting up or sending the request that triggered an Error

@@ -40,7 +40,7 @@ class Otpverificationresponse {
     return Otpverificationresponse(
       accessToken: map['accessToken'] as String,
       isNewUser: map['isNewUser'] as bool,
-      email: map['email'] as String,
+      email: map['username'] as String,
       expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expiresAt'] as int),
     );
   }
