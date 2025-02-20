@@ -3,6 +3,7 @@ import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
+import 'package:career_canvas/features/Skill/presentations/screens/SkillsScreen.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

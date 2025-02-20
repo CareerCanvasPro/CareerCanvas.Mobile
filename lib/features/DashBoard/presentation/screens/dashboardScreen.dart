@@ -188,29 +188,7 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   type: BottomNavigationBarType.fixed,
-      //   selectedItemColor: Colors.blue,
-      //   unselectedItemColor: Colors.grey,
-      //   showUnselectedLabels: true,
-      //   onTap: (index) {
-      //      if (index == 0) {
-      //       // Navigate to Networking Page
-      //       Navigator.pushNamed(context, '/dashboard');
-      //     }
-      //     if (index == 4) {
-      //       // Navigate to Networking Page
-      //       Navigator.pushNamed(context, '/networking');
-      //     }
-      //   },
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.business_center), label: 'Career'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.bolt), label: 'Skills'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Networking'),
-      //   ],
-      // ),
+      
     );
   }
 }

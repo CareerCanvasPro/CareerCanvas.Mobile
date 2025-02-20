@@ -66,7 +66,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
               'Explore Your Interests',
               style: getCTATextStyle(
                 context,
-                20,
+                16,
                 color: Colors.black,
               ),
             ),
@@ -74,7 +74,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
             const Text(
               'What subjects interest you the most? Select all the areas that excite you or align with your passions!',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Color(0xFF52525B),
               ),
             ),
@@ -113,7 +113,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                             textAlign: TextAlign.center,
                             style: getCTATextStyle(
                               context,
-                              14,
+                              11,
                               color: Colors.black,
                             ),
                           ),
