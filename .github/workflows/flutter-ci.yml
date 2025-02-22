@@ -26,6 +26,8 @@ jobs:
 
       # - name: Analyze code
       #   run: flutter analyze
+      - name: Clean Flutter build
+        run: flutter clean
 
       # - name: Run tests
       #   run: flutter test
