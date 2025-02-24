@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class AnalyzingResultsScreen extends StatefulWidget {
-    static const String routeName = "/AnalyzingResultsScreen";
+  static const String routeName = "/AnalyzingResultsScreen";
 
   const AnalyzingResultsScreen({Key? key}) : super(key: key);
 
@@ -126,18 +126,17 @@ class ScoreScreen extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-               style: ElevatedButton.styleFrom(
-                foregroundColor:  Colors.blue,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
                 minimumSize: const Size(200, 50),
-
               ),
               onPressed: () {
                 // Handle career recommendations logic
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Redirecting to recommendations...')),
+                  const SnackBar(
+                      content: Text('Redirecting to recommendations...')),
                 );
                 Navigator.pushNamed(context, '/JobRecommendationScreen');
-
               },
               // style: ElevatedButton.styleFrom(
               //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

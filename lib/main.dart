@@ -2,17 +2,16 @@ import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/user/data/datasources/user_local_data_source.dart';
 import 'package:career_canvas/features/user/data/models/user_model.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
-import 'package:career_canvas/src/profile/profile_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'src/app.dart';
@@ -26,6 +25,7 @@ void main() async {
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());
   await VersionInfo.init(); // Initialize version information
+  await TokenInfo.init();
 
   // Load the user's preferred theme while the splash screen is displayed.
   // This prevents a sudden theme change when the app is first displayed.
@@ -60,14 +60,10 @@ void main() async {
 }
 
 Future<MainRouteData> checkIfUserLoggedIn() async {
-  final prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? '';
-  int expiresAt = prefs.getInt('expiresAt') ?? 0;
-  DateTime expiry = DateTime.fromMillisecondsSinceEpoch(expiresAt);
   MainRouteData routeData = MainRouteData(
     initialRoute: LoginScreen.routeName,
   );
-  if (token.isNotEmpty && expiry.isAfter(DateTime.now())) {
+  if (TokenInfo.isloggedInUser()) {
     try {
       final dio = Dio(
         BaseOptions(
@@ -76,15 +72,12 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
           receiveTimeout: const Duration(seconds: 30),
         ),
       );
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString('token') ?? '';
-
       final response = await dio.get(
         "${ApiClient.userBase}/user/profile",
         options: Options(
           headers: {
             'Content-Type': "application/json",
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer ${TokenInfo.token}",
           },
         ),
       );

@@ -1,4 +1,3 @@
-import 'package:career_canvas/core/models/QuestionAnswer.dart';
 import 'package:career_canvas/core/models/TextQuestion.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
@@ -153,7 +152,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               3,
                                             );
                                           });
@@ -171,7 +171,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               2,
                                             );
                                           });
@@ -189,7 +190,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               1,
                                             );
                                           });
@@ -200,7 +202,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                       value: 0,
                                       activeColor: Colors.grey,
                                       hoverColor: Colors.grey,
-                                      groupValue: currentQuestions[index].answer,
+                                      groupValue:
+                                          currentQuestions[index].answer,
                                       onChanged: (value) {
                                         setState(() {
                                           onAnswerSelected(
@@ -219,7 +222,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               -1,
                                             );
                                           });
@@ -235,7 +239,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               -2,
                                             );
                                           });
@@ -251,7 +256,8 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                         onChanged: (value) {
                                           setState(() {
                                             onAnswerSelected(
-                                              currentQuestions[index].questionID,
+                                              currentQuestions[index]
+                                                  .questionID,
                                               -3,
                                             );
                                           });

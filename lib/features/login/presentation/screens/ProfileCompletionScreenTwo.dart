@@ -2,6 +2,7 @@ import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
@@ -11,7 +12,6 @@ import 'package:get/get.dart' as getIt;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
@@ -396,8 +396,6 @@ class _ProfileCompletionScreenTwoState
                               receiveTimeout: const Duration(seconds: 3000),
                             ),
                           );
-                          final prefs = await SharedPreferences.getInstance();
-                          String token = prefs.getString('token') ?? '';
                           UploadEducation uploadEducation = UploadEducation(
                             education: _educationList,
                           );
@@ -408,7 +406,7 @@ class _ProfileCompletionScreenTwoState
                             options: Options(
                               headers: {
                                 'Content-Type': "application/json",
-                                "Authorization": "Bearer $token",
+                                "Authorization": "Bearer ${TokenInfo.token}",
                               },
                             ),
                           );
