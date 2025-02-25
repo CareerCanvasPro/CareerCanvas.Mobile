@@ -411,138 +411,141 @@ class _ProfileCompletionScreenOneState
           SvgPicture.asset(
             'assets/svg/icons/icon_coin_5.svg',
           ),
-          Row(
-            children: [
-              // TextButton(
-              //   onPressed: () {},
-              //   child: const Text(
-              //     'Skip',
-              //     style: TextStyle(color: primaryBlue, fontSize: 16),
-              //   ),
-              // ),
-              // ElevatedButton(
-              //   onPressed: isUploadingData
-              //       ? null
-              //       : () {
-              //           // Action for skip button
-              //           debugPrint("Skip button clicked");
-              //           Navigator.pushNamed(
-              //             context,
-              //             ProfileCompletionScreenTwo.routeName,
-              //           );
-              //         },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: scaffoldBackgroundColor,
-              //     side: BorderSide(color: primaryBlue),
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(24.0),
-              //     ),
-              //     minimumSize: const Size(80, 48),
-              //   ),
-              //   child: Text(
-              //     'Skip',
-              //     style: getCTATextStyle(
-              //       context,
-              //       16,
-              //       color: primaryBlue,
-              //     ),
-              //   ),
-              // ),
-              Expanded(child: Container()),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: isUploadingData
-                    ? null
-                    : () async {
-                        FocusScope.of(context).unfocus();
-                        // final allValues = _getAllEducationValues();
-                        // print(allValues);
-                        // Example: Access user inputs
-                        Onboardingone onboardingone = Onboardingone(
-                          profilePicture: imageUrl,
-                          name: fullNameController.text,
-                          phone: mobileController.text,
-                          address: addressController.text,
-                          email: emailController.text,
-                        );
-                        try {
-                          setState(() {
-                            isUploadingData = true;
-                          });
-                          final dio = Dio(
-                            BaseOptions(
-                              baseUrl: ApiClient.userBase,
-                              connectTimeout: const Duration(seconds: 3000),
-                              receiveTimeout: const Duration(seconds: 3000),
-                            ),
+          Expanded(
+            child: Row(
+              children: [
+                // TextButton(
+                //   onPressed: () {},
+                //   child: const Text(
+                //     'Skip',
+                //     style: TextStyle(color: primaryBlue, fontSize: 16),
+                //   ),
+                // ),
+                SizedBox(width: 10,),
+                ElevatedButton(
+                  onPressed: isUploadingData
+                      ? null
+                      : () {
+                          // Action for skip button
+                          debugPrint("Skip button clicked");
+                          Navigator.pushNamed(
+                            context,
+                            ProfileCompletionScreenTwo.routeName,
                           );
-                          await dio.post(
-                            "${ApiClient.userBase}/user/profile",
-                            data: onboardingone.toJson(),
-                            options: Options(
-                              headers: {
-                                'Content-Type': "application/json",
-                                "Authorization": "Bearer ${TokenInfo.token}",
-                              },
-                            ),
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: scaffoldBackgroundColor,
+                    side: BorderSide(color: primaryBlue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    minimumSize: const Size(80, 48),
+                  ),
+                  child: Text(
+                    'Skip',
+                    style: getCTATextStyle(
+                      context,
+                      16,
+                      color: primaryBlue,
+                    ),
+                  ),
+                ),
+                Expanded(child: Container()),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: isUploadingData
+                      ? null
+                      : () async {
+                          FocusScope.of(context).unfocus();
+                          // final allValues = _getAllEducationValues();
+                          // print(allValues);
+                          // Example: Access user inputs
+                          Onboardingone onboardingone = Onboardingone(
+                            profilePicture: imageUrl,
+                            name: fullNameController.text,
+                            phone: mobileController.text,
+                            address: addressController.text,
+                            email: emailController.text,
                           );
-                          setState(() {
-                            isUploadingData = false;
-                          });
-                          // Navigator.pushNamed(context, '/profileCompletiontwo');
-                          getIt.Get.to(
-                            () => ProfileCompletionScreenTwo(),
-                          );
-                        } on DioException catch (e) {
-                          setState(() {
-                            isUploadingData = false;
-                          });
-                          // The request was made and the server responded with a status code
-                          // that falls out of the range of 2xx and is also not 304.
-                          if (e.response != null) {
-                            print(e.response!.data["message"]);
-                            print(e.response!.headers);
-                            print(e.response!.requestOptions);
-                            CustomDialog.showCustomDialog(
-                              context,
-                              title: "Error",
-                              content: e.response!.data["message"].toString(),
+                          try {
+                            setState(() {
+                              isUploadingData = true;
+                            });
+                            final dio = Dio(
+                              BaseOptions(
+                                baseUrl: ApiClient.userBase,
+                                connectTimeout: const Duration(seconds: 3000),
+                                receiveTimeout: const Duration(seconds: 3000),
+                              ),
                             );
-                          } else {
-                            // Something happened in setting up or sending the request that triggered an Error
-                            print(e.requestOptions);
-                            print(e.message);
+                            await dio.post(
+                              "${ApiClient.userBase}/user/profile",
+                              data: onboardingone.toJson(),
+                              options: Options(
+                                headers: {
+                                  'Content-Type': "application/json",
+                                  "Authorization": "Bearer ${TokenInfo.token}",
+                                },
+                              ),
+                            );
+                            setState(() {
+                              isUploadingData = false;
+                            });
+                            // Navigator.pushNamed(context, '/profileCompletiontwo');
+                            getIt.Get.to(
+                              () => ProfileCompletionScreenTwo(),
+                            );
+                          } on DioException catch (e) {
+                            setState(() {
+                              isUploadingData = false;
+                            });
+                            // The request was made and the server responded with a status code
+                            // that falls out of the range of 2xx and is also not 304.
+                            if (e.response != null) {
+                              print(e.response!.data["message"]);
+                              print(e.response!.headers);
+                              print(e.response!.requestOptions);
+                              CustomDialog.showCustomDialog(
+                                context,
+                                title: "Error",
+                                content: e.response!.data["message"].toString(),
+                              );
+                            } else {
+                              // Something happened in setting up or sending the request that triggered an Error
+                              print(e.requestOptions);
+                              print(e.message);
+                              CustomDialog.showCustomDialog(
+                                context,
+                                title: "Error",
+                                content: e.message.toString(),
+                              );
+                            }
+                          } catch (e) {
+                            debugPrint(e.toString());
+                            setState(() {
+                              isUploadingData = false;
+                            });
                             CustomDialog.showCustomDialog(
                               context,
                               title: "Error",
-                              content: e.message.toString(),
+                              content: e.toString(),
                             );
                           }
-                        } catch (e) {
-                          debugPrint(e.toString());
-                          setState(() {
-                            isUploadingData = false;
-                          });
-                          CustomDialog.showCustomDialog(
-                            context,
-                            title: "Error",
-                            content: e.toString(),
-                          );
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isUploadingData ? Colors.grey : primaryBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isUploadingData ? Colors.grey : primaryBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    minimumSize: const Size(80, 48),
                   ),
-                  minimumSize: const Size(80, 48),
+                  child: Text(
+                    'Next',
+                    style: getCTATextStyle(context, 16),
+                  ),
                 ),
-                child: Text(
-                  'Next',
-                  style: getCTATextStyle(context, 16),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

@@ -28,7 +28,6 @@ void main() async {
   await VersionInfo.init(); // Initialize version information
   await TokenInfo.init();
   setup(); // Initialize GetIt
-
   // Load the user's preferred theme while the splash screen is displayed.
   // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
@@ -47,6 +46,7 @@ void main() async {
   final userLocalDataSource = getIt<UserLocalDataSource>();
   await userLocalDataSource.initDatabase();
   //await insertExampleData(userLocalDataSource); // Insert example data
+  await getIt<AuthService>().loadToken(); // Load the stored token
 
   // Log table data
   await logUsersTableData();

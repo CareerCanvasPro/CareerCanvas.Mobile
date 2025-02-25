@@ -1,14 +1,28 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_it/get_it.dart';
 
 class AuthService {
   String? _token;
 
-  void setToken(String token) {
+  String? get token => _token;
+
+  Future<void> setToken(String token) async {
     _token = token;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
   }
 
-  String? get token => _token;
+  Future<void> loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('auth_token');
+  }
+
+  Future<void> clearToken() async {
+    _token = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+  }
 }
 
 // Register GetIt instance

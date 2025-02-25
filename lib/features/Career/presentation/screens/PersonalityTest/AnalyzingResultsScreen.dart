@@ -23,14 +23,22 @@ Future<void> fetchResults() async {
   
   // Calculate score based on selectedAnswers
   int totalScore = 0;
-  int relevantSkills = 0; // Example metric, change based on your logic
+int relevantSkills = 0;
 
-  for (var answer in selectedAnswers) {
-    totalScore += (answer['selectedOption'] as int);  // Cast to int explicitly
-    if (answer['selectedOption'] >= 4) {
-      relevantSkills++; // Example condition, can be based on your logic
-    }
+for (var answer in selectedAnswers) {
+  // Handle null by using ?? 0 to default to 0 if null
+  int selectedOption = (answer['selectedOption'] as int?) ?? 0;
+
+  totalScore += selectedOption;
+
+  // Ensure logic correctly handles positive, negative, and zero values
+  if (selectedOption > 0) {
+    relevantSkills++; // Count only positive responses
   }
+}
+
+
+  
 
   // Calculate percentage score (clamping between 0.0 and 100.0)
   double scorePercentage = (totalScore / (selectedAnswers.length * 7)) * 100;

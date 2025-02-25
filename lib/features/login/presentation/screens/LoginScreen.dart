@@ -248,6 +248,9 @@ class LoginScreen extends StatelessWidget {
                         'Email',
                         response.expiresAt,
                       );
+                      await getIt<AuthService>().setToken(response.accessToken);
+
+
                       Get.back();
                       if (response.isNewUser) {
                         Get.to(

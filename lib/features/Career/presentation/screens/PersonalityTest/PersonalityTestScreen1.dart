@@ -367,6 +367,7 @@ import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/personalitytest/data/models/personalityTestModel.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -502,6 +503,36 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
     }
   }
 
+void sendPersonalityTestResults() async {
+  final String? token = getIt<AuthService>().token; // Get stored token
+
+  if (token == null) {
+    print("Error: No token found.");
+    return;
+  }
+
+  final String apiUrl =
+      "https://personality.api.careercanvas.pro/personality-test/result";
+
+  try {
+    print({"result": selectedAnswers});
+    final response = await Dio().put(
+      apiUrl,
+      data: {"result": selectedAnswers},
+      options: Options(
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+      ),
+    );
+
+    print("Response: ${response.data}");
+  } on DioException catch (e) {
+    print("Error sending data: ${e.response?.data ?? e.message}");
+  }
+}
+
   void onAnswerSelected(String id, int selectedOption) {
     setState(() {
       Questions question = controller.personalityTest.value!.data!.questions!
@@ -511,9 +542,12 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
       // Store the selected answer
       selectedAnswers.add({
         'questionID': question.questionID,
-        'selectedOption': selectedOption,
+        'answer': selectedOption,
       });
     });
+    print(selectedAnswers);
+      sendPersonalityTestResults(); // Send data to API
+
   }
 
   void onNextPage() {
