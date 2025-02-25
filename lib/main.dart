@@ -2,6 +2,7 @@ import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
@@ -26,6 +27,7 @@ void main() async {
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());
   await VersionInfo.init(); // Initialize version information
+  setup(); // Initialize GetIt
 
   // Load the user's preferred theme while the splash screen is displayed.
   // This prevents a sudden theme change when the app is first displayed.

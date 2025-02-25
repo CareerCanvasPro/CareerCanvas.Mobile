@@ -1,4 +1,6 @@
-
+import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
+import 'package:career_canvas/features/personalitytest/domain/repository_impl/PersonalityTestRepositoryImpl.dart';
+import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
@@ -18,22 +20,40 @@ import '../../features/user/presentation/bloc/cubit/user_cubit.dart';
 import '../network/api_client.dart';
 import '../utils/constants.dart';
 import '../network/network_info.dart';
+import 'package:get_it/get_it.dart';
+import 'package:dio/dio.dart';
+import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
+
+
 Future<String> getDatabasePath(String dbName) async {
   final directory = await getApplicationDocumentsDirectory();
   return join(directory.path, dbName); // Full path to the database
 }
 
-
 final GetIt getIt = GetIt.instance;
 Future<void> setupDependencies() async {
+ // Register Dio instance as a lazy singleton
+  getIt.registerLazySingleton<Dio>(() => Dio());
+
+  // Register PersonalityTestRepositoryImpl, injecting Dio
+  getIt.registerLazySingleton<PersonalityTestRepository>(
+      () => PersonalityTestRepositoryImpl(getIt<Dio>()));
+
+  // Register PersonalityTestController, injecting PersonalityTestRepository
+  getIt.registerLazySingleton<PersonalityTestController>(
+      () => PersonalityTestController(getIt<PersonalityTestRepository>()));
+
+
+
+
   final dbPath = await getDatabasesPath();
 
   // Initialize the database
   final database = await openDatabase(
-  '$dbPath/app.db',
-  version: 2, // Increment the version
-  onCreate: (db, version) async {
-    await db.execute('''
+    '$dbPath/app.db',
+    version: 2, // Increment the version
+    onCreate: (db, version) async {
+      await db.execute('''
       CREATE TABLE IF NOT EXISTS ${Constants.usersTable} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -44,17 +64,16 @@ Future<void> setupDependencies() async {
         sync_status TEXT NOT NULL DEFAULT 'pending'
       )
     ''');
-  },
-  onUpgrade: (db, oldVersion, newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('''
+    },
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await db.execute('''
         ALTER TABLE ${Constants.usersTable}
         ADD COLUMN birth_date TEXT
       ''');
-    }
-  },
-);
-
+      }
+    },
+  );
 
   // Register the database
   getIt.registerSingleton<Database>(database);
@@ -98,9 +117,8 @@ Future<void> setupDependencies() async {
     () => SyncUsers(getIt<UserRepository>()),
   );
   getIt.registerLazySingleton<UpdateUser>(
-  () => UpdateUser(getIt<UserRepository>()),
-);
-
+    () => UpdateUser(getIt<UserRepository>()),
+  );
 
   // Register UserCubit
   getIt.registerFactory(() => UserCubit());

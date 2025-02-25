@@ -193,7 +193,7 @@ class CareerScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(
-                            context, PersonalityTestScreen.routeName);
+                            context, PersonalityTestScreen.routeName,);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

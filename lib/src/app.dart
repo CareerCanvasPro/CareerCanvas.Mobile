@@ -131,11 +131,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // Glue the SettingsController to the MaterialApp.
     //
+   
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
     return ListenableBuilder(
       listenable: widget.settingsController,
       builder: (BuildContext context, Widget? child) {
+        
         return GetMaterialApp(
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
@@ -212,6 +214,7 @@ class _MyAppState extends State<MyApp> {
                   case PersonalityTestScreen.routeName:
                     return PersonalityTestScreen();
                   case PersonalityTestScreen1.routeName:
+             
                     return PersonalityTestScreen1();
                   case AnalyzingResultsScreen.routeName:
                     return AnalyzingResultsScreen();

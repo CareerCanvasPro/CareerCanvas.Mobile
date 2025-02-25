@@ -9,30 +9,46 @@ class AnalyzingResultsScreen extends StatefulWidget {
   @override
   _AnalyzingResultsScreenState createState() => _AnalyzingResultsScreenState();
 }
-
 class _AnalyzingResultsScreenState extends State<AnalyzingResultsScreen> {
   @override
   void initState() {
     super.initState();
     fetchResults();
   }
+Future<void> fetchResults() async {
+  // Simulate API call with a delay (or fetch your result logic here)
+  await Future.delayed(const Duration(seconds: 3));
 
-  Future<void> fetchResults() async {
-    // Simulate API call with a delay
-    await Future.delayed(const Duration(seconds: 3));
+  final selectedAnswers = ModalRoute.of(context)!.settings.arguments as List<Map<String, dynamic>>;
+  
+  // Calculate score based on selectedAnswers
+  int totalScore = 0;
+  int relevantSkills = 0; // Example metric, change based on your logic
 
-    // Navigate to the score screen with dynamic data
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScoreScreen(
-          score: 80, // Dynamic score (replace with API response data)
-          relevantSkills: 38,
-          totalSkills: 50,
-        ),
-      ),
-    );
+  for (var answer in selectedAnswers) {
+    totalScore += (answer['selectedOption'] as int);  // Cast to int explicitly
+    if (answer['selectedOption'] >= 4) {
+      relevantSkills++; // Example condition, can be based on your logic
+    }
   }
+
+  // Calculate percentage score (clamping between 0.0 and 100.0)
+  double scorePercentage = (totalScore / (selectedAnswers.length * 7)) * 100;
+  scorePercentage = scorePercentage.clamp(0.0, 100.0);  // Ensure it stays between 0.0 and 100.0
+
+  // Navigate to the score screen with dynamic data
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ScoreScreen(
+        score: scorePercentage.toInt(),
+        relevantSkills: relevantSkills,
+        totalSkills: selectedAnswers.length,
+      ),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +79,6 @@ class _AnalyzingResultsScreenState extends State<AnalyzingResultsScreen> {
     );
   }
 }
-
 class ScoreScreen extends StatelessWidget {
   final int score;
   final int relevantSkills;
@@ -126,10 +141,9 @@ class ScoreScreen extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-               style: ElevatedButton.styleFrom(
-                foregroundColor:  Colors.blue,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
                 minimumSize: const Size(200, 50),
-
               ),
               onPressed: () {
                 // Handle career recommendations logic
@@ -137,11 +151,7 @@ class ScoreScreen extends StatelessWidget {
                   const SnackBar(content: Text('Redirecting to recommendations...')),
                 );
                 Navigator.pushNamed(context, '/JobRecommendationScreen');
-
               },
-              // style: ElevatedButton.styleFrom(
-              //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              // ),
               child: const Text(
                 "Career Recommendation",
                 style: TextStyle(fontSize: 16),
