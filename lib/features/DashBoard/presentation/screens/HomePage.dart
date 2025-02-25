@@ -1,15 +1,13 @@
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
-import 'package:career_canvas/features/Skill/presentations/screens/SkillsScreen.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../src/profile/profile_view.dart';
 import '../../../Career/presentation/screens/CareerScreen.dart';
@@ -70,15 +68,13 @@ class _HomePageState extends State<HomePage> {
           receiveTimeout: const Duration(seconds: 3000),
         ),
       );
-      final prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString('token') ?? '';
 
       final response = await dio.get(
         "${ApiClient.userBase}/user/profile",
         options: Options(
           headers: {
             'Content-Type': "application/json",
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer ${TokenInfo.token}",
           },
         ),
       );

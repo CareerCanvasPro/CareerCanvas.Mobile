@@ -2,6 +2,7 @@ import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/models/onBoardingOne.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
@@ -13,16 +14,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileCompletionScreenOne extends StatefulWidget {
-  final String? type;
-  final String? email;
-  final String? token;
-  final String? phone;
   ProfileCompletionScreenOne({
     super.key,
-    this.type,
-    this.email,
-    this.token,
-    this.phone,
   });
 
   static const String routeName = '/profileCompletionOne';
@@ -168,16 +161,18 @@ class _ProfileCompletionScreenOneState
     }
     if (arguments.isNotEmpty) {
       type = arguments['type'] ?? 'Unknown';
-      emailController.text = arguments['email'] ?? '';
-      mobileController.text = arguments['phone'] ?? '';
+      if (type == "Email") {
+        emailController.text = arguments['username'] ?? '';
+      } else {
+        mobileController.text = arguments['username'] ?? '';
+      }
     } else {
       final prefs = await SharedPreferences.getInstance();
-      emailController.text = prefs.getString('email') ?? '';
-      mobileController.text = prefs.getString('phone') ?? '';
-      if (prefs.getString('email') != null) {
-        type = "Email";
-      } else if (prefs.getString('phone') != null) {
-        type = "Phone";
+      type = prefs.getString('type') ?? 'Unknown';
+      if (type == "Email") {
+        emailController.text = prefs.getString('username') ?? '';
+      } else {
+        mobileController.text = prefs.getString('username') ?? '';
       }
     }
     setState(() {});
@@ -425,34 +420,35 @@ class _ProfileCompletionScreenOneState
               //     style: TextStyle(color: primaryBlue, fontSize: 16),
               //   ),
               // ),
-              ElevatedButton(
-                onPressed: isUploadingData
-                    ? null
-                    : () {
-                        // Action for skip button
-                        debugPrint("Skip button clicked");
-                        Navigator.pushNamed(
-                          context,
-                          ProfileCompletionScreenTwo.routeName,
-                        );
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: scaffoldBackgroundColor,
-                  side: BorderSide(color: primaryBlue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  minimumSize: const Size(80, 48),
-                ),
-                child: Text(
-                  'Skip',
-                  style: getCTATextStyle(
-                    context,
-                    16,
-                    color: primaryBlue,
-                  ),
-                ),
-              ),
+              // ElevatedButton(
+              //   onPressed: isUploadingData
+              //       ? null
+              //       : () {
+              //           // Action for skip button
+              //           debugPrint("Skip button clicked");
+              //           Navigator.pushNamed(
+              //             context,
+              //             ProfileCompletionScreenTwo.routeName,
+              //           );
+              //         },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: scaffoldBackgroundColor,
+              //     side: BorderSide(color: primaryBlue),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(24.0),
+              //     ),
+              //     minimumSize: const Size(80, 48),
+              //   ),
+              //   child: Text(
+              //     'Skip',
+              //     style: getCTATextStyle(
+              //       context,
+              //       16,
+              //       color: primaryBlue,
+              //     ),
+              //   ),
+              // ),
+              Expanded(child: Container()),
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: isUploadingData
@@ -480,15 +476,13 @@ class _ProfileCompletionScreenOneState
                               receiveTimeout: const Duration(seconds: 3000),
                             ),
                           );
-                          final prefs = await SharedPreferences.getInstance();
-                          String token = prefs.getString('token') ?? '';
                           await dio.post(
                             "${ApiClient.userBase}/user/profile",
                             data: onboardingone.toJson(),
                             options: Options(
                               headers: {
                                 'Content-Type': "application/json",
-                                "Authorization": "Bearer $token",
+                                "Authorization": "Bearer ${TokenInfo.token}",
                               },
                             ),
                           );
@@ -498,12 +492,6 @@ class _ProfileCompletionScreenOneState
                           // Navigator.pushNamed(context, '/profileCompletiontwo');
                           getIt.Get.to(
                             () => ProfileCompletionScreenTwo(),
-                            arguments: {
-                              'type': 'Email',
-                              'email': arguments['email'] ?? "",
-                              'token': arguments['token'] ?? "",
-                              'phone': arguments['phone'] ?? "",
-                            },
                           );
                         } on DioException catch (e) {
                           setState(() {

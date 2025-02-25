@@ -2,6 +2,7 @@ import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/ImagePath/ImageAssets.dart';
 
@@ -380,8 +380,6 @@ class _ProfileCompletionScreenThreeState
                             receiveTimeout: const Duration(seconds: 3000),
                           ),
                         );
-                        final prefs = await SharedPreferences.getInstance();
-                        String token = prefs.getString('token') ?? '';
                         UploadExperiance exp = UploadExperiance(
                           occupation: _experiances,
                         );
@@ -392,7 +390,7 @@ class _ProfileCompletionScreenThreeState
                           options: Options(
                             headers: {
                               'Content-Type': "application/json",
-                              "Authorization": "Bearer $token",
+                              "Authorization": "Bearer ${TokenInfo.token}",
                             },
                           ),
                         );

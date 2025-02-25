@@ -1,6 +1,7 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreenApi.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
@@ -14,7 +15,6 @@ import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../getx/controller/TabContentController.dart';
 
@@ -234,24 +234,27 @@ class LoginScreen extends StatelessWidget {
                     to: emailController.emailController.text,
                     onPressedSubmit: (Otpverificationresponse response) async {
                       emailController.emailController.clear();
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('token', response.accessToken);
-                      await prefs.setString('email', response.email);
-                      await prefs.setString('type', "Email");
-                      await prefs.setInt(
-                        'expiresAt',
-                        response.expiresAt.millisecondsSinceEpoch,
-                        
+                      // final prefs = await SharedPreferences.getInstance();
+                      // await prefs.setString('token', response.accessToken);
+                      // await prefs.setString('username', response.email);
+                      // await prefs.setString('type', "Email");
+                      // await prefs.setInt(
+                      //   'expiresAt',
+                      //   response.expiresAt.millisecondsSinceEpoch,
+                      // );
+                      await TokenInfo.setToken(
+                        response.accessToken,
+                        response.email,
+                        'Email',
+                        response.expiresAt,
                       );
-                      getIt<AuthService>().setToken(response.accessToken); // Store token globally
-
                       Get.back();
                       if (response.isNewUser) {
                         Get.to(
                           () => ProfileCompletionScreenOne(),
                           arguments: {
                             'type': 'Email',
-                            'email': response.email,
+                            'username': response.email,
                             'token': response.accessToken
                           },
                         );
@@ -268,7 +271,7 @@ class LoginScreen extends StatelessWidget {
                           () => DashboardScreen(),
                           arguments: {
                             'type': 'Email',
-                            'email': response.email,
+                            'username': response.email,
                             'token': response.accessToken
                           },
                         );

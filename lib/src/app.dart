@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
@@ -12,7 +13,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
@@ -86,19 +86,19 @@ class _MyAppState extends State<MyApp> {
           DateTime expiry = DateTime.fromMillisecondsSinceEpoch(
             uri.queryParameters["expiresAt"] as int,
           );
-
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('token', token);
-          await prefs.setString('type', "Email");
-          await prefs.setString('email', email);
-          await prefs.setInt('expiresAt', expiry.millisecondsSinceEpoch);
+          await TokenInfo.setToken(
+            token,
+            email,
+            "Email",
+            expiry,
+          );
           print('Is new user: $isNewUser');
           if (isNewUser) {
             openAppLink(
               ProfileCompletionScreenOne.routeName,
               arguments: {
                 'type': 'Email',
-                'email': email,
+                'username': email,
                 'token': token,
               },
             );
