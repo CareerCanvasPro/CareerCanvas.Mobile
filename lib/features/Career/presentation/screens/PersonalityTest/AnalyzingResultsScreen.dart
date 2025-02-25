@@ -141,8 +141,7 @@ class ScoreScreen extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blue,
+              
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.blue,
                 minimumSize: const Size(200, 50),
