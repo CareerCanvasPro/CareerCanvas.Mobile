@@ -421,35 +421,37 @@ class _ProfileCompletionScreenOneState
                 //     style: TextStyle(color: primaryBlue, fontSize: 16),
                 //   ),
                 // ),
-                SizedBox(width: 10,),
-                ElevatedButton(
-                  onPressed: isUploadingData
-                      ? null
-                      : () {
-                          // Action for skip button
-                          debugPrint("Skip button clicked");
-                          Navigator.pushNamed(
-                            context,
-                            ProfileCompletionScreenTwo.routeName,
-                          );
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: scaffoldBackgroundColor,
-                    side: BorderSide(color: primaryBlue),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                    minimumSize: const Size(80, 48),
-                  ),
-                  child: Text(
-                    'Skip',
-                    style: getCTATextStyle(
-                      context,
-                      16,
-                      color: primaryBlue,
-                    ),
-                  ),
+                SizedBox(
+                  width: 10,
                 ),
+                // ElevatedButton(
+                //   onPressed: isUploadingData
+                //       ? null
+                //       : () {
+                //           // Action for skip button
+                //           debugPrint("Skip button clicked");
+                //           Navigator.pushNamed(
+                //             context,
+                //             ProfileCompletionScreenTwo.routeName,
+                //           );
+                //         },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: scaffoldBackgroundColor,
+                //     side: BorderSide(color: primaryBlue),
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(24.0),
+                //     ),
+                //     minimumSize: const Size(80, 48),
+                //   ),
+                //   child: Text(
+                //     'Skip',
+                //     style: getCTATextStyle(
+                //       context,
+                //       16,
+                //       color: primaryBlue,
+                //     ),
+                //   ),
+                // ),
                 Expanded(child: Container()),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -533,7 +535,8 @@ class _ProfileCompletionScreenOneState
                           }
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isUploadingData ? Colors.grey : primaryBlue,
+                    backgroundColor:
+                        isUploadingData ? Colors.grey : primaryBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24.0),
                     ),

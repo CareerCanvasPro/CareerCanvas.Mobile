@@ -1,3 +1,11 @@
+import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
+import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:career_canvas/features/Career/domain/repository_impl/CoursesRepository_API_Impl.dart';
+import 'package:career_canvas/features/Career/domain/repository_impl/JobsRepository_API_Impl.dart';
+import 'package:career_canvas/features/Career/domain/usecases/get_courses_recomendation.dart';
+import 'package:career_canvas/features/Career/domain/usecases/get_jobs_recomendation.dart';
+import 'package:career_canvas/features/Career/presentation/getx/controller/CoursesController.dart';
+import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
 import 'package:career_canvas/features/personalitytest/domain/repository_impl/PersonalityTestRepositoryImpl.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
@@ -20,10 +28,6 @@ import '../../features/user/presentation/bloc/cubit/user_cubit.dart';
 import '../network/api_client.dart';
 import '../utils/constants.dart';
 import '../network/network_info.dart';
-import 'package:get_it/get_it.dart';
-import 'package:dio/dio.dart';
-import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
-
 
 Future<String> getDatabasePath(String dbName) async {
   final directory = await getApplicationDocumentsDirectory();
@@ -32,8 +36,10 @@ Future<String> getDatabasePath(String dbName) async {
 
 final GetIt getIt = GetIt.instance;
 Future<void> setupDependencies() async {
- // Register Dio instance as a lazy singleton
+  // Register Dio instance as a lazy singleton
   getIt.registerLazySingleton<Dio>(() => Dio());
+  // Register ApiClient
+  getIt.registerLazySingleton<ApiClient>(() => ApiClient(Dio()));
 
   // Register PersonalityTestRepositoryImpl, injecting Dio
   getIt.registerLazySingleton<PersonalityTestRepository>(
@@ -43,8 +49,20 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<PersonalityTestController>(
       () => PersonalityTestController(getIt<PersonalityTestRepository>()));
 
+  // Jobs Repo
+  getIt.registerLazySingleton<JobsRepository>(
+    () => JobsRepository_API_Impl(getIt<ApiClient>()),
+  );
+  getIt.registerLazySingleton<JobsController>(
+      () => JobsController(getIt<JobsRepository>()));
 
+  // Courses Repo
+  getIt.registerLazySingleton<CoursesRepository>(
+    () => CoursesRepository_API_Impl(getIt<ApiClient>()),
+  );
 
+  getIt.registerLazySingleton<CoursesController>(
+      () => CoursesController(getIt<CoursesRepository>()));
 
   final dbPath = await getDatabasesPath();
 
@@ -83,9 +101,6 @@ Future<void> setupDependencies() async {
     () => UserLocalDataSource(getIt<Database>()),
   );
 
-  // Register ApiClient
-  getIt.registerLazySingleton<ApiClient>(() => ApiClient(Dio()));
-
   // Register NetworkInfo
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
@@ -118,6 +133,14 @@ Future<void> setupDependencies() async {
   );
   getIt.registerLazySingleton<UpdateUser>(
     () => UpdateUser(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetJobsRecomendation>(
+    () => GetJobsRecomendation(getIt<JobsRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetCoursesRecomendation>(
+    () => GetCoursesRecomendation(getIt<CoursesRepository>()),
   );
 
   // Register UserCubit

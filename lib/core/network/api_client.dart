@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:dio/dio.dart';
 
 class ApiClient {
@@ -22,7 +23,20 @@ class ApiClient {
   Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,
+    bool useToken = true,
   }) async {
-    return dio.get(path, queryParameters: queryParameters);
+    Map<String, dynamic> headers = {
+      'Content-Type': "application/json",
+    };
+    if (useToken) {
+      headers["Authorization"] = "Bearer ${TokenInfo.token}";
+    }
+    return dio.get(
+      path,
+      queryParameters: queryParameters,
+      options: Options(
+        headers: headers,
+      ),
+    );
   }
 }
