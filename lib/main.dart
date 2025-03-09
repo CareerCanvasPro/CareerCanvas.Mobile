@@ -10,6 +10,7 @@ import 'package:career_canvas/features/login/presentation/screens/ProfileComplet
 import 'package:career_canvas/features/user/data/datasources/user_local_data_source.dart';
 import 'package:career_canvas/features/user/data/models/user_model.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -85,9 +86,9 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
       );
       print(response.data['data']);
       UserProfileData profile = UserProfileData.fromMap(response.data['data']);
-      print(profile.toString());
       routeData.userProfile = profile;
       routeData.initialRoute = HomePage.routeName;
+      await getIt<UserProfileController>().getUserProfile();
       return routeData;
     } on DioException catch (e) {
       // The request was made and the server responded with a status code

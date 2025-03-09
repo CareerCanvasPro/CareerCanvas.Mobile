@@ -76,6 +76,7 @@ class CustomOutlinedButton extends StatelessWidget {
   final TextStyle? textStyle;
   final EdgeInsets? padding;
   final BorderSide? borderSide;
+  final Color? color;
 
   CustomOutlinedButton({
     required this.title,
@@ -83,6 +84,7 @@ class CustomOutlinedButton extends StatelessWidget {
     this.textStyle,
     this.padding,
     this.borderSide,
+    this.color,
   });
 
   @override
@@ -91,13 +93,22 @@ class CustomOutlinedButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         side: borderSide ??
-            BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
-        padding:
-            padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            BorderSide(
+              color: color ?? Theme.of(context).primaryColor,
+              width: 1.5,
+            ),
+        padding: padding ??
+            EdgeInsets.symmetric(
+              vertical: 12.0,
+              horizontal: 16.0,
+            ),
       ),
       child: Text(
         title,
-        style: textStyle ?? TextStyle(color: Theme.of(context).primaryColor),
+        style: textStyle ??
+            TextStyle(
+              color: color ?? Theme.of(context).primaryColor,
+            ),
       ),
     );
   }

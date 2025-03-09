@@ -7,7 +7,7 @@ import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
-import 'package:career_canvas/src/profile/profile_view.dart';
+import 'package:career_canvas/src/profile/presentation/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -27,8 +27,6 @@ import '../features/Networking/presentation/screens/networkingScreen.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import '../features/user/presentation/screens/user_screen.dart';
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
@@ -195,9 +193,7 @@ class _MyAppState extends State<MyApp> {
                   case UserScreen.routeName:
                     return UserScreen();
                   case UserProfile.routeName:
-                    return UserProfile(
-                      userProfileData: widget.mainRouteData.userProfile,
-                    );
+                    return UserProfile();
                   case DashboardScreen.routeName:
                     return DashboardScreen();
                   case NetworkingScreen.routeName:

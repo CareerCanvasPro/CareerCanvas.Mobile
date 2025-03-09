@@ -5,6 +5,7 @@ import 'package:career_canvas/features/Career/presentation/getx/controller/Cours
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -114,14 +115,24 @@ class _CareerScreenState extends State<CareerScreen> {
   final JobService jobService = JobService();
   late final JobsController jobsController;
   late final CoursesController coursesController;
+  late final UserProfileController userProfileController;
 
   @override
   void initState() {
     super.initState();
     jobsController = getIt<JobsController>();
     coursesController = getIt<CoursesController>();
-    jobsController.getJobsRecomendation();
-    coursesController.getCoursesRecomendation();
+    if (jobsController.jobs.value == null) {
+      jobsController.getJobsRecomendation();
+    }
+    if (coursesController.courses.value == null) {
+      coursesController.getCoursesRecomendation();
+    }
+
+    userProfileController = getIt<UserProfileController>();
+    if (userProfileController.userProfile.value == null) {
+      userProfileController.getUserProfile();
+    }
   }
 
   final List<UserGoal> userGoals = [
@@ -355,7 +366,9 @@ class _CareerScreenState extends State<CareerScreen> {
                           ),
                           clipBehavior: Clip.antiAlias,
                           child: Image.network(
-                            "https://ugv.edu.bd/images/teacher_images/1581406453.jpg",
+                            userProfileController
+                                    .userProfile.value?.profilePicture ??
+                                "https://ugv.edu.bd/images/teacher_images/1581406453.jpg",
                             height: 100,
                             width: 100,
                             fit: BoxFit.cover,
@@ -367,7 +380,8 @@ class _CareerScreenState extends State<CareerScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Tanvir Ahmed Khan",
+                                userProfileController.userProfile.value?.name ??
+                                    "",
                                 style: getCTATextStyle(
                                   context,
                                   16,
@@ -375,7 +389,9 @@ class _CareerScreenState extends State<CareerScreen> {
                                 ),
                               ),
                               Text(
-                                "MBTI Personality",
+                                userProfileController
+                                        .userProfile.value?.aboutMe ??
+                                    "",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,

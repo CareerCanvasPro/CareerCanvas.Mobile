@@ -1,16 +1,20 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/models/education.dart';
+import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/profile.dart';
+import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({
     super.key,
-    this.userProfileData,
   });
-  final UserProfileData? userProfileData;
 
   static const String routeName = "/userProfile";
 
@@ -19,9 +23,22 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  late UserProfileController userProfileController;
   @override
   void initState() {
     super.initState();
+    userProfileController = getIt<UserProfileController>();
+    if (userProfileController.userProfile.value == null) {
+      userProfileController.getUserProfile();
+    }
+  }
+
+  String formatBytes(int bytes, {int decimals = 2}) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    int i = (bytes > 0) ? (log(bytes) / log(1024)).floor() : 0;
+    double size = bytes / pow(1024, i);
+    return "${size.toStringAsFixed(decimals)} ${suffixes[i]}";
   }
 
   @override
@@ -45,32 +62,43 @@ class _UserProfileState extends State<UserProfile> {
       ),
       body: Column(
         children: [
-          _profileHeaderSection(context, widget.userProfileData),
+          _profileHeaderSection(
+              context, userProfileController.userProfile.value),
           Expanded(
             child: SingleChildScrollView(
               controller: controller,
               child: Column(
                 children: [
                   // About Me Section
-                  _aboutMeSection(context),
+                  _aboutMeSection(
+                      context, userProfileController.userProfile.value),
 
                   // Work Experience Section
-                  _workExperianceSection(context),
+                  _workExperianceSection(
+                    context,
+                    userProfileController.userProfile.value?.occupation ?? [],
+                  ),
 
                   // Education Section
-                  _educationSection(context),
+                  _educationSection(
+                    context,
+                    userProfileController.userProfile.value?.education ?? [],
+                  ),
                   // Skills Section
-                  _skillsSection(context),
+                  _skillsSection(context,
+                      userProfileController.userProfile.value?.skills ?? []),
 
                   // Language Section
-                  _languageSection(context),
+                  _languageSection(context,
+                      userProfileController.userProfile.value?.languages ?? []),
 
                   // Appreciation Section
-                  _appreciationSection(context),
+                  // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
 
                   // Resume section
 
-                  _resumeSection(context),
+                  _resumeSection(context,
+                      userProfileController.userProfile.value?.resumes ?? []),
                 ],
               ),
             ),
@@ -144,7 +172,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
             const SizedBox(height: 4),
             Text(
-              "Dhaka, Bangladesh",
+              userProfileData != null ? userProfileData.address : "",
               style: getBodyTextStyle(context, 12, color: Colors.white),
             ),
             const SizedBox(height: 8),
@@ -167,7 +195,9 @@ class _UserProfileState extends State<UserProfile> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "120k",
+                        text: userProfileData != null
+                            ? userProfileData.followers.toString()
+                            : "",
                         style: getCTATextStyle(
                           context,
                           14,
@@ -192,7 +222,9 @@ class _UserProfileState extends State<UserProfile> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "23k",
+                        text: userProfileData != null
+                            ? userProfileData.following.toString()
+                            : "",
                         style: getCTATextStyle(
                           context,
                           14,
@@ -247,7 +279,8 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Container _aboutMeSection(BuildContext context) {
+  Container _aboutMeSection(
+      BuildContext context, UserProfileData? userProfileData) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 24,
@@ -297,7 +330,7 @@ class _UserProfileState extends State<UserProfile> {
             thickness: 1,
           ),
           Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor.",
+            userProfileData != null ? userProfileData.aboutMe : "",
             style: getBodyTextStyle(
               context,
               14,
@@ -309,7 +342,10 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Container _workExperianceSection(BuildContext context) {
+  Container _workExperianceSection(
+    BuildContext context,
+    List<Experiance> data,
+  ) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -360,30 +396,30 @@ class _UserProfileState extends State<UserProfile> {
             height: 24,
             thickness: 1,
           ),
-          getExperianceItem(
-            context,
-            title: "Manager",
-            company: "Amazone, Inc.",
-            startDate: DateTime.now(),
-            endDate: DateTime.now().add(
-              const Duration(days: 256),
+          if (data.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return getExperianceItem(
+                  context,
+                  title: data[index].designation,
+                  company: data[index].organization,
+                  startDate:
+                      DateTime.fromMillisecondsSinceEpoch(data[index].from),
+                  endDate: data[index].to != null
+                      ? DateTime.fromMillisecondsSinceEpoch(data[index].to!)
+                      : null,
+                );
+              },
             ),
-          ),
-          getExperianceItem(
-            context,
-            title: "AI Engineer",
-            company: "Google, LLC.",
-            startDate: DateTime.now(),
-            endDate: DateTime.now().add(
-              const Duration(days: 368),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Container _educationSection(BuildContext context) {
+  Container _educationSection(BuildContext context, List<Education> data) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -434,30 +470,24 @@ class _UserProfileState extends State<UserProfile> {
             height: 24,
             thickness: 1,
           ),
-          getExperianceItem(
-            context,
-            title: "Information Security Engineer",
-            company: "Oxford University",
-            startDate: DateTime.now(),
-            endDate: DateTime.now().add(
-              const Duration(days: 256),
+          if (data.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return EducationItem(
+                  context,
+                  education: data[index],
+                );
+              },
             ),
-          ),
-          getExperianceItem(
-            context,
-            title: "Software Engineer",
-            company: "Harvard University",
-            startDate: DateTime.now(),
-            endDate: DateTime.now().add(
-              const Duration(days: 368),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Container _skillsSection(BuildContext context) {
+  Container _skillsSection(BuildContext context, List<String> data) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -509,38 +539,19 @@ class _UserProfileState extends State<UserProfile> {
             height: 24,
             thickness: 1,
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              getChipItem(
-                context,
-                title: "Leadership",
-              ),
-              getChipItem(
-                context,
-                title: "Teamwork",
-              ),
-              getChipItem(
-                context,
-                title: "Visioner",
-              ),
-              getChipItem(
-                context,
-                title: "Terget Oriented",
-              ),
-              getChipItem(
-                context,
-                title: "Consistent",
-              ),
-            ],
-          ),
+          if (data.isNotEmpty)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  data.map((e) => getChipItem(context, title: e)).toList(),
+            ),
         ],
       ),
     );
   }
 
-  Container _languageSection(BuildContext context) {
+  Container _languageSection(BuildContext context, List<String> data) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -592,36 +603,13 @@ class _UserProfileState extends State<UserProfile> {
             height: 24,
             thickness: 1,
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              getChipItem(
-                context,
-                title: "Bengali",
-              ),
-              getChipItem(
-                context,
-                title: "Engllish",
-              ),
-              getChipItem(
-                context,
-                title: "Hindi",
-              ),
-              getChipItem(
-                context,
-                title: "Spanish",
-              ),
-              getChipItem(
-                context,
-                title: "French",
-              ),
-              getChipItem(
-                context,
-                title: "Russian",
-              ),
-            ],
-          ),
+          if (data.isNotEmpty)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  data.map((e) => getChipItem(context, title: e)).toList(),
+            ),
         ],
       ),
     );
@@ -695,7 +683,7 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Container _resumeSection(BuildContext context) {
+  Container _resumeSection(BuildContext context, List<Resume> data) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -747,21 +735,19 @@ class _UserProfileState extends State<UserProfile> {
             height: 24,
             thickness: 1,
           ),
-          getResumeItem(context,
-              title: "Tanvir Ahmed Khan - CV - Flutter Developer",
-              size: "270kb",
-              date: DateTime.now(),
-              onRemove: () {}),
-          getResumeItem(context,
-              title: "Jamet kudasi - CV - UI/UX Designer",
-              size: "430kb",
-              date: DateTime.now(),
-              onRemove: () {}),
-          getResumeItem(context,
-              title: "Jamet kudasi - CV - UI/UX Designer",
-              size: "680kb",
-              date: DateTime.now(),
-              onRemove: () {}),
+          if (data.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return getResumeItem(
+                  context,
+                  resume: data[index],
+                  onRemove: () {},
+                );
+              },
+            ),
         ],
       ),
     );
@@ -773,9 +759,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget getResumeItem(
     BuildContext context, {
-    required String title,
-    required String size,
-    required DateTime date,
+    required Resume resume,
     required Function()? onRemove,
   }) {
     return Padding(
@@ -794,7 +778,7 @@ class _UserProfileState extends State<UserProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  resume.name,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
@@ -802,7 +786,7 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
                 Text(
-                  "$size . ${getFormatedDateForResume(date)}",
+                  "${formatBytes(resume.size)} . ${getFormatedDateForResume(resume.uploadedAt)}",
                   overflow: TextOverflow.ellipsis,
                   style: getBodyTextStyle(
                     context,
@@ -816,7 +800,12 @@ class _UserProfileState extends State<UserProfile> {
           const SizedBox(
             width: 8,
           ),
-          SvgPicture.asset("assets/svg/icons/Icon_Remove.svg"),
+          GestureDetector(
+            onTap: onRemove,
+            child: SvgPicture.asset(
+              "assets/svg/icons/Icon_Remove.svg",
+            ),
+          ),
         ],
       ),
     );
@@ -858,12 +847,97 @@ class _UserProfileState extends State<UserProfile> {
     return "$duration Days";
   }
 
+  Widget EducationItem(
+    BuildContext context, {
+    required Education education,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                education.field,
+                style: getCTATextStyle(
+                  context,
+                  14,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              SvgPicture.asset(
+                "assets/svg/icons/Edit.svg",
+              ),
+            ],
+          ),
+          Text(
+            education.institute,
+            style: getBodyTextStyle(
+              context,
+              14,
+              color: Colors.black,
+            ),
+          ),
+          if (education.graduationDate != null)
+            Row(
+              children: [
+                if (education.graduationDate != null)
+                  Text(
+                    "${getFormatedDate(DateTime.fromMillisecondsSinceEpoch(education.graduationDate!))}",
+                    style: getBodyTextStyle(
+                      context,
+                      14,
+                      color: Colors.black,
+                    ),
+                  ),
+                if (education.graduationDate != null && education.isCurrent)
+                  Text(
+                    " . ",
+                    style: getBodyTextStyle(
+                      context,
+                      14,
+                      color: Colors.black,
+                    ),
+                  ),
+                if (education.isCurrent)
+                  Text(
+                    "Current",
+                    style: getBodyTextStyle(
+                      context,
+                      14,
+                      color: Colors.black,
+                    ),
+                  ),
+              ],
+            ),
+          const SizedBox(height: 8),
+          Divider(
+            color: Colors.black.withOpacity(0.15),
+            height: 24,
+            thickness: 1,
+          ),
+          Text(
+            education.achievements,
+            style: getBodyTextStyle(
+              context,
+              12,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget getExperianceItem(
     BuildContext context, {
     required String title,
     required String company,
     required DateTime startDate,
-    required DateTime endDate,
+    required DateTime? endDate,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -898,7 +972,7 @@ class _UserProfileState extends State<UserProfile> {
           Row(
             children: [
               Text(
-                "${getFormatedDate(startDate)} - ${getFormatedDate(endDate)}",
+                "${getFormatedDate(startDate)} ${endDate != null ? "- ${getFormatedDate(endDate)}" : ""}",
                 style: getBodyTextStyle(
                   context,
                   14,
@@ -914,7 +988,7 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               Text(
-                getDuration(startDate, endDate),
+                getDuration(startDate, endDate ?? DateTime.now()),
                 style: getBodyTextStyle(
                   context,
                   14,

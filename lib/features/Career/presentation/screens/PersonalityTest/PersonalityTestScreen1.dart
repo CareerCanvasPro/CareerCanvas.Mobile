@@ -363,6 +363,7 @@
 // }
 
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/personalitytest/data/models/personalityTestModel.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
@@ -483,7 +484,6 @@ class PersonalityTestScreen1 extends StatefulWidget {
 //   }
 // }
 
-
 class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
   late final PersonalityTestController controller;
   late String token = '';
@@ -503,35 +503,35 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
     }
   }
 
-void sendPersonalityTestResults() async {
-  final String? token = getIt<AuthService>().token; // Get stored token
+  void sendPersonalityTestResults() async {
+    final String? token = getIt<AuthService>().token; // Get stored token
 
-  if (token == null) {
-    print("Error: No token found.");
-    return;
+    if (token == null) {
+      print("Error: No token found.");
+      return;
+    }
+
+    final String apiUrl =
+        "https://personality.api.careercanvas.pro/personality-test/result";
+
+    try {
+      print({"result": selectedAnswers});
+      final response = await Dio().put(
+        apiUrl,
+        data: {"result": selectedAnswers},
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+
+      print("Response: ${response.data}");
+    } on DioException catch (e) {
+      print("Error sending data: ${e.response?.data ?? e.message}");
+    }
   }
-
-  final String apiUrl =
-      "https://personality.api.careercanvas.pro/personality-test/result";
-
-  try {
-    print({"result": selectedAnswers});
-    final response = await Dio().put(
-      apiUrl,
-      data: {"result": selectedAnswers},
-      options: Options(
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
-        },
-      ),
-    );
-
-    print("Response: ${response.data}");
-  } on DioException catch (e) {
-    print("Error sending data: ${e.response?.data ?? e.message}");
-  }
-}
 
   void onAnswerSelected(String id, int selectedOption) {
     setState(() {
@@ -546,8 +546,7 @@ void sendPersonalityTestResults() async {
       });
     });
     print(selectedAnswers);
-      sendPersonalityTestResults(); // Send data to API
-
+    sendPersonalityTestResults(); // Send data to API
   }
 
   void onNextPage() {
@@ -558,7 +557,8 @@ void sendPersonalityTestResults() async {
               .floor()) {
         currentPage++;
       } else {
-        Navigator.pushNamed(context, '/AnalyzingResultsScreen',arguments: selectedAnswers);
+        Navigator.pushNamed(context, '/AnalyzingResultsScreen',
+            arguments: selectedAnswers);
       }
     });
   }
@@ -608,19 +608,35 @@ void sendPersonalityTestResults() async {
                 itemBuilder: (context, index) {
                   final question = questionsToDisplay[index];
                   return Card(
-                    margin: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 18,
+                    ),
+                    color: scaffoldBackgroundColor,
+                    elevation: 3,
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 18,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(question.question ?? '',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          Text(
+                            question.question ?? '',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 8),
-                          Text('Category: ${question.category ?? 'N/A'}',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey)),
+                          Text(
+                            'Category: ${question.category ?? 'N/A'}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
                           const SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -630,27 +646,25 @@ void sendPersonalityTestResults() async {
                               Text("Disagree"),
                             ],
                           ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(7, (i) {
-                                final value = 3 - i;
-                                return Transform.scale(
-                                  scale: 1.2,
-                                  child: Radio(
-                                    value: value,
-                                    groupValue: question.selectedOption,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        onAnswerSelected(
-                                            question.questionID ?? '', value);
-                                      });
-                                    },
-                                  ),
-                                );
-                              }),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: List.generate(7, (i) {
+                              final value = 3 - i;
+                              return Transform.scale(
+                                scale: 1.5,
+                                child: Radio(
+                                  value: value,
+                                  activeColor: primaryBlue,
+                                  groupValue: question.selectedOption,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      onAnswerSelected(
+                                          question.questionID ?? '', value);
+                                    });
+                                  },
+                                ),
+                              );
+                            }),
                           ),
                         ],
                       ),
@@ -660,23 +674,30 @@ void sendPersonalityTestResults() async {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
+                  CustomOutlinedButton(
                     onPressed: onCancel,
-                    child: Text("Cancel"),
+                    title: "Cancel",
                   ),
-                  ElevatedButton(
+                  CustomTextButton(
+                    backgroundColor: primaryBlue,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12.0,
+                      horizontal: 24.0,
+                    ),
                     onPressed: onNextPage,
-                    child: Text(currentPage <
+                    textStyle: getCTATextStyle(context, 16),
+                    title: currentPage <
                             (controller.personalityTest.value!.data!.questions!
                                         .length /
                                     questionsPerPage)
                                 .floor()
                         ? "Next"
-                        : "Submit"),
+                        : "Submit",
                   ),
                 ],
               ),

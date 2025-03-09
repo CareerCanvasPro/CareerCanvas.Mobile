@@ -54,6 +54,19 @@ class UploadEducation {
   int get hashCode => education.hashCode;
 }
 
+///
+/// String achievements;
+///
+/// UploadedFile? certificate;
+///
+/// String field;
+///
+/// int? graduationDate;
+///
+/// String institute;
+///
+/// bool isCurrent;
+///
 class Education {
   String achievements;
   UploadedFile? certificate;
