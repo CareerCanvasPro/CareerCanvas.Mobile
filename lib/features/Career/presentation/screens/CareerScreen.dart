@@ -745,7 +745,7 @@ class _CareerScreenState extends State<CareerScreen> {
                     ),
                   ),
                   Text(
-                    "${course.level} · ${getFormatedDutaionForCourse(course.duration)} · ${course.sourceName}",
+                    "${course.level} · ${getFormatedDutaionForCourse(course.duration)} · ${course.authors.first}",
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: 12,
@@ -759,11 +759,20 @@ class _CareerScreenState extends State<CareerScreen> {
                   ),
                   Row(
                     children: [
+                      Text(
+                        course.sourceName,
+                      ),
+                      Spacer(),
                       Icon(Icons.star, color: orangeStar, size: 18),
                       SizedBox(width: 4),
-                      Text("${course.rating} (${course.ratingCount})",
-                          style: getCTATextStyle(context, 12,
-                              color: Colors.black)),
+                      Text(
+                        "${course.rating} (${course.ratingCount})",
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ],
