@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
@@ -136,15 +137,25 @@ class _UserProfileState extends State<UserProfile> {
                 Container(
                   height: 50,
                   width: 50,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        userProfileData != null
-                            ? userProfileData.profilePicture
-                            : "https://ugv.edu.bd/images/teacher_images/1581406453.jpg",
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: userProfileData != null
+                        ? userProfileData.profilePicture
+                        : "",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white,
                       ),
-                      fit: BoxFit.cover,
+                    )),
+                    errorWidget: (context, url, error) => Center(
+                      child: Icon(
+                        Icons.error,
+                      ),
                     ),
                   ),
                 ),

@@ -9,11 +9,9 @@ import 'package:career_canvas/features/Career/presentation/getx/controller/JobsC
 import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
 import 'package:career_canvas/features/personalitytest/domain/repository_impl/PersonalityTestRepositoryImpl.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
-import 'package:career_canvas/features/user/domain/entities/user.dart';
 import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dart';
 import 'package:career_canvas/src/profile/domain/repository_impl/userprofile_API_impl.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
-import 'package:career_canvas/src/profile/presentation/profile_view.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';

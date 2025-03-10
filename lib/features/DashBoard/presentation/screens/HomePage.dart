@@ -2,10 +2,10 @@ import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
+import 'package:career_canvas/features/Skill/presentations/screens/SkillPage.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../src/profile/presentation/profile_view.dart';
 import '../../../Career/presentation/screens/CareerScreen.dart';
@@ -73,39 +73,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
-    );
-  }
-}
-
-class SkillsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            SvgPicture.asset(
-              "assets/svg/icons/icon_skills_page.svg",
-              height: 30,
-              fit: BoxFit.fitHeight,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              "Skills",
-              style: getCTATextStyle(
-                context,
-                24,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-        centerTitle: false,
-      ),
-      body: Center(child: Text("Skills Page Content")),
     );
   }
 }

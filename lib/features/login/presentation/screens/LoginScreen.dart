@@ -3,7 +3,6 @@ import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/AuthService.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreenApi.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
@@ -250,7 +249,6 @@ class LoginScreen extends StatelessWidget {
                       );
                       await getIt<AuthService>().setToken(response.accessToken);
 
-
                       Get.back();
                       if (response.isNewUser) {
                         Get.to(
@@ -264,11 +262,10 @@ class LoginScreen extends StatelessWidget {
                         // Get.to(
                         //   () => PersonalityTestScreen(),
                         //   arguments: {
-                         
+
                         //     'token': response.accessToken
                         //   },
                         // );
-
                       } else {
                         Get.to(
                           () => DashboardScreen(),

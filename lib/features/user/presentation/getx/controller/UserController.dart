@@ -1,6 +1,4 @@
-
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../../../../core/Dependencies/setupDependencies.dart';
 import '../../../data/models/user_model.dart';
@@ -42,32 +40,32 @@ class UserController extends GetxController {
       },
     );
   }
-Future<void> createUser(UserModel user) async {
-  isLoading.value = true;
-  final result = await _createUser(user);
-  result.fold(
-    (failure) => errorMessage.value = 'Failed to create user.',
-    (_) {
-      loadUsers(); // Reload users
-      Get.back(); // Close the form after successful creation
-    },
-  );
-  isLoading.value = false;
-}
 
-Future<void> updateUser(UserModel user) async {
-  isLoading.value = true;
-  final result = await _updateUser(user);
-  result.fold(
-    (failure) => errorMessage.value = 'Failed to update user.',
-    (_) {
-      loadUsers(); // Reload users
-      Get.back(); // Close the form after successful update
-    },
-  );
-  isLoading.value = false;
-}
+  Future<void> createUser(UserModel user) async {
+    isLoading.value = true;
+    final result = await _createUser(user);
+    result.fold(
+      (failure) => errorMessage.value = 'Failed to create user.',
+      (_) {
+        loadUsers(); // Reload users
+        Get.back(); // Close the form after successful creation
+      },
+    );
+    isLoading.value = false;
+  }
 
+  Future<void> updateUser(UserModel user) async {
+    isLoading.value = true;
+    final result = await _updateUser(user);
+    result.fold(
+      (failure) => errorMessage.value = 'Failed to update user.',
+      (_) {
+        loadUsers(); // Reload users
+        Get.back(); // Close the form after successful update
+      },
+    );
+    isLoading.value = false;
+  }
 
   Future<void> deleteUser(String userId) async {
     isLoading.value = true;

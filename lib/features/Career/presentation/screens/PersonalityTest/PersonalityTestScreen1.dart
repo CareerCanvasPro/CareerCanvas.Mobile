@@ -370,7 +370,6 @@ import 'package:career_canvas/features/personalitytest/presentation/getx/control
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class PersonalityTestScreen1 extends StatefulWidget {

@@ -1,7 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
-import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
-import 'package:career_canvas/features/Career/presentation/getx/controller/CoursesController.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -114,21 +113,15 @@ class CareerScreen extends StatefulWidget {
 class _CareerScreenState extends State<CareerScreen> {
   final JobService jobService = JobService();
   late final JobsController jobsController;
-  late final CoursesController coursesController;
   late final UserProfileController userProfileController;
 
   @override
   void initState() {
     super.initState();
     jobsController = getIt<JobsController>();
-    coursesController = getIt<CoursesController>();
     if (jobsController.jobs.value == null) {
       jobsController.getJobsRecomendation();
     }
-    if (coursesController.courses.value == null) {
-      coursesController.getCoursesRecomendation();
-    }
-
     userProfileController = getIt<UserProfileController>();
     if (userProfileController.userProfile.value == null) {
       userProfileController.getUserProfile();
@@ -200,52 +193,6 @@ class _CareerScreenState extends State<CareerScreen> {
     } else {
       return value.toString(); // No formatting needed
     }
-  }
-
-  String getFormatedDutaionForCourse(int seconds) {
-    if (seconds < 60) return "${seconds}s"; // Less than 1 minute
-
-    const int minute = 60;
-    const int hour = 60 * minute;
-    const int day = 24 * hour;
-    const int week = 7 * day;
-    const int month = 30 * day; // Approximate month length
-    const int year = 365 * day; // Approximate year length
-
-    if (seconds >= year) {
-      int y = seconds ~/ year;
-      int remainingDays = (seconds % year) ~/ day;
-      return remainingDays > 0 ? "${y}y ${remainingDays}d" : "${y}y";
-    }
-
-    if (seconds >= month) {
-      int mo = seconds ~/ month;
-      int remainingDays = (seconds % month) ~/ day;
-      return remainingDays > 0 ? "${mo}mo ${remainingDays}d" : "${mo}mo";
-    }
-
-    if (seconds >= week) {
-      int w = seconds ~/ week;
-      int remainingDays = (seconds % week) ~/ day;
-      return remainingDays > 0 ? "${w}w ${remainingDays}d" : "${w}w";
-    }
-
-    if (seconds >= day) {
-      int d = seconds ~/ day;
-      int remainingHours = (seconds % day) ~/ hour;
-      return remainingHours > 0 ? "${d}d ${remainingHours}h" : "${d}d";
-    }
-
-    if (seconds >= hour) {
-      int h = seconds ~/ hour;
-      int remainingMinutes = (seconds % hour) ~/ minute;
-      return remainingMinutes > 0 ? "${h}h ${remainingMinutes}m" : "${h}h";
-    }
-
-    // If it's more than a minute but less than an hour
-    int m = seconds ~/ minute;
-    int remainingSeconds = seconds % minute;
-    return remainingSeconds > 0 ? "${m}m ${remainingSeconds}s" : "${m}m";
   }
 
   @override
@@ -365,10 +312,21 @@ class _CareerScreenState extends State<CareerScreen> {
                             ),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: Image.network(
-                            userProfileController
+                          child: CachedNetworkImage(
+                            imageUrl: userProfileController
                                     .userProfile.value?.profilePicture ??
-                                "https://ugv.edu.bd/images/teacher_images/1581406453.jpg",
+                                "",
+                            placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            )),
+                            errorWidget: (context, url, error) => Center(
+                              child: Icon(
+                                Icons.error,
+                              ),
+                            ),
                             height: 100,
                             width: 100,
                             fit: BoxFit.cover,
@@ -525,51 +483,7 @@ class _CareerScreenState extends State<CareerScreen> {
 
             SizedBox(height: 20),
             // Courses Section
-            Text(
-              "Skills for you",
-              style: getCTATextStyle(
-                context,
-                16,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 8),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              constraints: const BoxConstraints(maxHeight: 250),
-              child: Obx(() {
-                if (coursesController.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (coursesController.errorMessage.isNotEmpty) {
-                  return Center(
-                    child: Text(
-                      coursesController.errorMessage.value,
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  );
-                }
-                if (coursesController.courses.value == null ||
-                    coursesController.courses.value!.data == null ||
-                    coursesController.courses.value!.data!.courses == null) {
-                  return const Center(child: Text('No Courses Available'));
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return getCourseItem(context,
-                        coursesController.courses.value!.data!.courses![index]);
-                  },
-                  itemCount:
-                      coursesController.courses.value!.data!.courses!.length,
-                );
-              }),
-            ),
-            SizedBox(height: 8),
+
             Text(
               "Jobs for you",
               style: getCTATextStyle(
@@ -581,7 +495,6 @@ class _CareerScreenState extends State<CareerScreen> {
             SizedBox(
               height: 8,
             ),
-
             Container(
               constraints: const BoxConstraints(maxHeight: 210),
               child: Obx(() {
@@ -640,12 +553,24 @@ class _CareerScreenState extends State<CareerScreen> {
                   Container(
                     height: 50,
                     width: 50,
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(job.companyLogo),
-                        fit: BoxFit.contain,
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: job.companyLogo,
+                      placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          primaryBlue,
+                        ),
+                      )),
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
                       ),
+                      fit: BoxFit.contain,
                     ),
                   ),
                   Spacer(),
@@ -695,90 +620,6 @@ class _CareerScreenState extends State<CareerScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget getCourseItem(BuildContext context, CoursesModel course) {
-    return Container(
-      width: 300,
-      child: Card(
-        elevation: 3,
-        color: scaffoldBackgroundColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              )),
-              width: 300,
-              height: 130,
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                course.image,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: Text(
-                      course.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "${course.level} · ${getFormatedDutaionForCourse(course.duration)} · ${course.authors.first}",
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black.withOpacity(0.15),
-                    height: 12,
-                    thickness: 1,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        course.sourceName,
-                      ),
-                      Spacer(),
-                      Icon(Icons.star, color: orangeStar, size: 18),
-                      SizedBox(width: 4),
-                      Text(
-                        "${course.rating} (${course.ratingCount})",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
         ),
       ),
     );
