@@ -18,7 +18,7 @@ class NetworkingScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: scaffoldBackgroundColor,
           elevation: 0,
           automaticallyImplyLeading: false,
           title: Row(
@@ -30,7 +30,7 @@ class NetworkingScreen extends StatelessWidget {
               ),
               SizedBox(width: 8),
               Text(
-                "Networking",
+                "My Network",
                 style: getCTATextStyle(
                   context,
                   24,
@@ -45,30 +45,36 @@ class NetworkingScreen extends StatelessWidget {
               onPressed: () {},
             ),
           ],
-          bottom: TabBar(
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.black54,
-            indicatorColor: Colors.blue,
-            tabs: [
-              Tab(text: "feed"),
-              Tab(text: "Mentors"),
-              Tab(text: "Community"),
-              Tab(text: "Mentions"),
-            ],
-          ),
+          // bottom: TabBar(
+          //   labelColor: Colors.blue,
+          //   unselectedLabelColor: Colors.black54,
+          //   indicatorColor: Colors.blue,
+          //   tabs: [
+          //     Tab(text: "feed"),
+          //     Tab(text: "Mentors"),
+          //     Tab(text: "Community"),
+          //     Tab(text: "Mentions"),
+          //   ],
+          // ),
         ),
-        body: TabBarView(
-          children: [
-            // Feed Tab
-            MyFeedTab(),
-            // Mentors Tab
-            MyMentorsTab(),
+        // body: TabBarView(
+        //   children: [
+        //     // Feed Tab
+        //     MyFeedTab(),
+        //     // Mentors Tab
+        //     MyMentorsTab(),
 
-            // Community Tab
-            CommunityTab(),
-            // Mentions Tab
-            Mentionstab()
-          ],
+        //     // Community Tab
+        //     CommunityTab(),
+        //     // Mentions Tab
+        //     Mentionstab()
+        //   ],
+        // ),
+        body: Center(
+          child: Text(
+            "Coming Soon!",
+            style: getCTATextStyle(context, 24, color: Colors.black),
+          ),
         ),
       ),
     );

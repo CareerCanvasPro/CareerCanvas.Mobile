@@ -40,15 +40,12 @@ class TokenInfo {
     await prefs.setInt('expiresAt', expiresAt.millisecondsSinceEpoch);
   }
 
-  static void clear() {
+  static Future<void> clear() async {
     TokenInfo.token = '';
     TokenInfo.username = '';
     TokenInfo.type = '';
     TokenInfo.expiresAt = DateTime.now();
-    prefs.setString('token', '');
-    prefs.setString('username', '');
-    prefs.setString('type', '');
-    prefs.setInt('expiresAt', 0);
+    await prefs.clear();
   }
 
   static bool isloggedInUser() {

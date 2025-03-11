@@ -60,13 +60,38 @@ class EmailController extends GetxController {
       } else {
         throw "Failed to send. Please try again.";
       }
+    } on DioException catch (e) {
+      if (type == EmailLoginType.MagicLink) {
+        isSecondaryLoading.value = false;
+      } else {
+        isLoading.value = false;
+      }
+
+      if (e.response != null) {
+        var responseData = e.response!.data;
+
+        // Check if responseData is a Map (expected JSON)
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey("message")) {
+          onError(responseData["message"].toString());
+        }
+        // If responseData is a String, return it directly
+        else if (responseData is String) {
+          onError(responseData);
+        }
+        // Handle unexpected response format
+        else {
+          onError("Unexpected error format");
+        }
+      } else {
+        onError(e.message ?? "Problem occurred");
+      }
     } catch (e) {
       if (type == EmailLoginType.MagicLink) {
         isSecondaryLoading.value = false;
       } else {
         isLoading.value = false;
       }
-      debugPrint(e.toString());
       onError(e.toString());
     }
   }

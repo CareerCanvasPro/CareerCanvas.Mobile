@@ -16,14 +16,47 @@ class ApiClient {
   Future<Response> post(
     String path, {
     Map<String, dynamic>? data,
+    bool useToken = false,
   }) async {
-    return dio.post(path, data: data);
+    Map<String, dynamic> headers = {
+      'Content-Type': "application/json",
+    };
+    if (useToken) {
+      headers["Authorization"] = "Bearer ${TokenInfo.token}";
+    }
+    return dio.post(
+      path,
+      data: data,
+      options: Options(
+        headers: headers,
+      ),
+    );
+  }
+
+  Future<Response> put(
+    String path, {
+    Map<String, dynamic>? data,
+    bool useToken = false,
+  }) async {
+    Map<String, dynamic> headers = {
+      'Content-Type': "application/json",
+    };
+    if (useToken) {
+      headers["Authorization"] = "Bearer ${TokenInfo.token}";
+    }
+    return dio.put(
+      path,
+      data: data,
+      options: Options(
+        headers: headers,
+      ),
+    );
   }
 
   Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,
-    bool useToken = true,
+    bool useToken = false,
   }) async {
     Map<String, dynamic> headers = {
       'Content-Type': "application/json",

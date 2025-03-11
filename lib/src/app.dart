@@ -4,9 +4,11 @@ import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
+import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
+import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -165,7 +167,9 @@ class _MyAppState extends State<MyApp> {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(),
+          theme: ThemeData(
+            primaryColor: primaryBlue,
+          ),
           darkTheme: ThemeData.dark(),
           themeMode: widget.settingsController.themeMode,
 
@@ -214,8 +218,8 @@ class _MyAppState extends State<MyApp> {
                     return AnalyzingResultsScreen();
                   case JobRecommendationScreen.routeName:
                     return JobRecommendationScreen();
-                  case SettingsView.routeName:
-                    return SettingsView(controller: widget.settingsController);
+                  case ProfileSettings.routeName:
+                    return ProfileSettings();
                   default:
                     return LoginScreen();
                 }

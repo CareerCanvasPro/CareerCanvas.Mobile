@@ -1,11 +1,12 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/profile.dart';
-import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
+import 'package:career_canvas/features/Search/presentation/screens/SearchPage.dart';
 import 'package:career_canvas/features/Skill/presentations/screens/SkillPage.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../src/profile/presentation/profile_view.dart';
 import '../../../Career/presentation/screens/CareerScreen.dart';
@@ -34,11 +35,11 @@ class _HomePageState extends State<HomePage> {
     userProfileController = getIt<UserProfileController>();
 
     _pages = [
-      DashboardScreen(),
       CareerScreen(),
+      UserProfile(),
+      SearchPage(),
       SkillsPage(),
       NetworkingScreen(),
-      UserProfile(),
     ];
   }
 
@@ -65,12 +66,93 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: scaffoldBackgroundColor,
         elevation: 10,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.business_center), label: 'Career'),
-          BottomNavigationBarItem(icon: Icon(Icons.bolt), label: 'Skills'),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Networking'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            icon: SvgPicture.asset(
+              'assets/svg/icons/career_screen_icon.svg',
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/svg/icons/career_screen_icon.svg',
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'Career',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/svg/icons/user_icon.svg',
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/svg/icons/user_icon.svg',
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'About Me',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/svg/icons/search_icon.svg",
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              "assets/svg/icons/search_icon.svg",
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/svg/icons/icon_skills_page.svg",
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              "assets/svg/icons/icon_skills_page.svg",
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'Skills',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/svg/icons/icon_networking_page.svg",
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              "assets/svg/icons/icon_networking_page.svg",
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'Network',
+          ),
         ],
       ),
     );

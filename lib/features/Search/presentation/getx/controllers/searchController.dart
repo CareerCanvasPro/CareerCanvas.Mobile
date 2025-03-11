@@ -2,12 +2,14 @@ import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:get/get.dart';
 
-class CoursesController extends GetxController {
+class GlobalSearchController extends GetxController {
   CoursesRepository coursesRepository;
-  CoursesController(this.coursesRepository);
-  var isLoading = false.obs;
-  var errorMessage = ''.obs;
-  var courses = Rxn<CoursesResponseModel>();
+  GlobalSearchController(this.coursesRepository);
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
+  final courses = Rxn<CoursesResponseModel>();
+
+  final searchQuery = ''.obs;
 
   Future<void> getCoursesRecomendation() async {
     isLoading.value = true;
@@ -23,7 +25,13 @@ class CoursesController extends GetxController {
 
   Future<void> searchCourses(String query) async {
     isLoading.value = true;
-    final result = await coursesRepository.searchCourses(query);
+    searchQuery.value = query;
+    var result;
+    if (query.isNotEmpty) {
+      result = await coursesRepository.searchCourses(query);
+    } else {
+      result = await coursesRepository.getCoursesRecomendation();
+    }
     if (result != null) {
       courses.value = result;
       errorMessage.value = '';
