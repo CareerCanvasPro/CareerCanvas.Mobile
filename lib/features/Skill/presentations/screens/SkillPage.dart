@@ -20,6 +20,7 @@ class _SkillsPageState extends State<SkillsPage> {
     coursesController = getIt<CoursesController>();
     if (coursesController.courses.value == null) {
       coursesController.getCoursesRecomendation();
+      coursesController.getCoursesBasedOnGoals();
     }
   }
 
@@ -154,6 +155,46 @@ class _SkillsPageState extends State<SkillsPage> {
                   );
                 }),
               ),
+              SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(
+                  "Skills based on your goals",
+                  style: getCTATextStyle(
+                    context,
+                    16,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: const BoxConstraints(maxHeight: 250),
+                child: Obx(() {
+                  if (coursesController.isLoadingGolsBasedCourses.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (coursesController.courses.value == null ||
+                      coursesController.courses.value!.data == null ||
+                      coursesController.courses.value!.data!.courses == null) {
+                    return const Center(child: Text('No Courses Available'));
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return getCourseItem(
+                          context,
+                          coursesController
+                              .coursesGoals.value!.data!.courses![index]);
+                    },
+                    itemCount: coursesController
+                        .coursesGoals.value!.data!.courses!.length,
+                  );
+                }),
+              ),
               SizedBox(height: 8),
             ],
           ),
@@ -179,7 +220,7 @@ class _SkillsPageState extends State<SkillsPage> {
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               )),
-              width: 300,
+              width: 312,
               height: 130,
               clipBehavior: Clip.antiAlias,
               child: CachedNetworkImage(

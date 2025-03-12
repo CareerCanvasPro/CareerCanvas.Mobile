@@ -146,7 +146,9 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
             buttonText: "OK",
             onPressed: () {
               Navigator.pop(context); // Close the popup
-              getIt<UserProfileController>().getUserProfile();
+              getIt<UserProfileController>().getUserProfile().then((_) {
+                controller.loadPersonalityTest(TokenInfo.token);
+              });
               Navigator.pushNamed(
                 context,
                 '/HomePage',
@@ -233,6 +235,16 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
     sendPersonalityTestResults(); // Send data to API
   }
 
+  double currentProgress = 0;
+
+  void calculateProgress(
+      int currentPage, int questionsPerPage, int totalQuestions) {
+    int completedQuestions = currentPage * questionsPerPage;
+    double progress = (completedQuestions / totalQuestions)
+        .clamp(0.0, 1.0); // Ensure it's within 0-1 range
+    currentProgress = progress;
+  }
+
   void onNextPage() {
     final totalQuestions =
         controller.personalityTest.value?.data?.questions ?? [];
@@ -282,6 +294,7 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
     if (currentPage < (totalQuestions.length / questionsPerPage).floor() - 1) {
       setState(() {
         currentPage++;
+        calculateProgress(currentPage, questionsPerPage, totalQuestions.length);
       });
       scrollController.animateTo(
         scrollController.initialScrollOffset,
@@ -397,6 +410,12 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
 
         return Column(
           children: [
+            LinearProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                primaryBlue,
+              ),
+              value: currentProgress,
+            ),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,

@@ -14,6 +14,14 @@ class CoursesRemoteDataSource {
     return response;
   }
 
+  Future<Response> getCoursesByGoals() async {
+    final response = await apiClient.get(
+      ApiClient.coursesBase + '/courses/recommendation/goals',
+      useToken: true,
+    );
+    return response;
+  }
+
   Future<Response> searchCourses(String query) async {
     final response = await apiClient.get(
       ApiClient.coursesBase + '/courses/search',
