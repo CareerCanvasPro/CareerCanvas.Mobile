@@ -35,8 +35,7 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
     // print(token);
     controller = getIt<PersonalityTestController>();
 
-    if (TokenInfo.token.isNotEmpty &&
-        controller.personalityTest.value == null) {
+    if (TokenInfo.token.isNotEmpty) {
       controller.loadPersonalityTest(TokenInfo.token);
     }
   }
@@ -146,38 +145,13 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
             buttonText: "OK",
             onPressed: () {
               Navigator.pop(context); // Close the popup
-              getIt<UserProfileController>().getUserProfile().then((_) {
-                controller.loadPersonalityTest(TokenInfo.token);
-              });
+              getIt<UserProfileController>().getUserProfile();
               Navigator.pushNamed(
                 context,
                 '/HomePage',
               );
             },
           );
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return AlertDialog(
-          //       title: Text("Successfully Submitted"),
-          //       content: Text(
-          //           "Your response has been submitted successfully. The result will be added to your profile."),
-          //       actions: [
-          //         TextButton(
-          //           onPressed: () {
-          //             Navigator.pop(context); // Close the popup
-          //             getIt<UserProfileController>().getUserProfile();
-          //             Navigator.pushNamed(
-          //               context,
-          //               '/HomePage',
-          //             ); // Navigate to success screen
-          //           },
-          //           child: Text("OK"),
-          //         ),
-          //       ],
-          //     );
-          //   },
-          // );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content:
@@ -215,8 +189,6 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
         'answer': selectedOption,
       });
     });
-
-    print(selectedAnswers);
   }
 
   void onAnswerSelectedold(String id, int selectedOption) {
@@ -231,15 +203,14 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
         'answer': selectedOption,
       });
     });
-    print(selectedAnswers);
     sendPersonalityTestResults(); // Send data to API
   }
 
-  double currentProgress = 0;
+  double currentProgress = 0.167;
 
   void calculateProgress(
       int currentPage, int questionsPerPage, int totalQuestions) {
-    int completedQuestions = currentPage * questionsPerPage;
+    int completedQuestions = (currentPage + 1) * questionsPerPage;
     double progress = (completedQuestions / totalQuestions)
         .clamp(0.0, 1.0); // Ensure it's within 0-1 range
     currentProgress = progress;
@@ -454,37 +425,110 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                           //   ),
                           // ),
                           const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Agree"),
-                              Text("Neutral"),
-                              Text("Disagree"),
-                            ],
-                          ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: List.generate(7, (i) {
-                                final value = 3 - i;
-                                return Transform.scale(
-                                  scale: 1.5,
-                                  child: Radio(
-                                    value: value,
-                                    activeColor: primaryBlue,
-                                    groupValue: question.selectedOption,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        onAnswerSelected(
-                                            question.questionID ?? '', value);
-                                      });
-                                    },
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text("Agree"),
+                          //     Text("Neutral"),
+                          //     Text("Disagree"),
+                          //   ],
+                          // ),
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              // Calculate the scale factor based on the available width
+                              final screenWidth = constraints.maxWidth;
+                              const totalRadioButtons = 7;
+                              const spacingBetweenButtons =
+                                  8.0; // Adjust spacing as needed
+                              const padding = 16.0; // Adjust padding as needed
+
+                              // Calculate the available width for each radio button
+                              final availableWidthPerButton = (screenWidth -
+                                      (totalRadioButtons - 1) *
+                                          spacingBetweenButtons -
+                                      2 * padding) /
+                                  totalRadioButtons;
+
+                              // Define a base size for the radio button (you can adjust this)
+                              const baseRadioButtonSize = 24.0;
+
+                              // Calculate the scale factor
+                              final scale =
+                                  availableWidthPerButton / baseRadioButtonSize;
+
+                              return Column(
+                                children: [
+                                  // Texts above the radio buttons
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text("Agree"),
+                                      SizedBox(
+                                          width: (screenWidth - 2 * padding) /
+                                              3), // Spacing for "Neutral"
+                                      Text("Neutral"),
+                                      SizedBox(
+                                          width:
+                                              (screenWidth - 2 * padding) / 3 -
+                                                  7), // Spacing for "Disagree"
+                                      Text("Disagree"),
+                                    ],
                                   ),
-                                );
-                              }),
-                            ),
-                          ),
+                                  SizedBox(
+                                      height:
+                                          8), // Space between texts and radio buttons
+                                  // Radio buttons
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children:
+                                        List.generate(totalRadioButtons, (i) {
+                                      final value = 3 - i;
+                                      return Transform.scale(
+                                        scale: scale,
+                                        child: Radio(
+                                          value: value,
+                                          activeColor: primaryBlue,
+                                          groupValue: question.selectedOption,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              onAnswerSelected(
+                                                  question.questionID ?? '',
+                                                  value);
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
+                          // SingleChildScrollView(
+                          //   scrollDirection: Axis.horizontal,
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //     children: List.generate(7, (i) {
+                          //       final value = 3 - i;
+                          //       return Transform.scale(
+                          //         scale: 1.5,
+                          //         child: Radio(
+                          //           value: value,
+                          //           activeColor: primaryBlue,
+                          //           groupValue: question.selectedOption,
+                          //           onChanged: (val) {
+                          //             setState(() {
+                          //               onAnswerSelected(
+                          //                   question.questionID ?? '', value);
+                          //             });
+                          //           },
+                          //         ),
+                          //       );
+                          //     }),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
