@@ -14,7 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
@@ -48,7 +49,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
-  final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -72,17 +72,14 @@ class _MyAppState extends State<MyApp> {
     // Handle links
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
       debugPrint('onAppLink: $uri');
-
       if (uri.path == '/auth/callback') {
         try {
-          print('Deep link received: ${uri.path}');
           String token = uri.queryParameters['token'] ?? '';
-          print('Token: $token');
           bool isNewUser =
               uri.queryParameters['isNewUser'].toString() == 'true';
-          String email = uri.queryParameters['email'] ?? '';
+          String email = uri.queryParameters['username'] ?? '';
           DateTime expiry = DateTime.fromMillisecondsSinceEpoch(
-            uri.queryParameters["expiresAt"] as int,
+            int.tryParse(uri.queryParameters["expiresAt"].toString()) ?? 0,
           );
           await TokenInfo.setToken(
             token,
@@ -104,25 +101,26 @@ class _MyAppState extends State<MyApp> {
             openAppLink(HomePage.routeName);
           }
         } catch (e) {
-          CustomDialog.showCustomDialog(
-            context,
-            title: 'Error in deeplink',
-            content: e.toString(),
+          Fluttertoast.showToast(
+            msg: e.toString(),
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            fontSize: 14.0,
           );
         }
       } else {
-        print('Deep link received but not handled: ${uri.toString()}');
-        CustomDialog.showCustomDialog(
-          context,
-          title: 'Error in deeplink',
-          content: 'Deep link received but not handled: ${uri.toString()}',
+        Fluttertoast.showToast(
+          msg: 'Deep link received but not handled: ${uri.toString()}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
         );
       }
     });
   }
 
   void openAppLink(String routeName, {Object? arguments}) {
-    _navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
+    Get.offNamedUntil(routeName, (_) => false, arguments: arguments);
   }
 
   @override
@@ -159,8 +157,7 @@ class _MyAppState extends State<MyApp> {
           //
           // The appTitle is defined in .arb files found in the localization
           // directory.
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (BuildContext context) => "Career Canvas",
 
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
@@ -172,8 +169,6 @@ class _MyAppState extends State<MyApp> {
           themeMode: widget.settingsController.themeMode,
 
           initialRoute: widget.mainRouteData.initialRoute,
-
-          navigatorKey: _navigatorKey,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.

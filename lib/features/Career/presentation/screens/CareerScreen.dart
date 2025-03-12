@@ -155,44 +155,211 @@ class _CareerScreenState extends State<CareerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Start Assessment to know better yourself ",
-                                  textAlign: TextAlign.center,
-                                  style: getCTATextStyle(
-                                    context,
-                                    16,
-                                    color: Colors.white,
+                          if (userProfileController.userProfile.value != null &&
+                              userProfileController.userProfile.value!
+                                      .personalityTestStatus ==
+                                  'pending')
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Start Assessment to know better yourself ",
+                                        textAlign: TextAlign.center,
+                                        style: getCTATextStyle(
+                                          context,
+                                          16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      PersonalityTestScreen.routeName,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24.0),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Start Assessment',
+                                    style: getCTATextStyle(
+                                      context,
+                                      16,
+                                      color: primaryBlue,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                PersonalityTestScreen1.routeName,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
+                              ],
                             ),
-                            child: Text(
-                              'Start Assessment',
-                              style: getCTATextStyle(
-                                context,
-                                16,
-                                color: primaryBlue,
-                              ),
+                          if (userProfileController.userProfile.value != null &&
+                              userProfileController.userProfile.value!
+                                      .personalityTestStatus !=
+                                  'pending')
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Your Personality Type: ${userProfileController.userProfile.value!.personalityType ?? ""}",
+                                        textAlign: TextAlign.center,
+                                        style: getCTATextStyle(
+                                          context,
+                                          16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "TF",
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          userProfileController.userProfile
+                                              .value!.personalityTestResult!.TF
+                                              .toStringAsFixed(2),
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "SN",
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          userProfileController.userProfile
+                                              .value!.personalityTestResult!.SN
+                                              .toStringAsFixed(2),
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "EI",
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          userProfileController.userProfile
+                                              .value!.personalityTestResult!.EI
+                                              .toStringAsFixed(2),
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "JP",
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          userProfileController.userProfile
+                                              .value!.personalityTestResult!.JP
+                                              .toStringAsFixed(2),
+                                          style: getCTATextStyle(
+                                            context,
+                                            16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      PersonalityTestScreen.routeName,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24.0),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Re-Assess',
+                                    style: getCTATextStyle(
+                                      context,
+                                      16,
+                                      color: primaryBlue,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -270,11 +437,13 @@ class _CareerScreenState extends State<CareerScreen> {
                                       ),
                                     ),
                                     Text(
-                                      userProfileController.userProfile.value
-                                              ?.personalityType ??
+                                      userProfileController
+                                              .userProfile.value?.aboutMe ??
                                           "",
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.white,
                                       ),
                                     ),

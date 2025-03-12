@@ -5,6 +5,48 @@ import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/resume.dart';
 
+class PersonalityTestResult {
+  double TF;
+  double SN;
+  double EI;
+  double JP;
+  PersonalityTestResult({
+    required this.TF,
+    required this.SN,
+    required this.EI,
+    required this.JP,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'TF': TF,
+      'SN': SN,
+      'EI': EI,
+      'JP': JP,
+    };
+  }
+
+  factory PersonalityTestResult.fromMap(Map<String, dynamic> map) {
+    return PersonalityTestResult(
+      TF: double.tryParse(map['TF'].toString()) ?? 0,
+      SN: double.tryParse(map['SN'].toString()) ?? 0,
+      EI: double.tryParse(map['EI'].toString()) ?? 0,
+      JP: double.tryParse(map['JP'].toString()) ?? 0,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory PersonalityTestResult.fromJson(String source) =>
+      PersonalityTestResult.fromMap(
+          json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'PersonalityTestResult(TF: $TF, SN: $SN, EI: $EI, JP: $JP)';
+  }
+}
+
 class UserProfileData {
   int following;
   int followers;
@@ -24,6 +66,7 @@ class UserProfileData {
   String personalityTestStatus;
   String? personalityType;
   List<String> goals;
+  PersonalityTestResult? personalityTestResult;
   UserProfileData({
     required this.following,
     required this.followers,
@@ -43,6 +86,7 @@ class UserProfileData {
     this.personalityType,
     this.coins = 0,
     required this.goals,
+    this.personalityTestResult,
   });
 
   factory UserProfileData.fromMap(Map<String, dynamic> map) {
@@ -58,6 +102,10 @@ class UserProfileData {
       email: (map['email'] as String?) ?? "",
       name: (map['name'] as String?) ?? "",
       aboutMe: (map['aboutMe'] as String?) ?? "",
+      personalityTestResult: map["personalityTestResult"] != null
+          ? PersonalityTestResult.fromMap(
+              map["personalityTestResult"] as Map<String, dynamic>)
+          : PersonalityTestResult(TF: 0, SN: 0, EI: 0, JP: 0),
       personalityTestStatus:
           (map['personalityTestStatus'] as String?) ?? "pending",
       personalityType: map['personalityType'] as String?,
