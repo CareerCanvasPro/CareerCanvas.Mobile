@@ -33,7 +33,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
       appBar: AppBar(
         backgroundColor: widget.categoryColors.background,
         title: Text(
-          "${widget.type} Details",
+          "${widget.type}'s Details",
           style: getCTATextStyle(
             context,
             16,
@@ -63,7 +63,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                   Expanded(
                     child: Text(
                       "${widget.personalityType.name} (${widget.personalityType.category})",
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       style: getCTATextStyle(
                         context,
                         24,
@@ -81,7 +81,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                   Expanded(
                     child: Text(
                       "${widget.personalityType.description}",
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       style: getCTATextStyle(
                         context,
                         16,
@@ -104,14 +104,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       backgroundColor: Colors.white,
                       progressColor: widget.categoryColors.foreground,
                       barRadius: Radius.circular(10),
-                      center: Text(
-                        "${(widget.personalityTestResult.EI * 100).ceil()}%",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: greyColor,
-                        ),
-                      ),
+                      // center: Text(
+                      //   "${(widget.personalityTestResult.EI * 100).ceil()}%",
+                      //   style: getCTATextStyle(
+                      //     context,
+                      //     12,
+                      //     color: greyColor,
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],
@@ -129,14 +129,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       backgroundColor: Colors.white,
                       progressColor: widget.categoryColors.foreground,
                       barRadius: Radius.circular(10),
-                      center: Text(
-                        "${(widget.personalityTestResult.JP * 100).ceil()}%",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: greyColor,
-                        ),
-                      ),
+                      // center: Text(
+                      //   "·",
+                      //   style: getCTATextStyle(
+                      //     context,
+                      //     12,
+                      //     color: greyColor,
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],
@@ -154,14 +154,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       backgroundColor: Colors.white,
                       progressColor: widget.categoryColors.foreground,
                       barRadius: Radius.circular(10),
-                      center: Text(
-                        "${(widget.personalityTestResult.SN * 100).ceil()}%",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: greyColor,
-                        ),
-                      ),
+                      // center: Text(
+                      //   "·",
+                      //   style: getCTATextStyle(
+                      //     context,
+                      //     12,
+                      //     color: greyColor,
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],
@@ -179,14 +179,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       backgroundColor: Colors.white,
                       progressColor: widget.categoryColors.foreground,
                       barRadius: Radius.circular(10),
-                      center: Text(
-                        "${(widget.personalityTestResult.TF * 100).ceil()}%",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: greyColor,
-                        ),
-                      ),
+                      // center: Text(
+                      //   "·",
+                      //   style: getCTATextStyle(
+                      //     context,
+                      //     12,
+                      //     color: greyColor,
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],
@@ -306,9 +306,49 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 runSpacing: 8,
                 children: widget.personalityType.recommendedRoles.map((e) {
                   return GestureDetector(
-                    onTap: () {
-                      // TODO: Open the job recommendation screen
-                    },
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        e,
+                        style: getCTATextStyle(
+                          context,
+                          14,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Text(
+                "Known People",
+                textAlign: TextAlign.center,
+                style: getCTATextStyle(
+                  context,
+                  16,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: widget.personalityType.knownPersons.map((e) {
+                  return GestureDetector(
+                    onTap: () {},
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),

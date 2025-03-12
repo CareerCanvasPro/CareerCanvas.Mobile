@@ -8,6 +8,7 @@ class PersonalityType {
   final List<String> workEnvironment;
   final List<String> strengths;
   final List<String> recommendedRoles;
+  final List<String> knownPersons;
 
   static PersonalityType? getType(String type) {
     return personalityTypes[type];
@@ -29,6 +30,7 @@ class PersonalityType {
     required this.workEnvironment,
     required this.strengths,
     required this.recommendedRoles,
+    required this.knownPersons,
   });
 }
 
@@ -77,7 +79,7 @@ final Map<String, PersonalityType> personalityTypes = {
     ],
     workEnvironment: [
       "Prefers structured, analytical environments with intellectual challenges.",
-      "Thrive in leadership roles and long-term strategic planning."
+      "Thrives in leadership roles and long-term strategic planning."
     ],
     strengths: [
       "Excellent at long-term planning and problem-solving.",
@@ -89,6 +91,24 @@ final Map<String, PersonalityType> personalityTypes = {
       "Economist",
       "Architect",
       "Business Consultant"
+    ],
+    knownPersons: [
+      "Friedrich Nietzsche",
+      "Michelle Obama",
+      "Elon Musk",
+      "Christopher Nolan",
+      "Arnold Schwarzenegger",
+      "Colin Powell",
+      "Samantha Power",
+      "Walter White (“Heisenberg”)",
+      "Petyr Baelish (“Littlefinger”)",
+      "Tywin Lannister",
+      "Yennefer of Vengerberg",
+      "Gandalf the Grey",
+      "Professor Moriarty",
+      "Katniss Everdeen",
+      "Seven of Nine",
+      "Jay Gatsby",
     ],
   ),
   "INTP": PersonalityType(
@@ -118,6 +138,14 @@ final Map<String, PersonalityType> personalityTypes = {
       "Data Analyst",
       "Machine Learning Specialist"
     ],
+    knownPersons: [
+      "Albert Einstein",
+      "Bill Gates",
+      "Kristen Stewart",
+      "Avicii",
+      "Stanley Crouch",
+      "Isaac Newton",
+    ],
   ),
   "ENTJ": PersonalityType(
     category: "Analysts",
@@ -146,6 +174,27 @@ final Map<String, PersonalityType> personalityTypes = {
       "Corporate Manager",
       "Startup Founder"
     ],
+    knownPersons: [
+      "Steve Jobs",
+      "Gordon Ramsay",
+      "Margaret Thatcher",
+      "Franklin D. Roosevelt",
+      "Jim Carrey",
+      "Whoopi Goldberg",
+      "Harrison Ford",
+      "Malcolm X",
+      "Doctor Strange",
+      "Tony Soprano",
+      "David Palmer",
+      "Malcolm Merlyn",
+      "Mary Talbot",
+      "Francis J. Underwood",
+      "Jacqueline A. Sharp",
+      "River Tam",
+      "Milady de Winter",
+      "Miranda Priestly",
+      "Raymond Reddington",
+    ],
   ),
   "ENTP": PersonalityType(
     category: "Analysts",
@@ -173,6 +222,25 @@ final Map<String, PersonalityType> personalityTypes = {
       "Public Speaker",
       "Venture Capitalist",
       "Marketing Director"
+    ],
+    knownPersons: [
+      "Alfred “Weird Al” Yankovic",
+      "Adam Savage",
+      "Sarah Silverman",
+      "Mark Twain",
+      "Tom Hanks",
+      "Thomas Edison",
+      "Céline Dion",
+      "Sacha Baron Cohen",
+      "Captain Jack Sparrow",
+      "Tyrion Lannister",
+      "Irene Adler",
+      "The Joker",
+      "Jim Halpert",
+      "Dr. Emmett Brown",
+      "Felicity Smoak",
+      "Julian Sark",
+      "Mark Watney",
     ],
   ),
   // Diplomats (N & F)
@@ -203,6 +271,27 @@ final Map<String, PersonalityType> personalityTypes = {
       "Human Rights Advocate",
       "Life Coach"
     ],
+    knownPersons: [
+      "Martin Luther King",
+      "Nelson Mandela",
+      "Mother Teresa",
+      "Marie Kondo",
+      "Lady Gaga",
+      "Nicole Kidman",
+      "Morgan Freeman",
+      "Goethe",
+      "Jon Snow",
+      "James Wilson",
+      "Aragorn",
+      "Galadriel",
+      "Tom Kirkman",
+      "Rose DeWitt Bukater",
+      "Desmond Hume",
+      "Aramis",
+      "Michael Scofield",
+      "Atticus Finch",
+      "Matthew Murdock",
+    ],
   ),
   "INFP": PersonalityType(
     category: "Diplomats",
@@ -219,6 +308,24 @@ final Map<String, PersonalityType> personalityTypes = {
       "Creative and excellent at expressing emotions through art."
     ],
     recommendedRoles: ["Writer", "Poet", "Therapist", "Musician", "NGO Worker"],
+    knownPersons: [
+      "J.R.R. Tolkien",
+      "William Shakespeare",
+      "Björk",
+      "Alicia Keys",
+      "Tom Hiddleston",
+      "Julia Roberts",
+      "William Wordsworth",
+      "Johnny Depp",
+      "Frodo Baggins",
+      "Amélie Poulain",
+      "Arwen",
+      "Fox Mulder",
+      "Anne",
+      "Sybil Branson",
+      "Lance Sweets",
+      "Konstantin Levin",
+    ],
   ),
   "ENFJ": PersonalityType(
     category: "Diplomats",
@@ -246,6 +353,24 @@ final Map<String, PersonalityType> personalityTypes = {
       "HR Manager",
       "Life Coach",
       "Social Worker"
+    ],
+    knownPersons: [
+      "Barack Obama",
+      "Oprah Winfrey",
+      "John Cusack",
+      "Ben Affleck",
+      "Malala Yousafzai",
+      "Jennifer Lawrence",
+      "Sean Connery",
+      "Maya Angelou",
+      "Daenerys Targaryen",
+      "Morpheus",
+      "Elizabeth Bennet",
+      "The Oracle",
+      "Skyler White",
+      "Laurel Lance",
+      "Isobel Crawley",
+      "Seeley Booth",
     ],
   ),
   "ENFP": PersonalityType(
@@ -275,6 +400,25 @@ final Map<String, PersonalityType> personalityTypes = {
       "Marketing Specialist",
       "Public Speaker"
     ],
+    knownPersons: [
+      "Robert Downey, Jr.",
+      "Robin Williams",
+      "Quentin Tarantino",
+      "RM (Kim Nam-joon)",
+      "Kelly Clarkson",
+      "Will Smith",
+      "Meg Ryan",
+      "Ellen DeGeneres",
+      "Michael Scott",
+      "Spider-Man",
+      "Phil Dunphy",
+      "Piper Chapman",
+      "Hoban Washburne",
+      "Peeta Mellark",
+      "Jennifer Keller",
+      "Carrie Bradshaw",
+      "Willy Wonka",
+    ],
   ),
   // Sentinels (S & J)
   "ISTJ": PersonalityType(
@@ -302,6 +446,25 @@ final Map<String, PersonalityType> personalityTypes = {
       "Police Officer",
       "Military Officer",
       "Operations Manager"
+    ],
+    knownPersons: [
+      "Sting",
+      "Denzel Washington",
+      "Angela Merkel",
+      "Natalie Portman",
+      "Anthony Hopkins",
+      "George Washington",
+      "Condoleezza Rice",
+      "George H.W. Bush",
+      "Eddard Stark",
+      "Hermione Granger",
+      "Geralt of Rivia",
+      "Mr. Darcy",
+      "Dana Scully",
+      "Jason Bourne",
+      "Thorin Oakenshield",
+      "Stannis Baratheon",
+      "Inspector Lestrade",
     ],
   ),
   "ISFJ": PersonalityType(
@@ -331,6 +494,26 @@ final Map<String, PersonalityType> personalityTypes = {
       "Social Worker",
       "Human Resources Manager"
     ],
+    knownPersons: [
+      "Beyoncé",
+      "Queen Elizabeth II",
+      "Aretha Franklin",
+      "Vin Diesel",
+      "Halle Berry",
+      "Kate Middleton",
+      "Anne Hathaway",
+      "Lance Reddick",
+      "Selena Gomez",
+      "Catelyn Stark",
+      "Samwise Gamgee",
+      "Dr Watson",
+      "Captain America",
+      "Triss Merigold",
+      "Will Turner",
+      "Pam Beesly",
+      "Vito Corleone",
+      "Bree Van de Kamp",
+    ],
   ),
   "ESTJ": PersonalityType(
     category: "Sentinels",
@@ -359,6 +542,24 @@ final Map<String, PersonalityType> personalityTypes = {
       "Political Leader",
       "Financial Advisor"
     ],
+    knownPersons: [
+      "Sonia Sotomayor",
+      "John D. Rockefeller",
+      "Judge Judy",
+      "Ella Baker",
+      "Frank Sinatra",
+      "James Monroe",
+      "Laura Linney",
+      "Lyndon B. Johnson",
+      "Boromir",
+      "Dwight Schrute",
+      "Claire Dunphy",
+      "Ana Lucia Cortez",
+      "Violet Crawley",
+      "Robb Stark",
+      "Lisa Cuddy",
+      "Porthos",
+    ],
   ),
   "ESFJ": PersonalityType(
     category: "Sentinels",
@@ -386,6 +587,24 @@ final Map<String, PersonalityType> personalityTypes = {
       "Event Planner",
       "Human Resources Specialist",
       "Community Manager"
+    ],
+    knownPersons: [
+      "Taylor Swift",
+      "Jennifer Garner",
+      "Bill Clinton",
+      "Steve Harvey",
+      "Danny Glover",
+      "Jennifer Lopez",
+      "Sally Field",
+      "Tyra Banks",
+      "Sansa Stark",
+      "Dean Winchester",
+      "Jack Shephard",
+      "Cersei Lannister",
+      "Carmela Soprano",
+      "Monica",
+      "Mrs. Hudson",
+      "Larry Bloom",
     ],
   ),
   // Explorers (S & P)
@@ -417,6 +636,26 @@ final Map<String, PersonalityType> personalityTypes = {
       "Pilot",
       "Navy SEAL"
     ],
+    knownPersons: [
+      "Olivia Wilde",
+      "Bear Grylls",
+      "Michael Jordan",
+      "Clint Eastwood",
+      "Milla Jovovich",
+      "Daniel Craig",
+      "Tom Cruise",
+      "Michelle Rodriguez",
+      "Arya Stark",
+      "Michael Westen",
+      "Indiana Jones",
+      "Hawkeye",
+      "Jack Bauer",
+      "John McClane",
+      "Angus MacGyver",
+      "Lisbeth Salander",
+      "James Bond",
+      "Jessica Jones",
+    ],
   ),
   "ISFP": PersonalityType(
     category: "Explorers",
@@ -438,6 +677,26 @@ final Map<String, PersonalityType> personalityTypes = {
       "Musician",
       "Travel Blogger",
       "Fashion Designer"
+    ],
+    knownPersons: [
+      "Lana Del Rey",
+      "Jungkook (Jeon Jungkook)",
+      "Avril Lavigne",
+      "Kevin Costner",
+      "Frida Kahlo",
+      "Britney Spears",
+      "Michael Jackson",
+      "Jessica Alba",
+      "Joss Stone",
+      "Beatrix Kiddo",
+      "Jesse Pinkman",
+      "Éowyn",
+      "Kate Austen",
+      "Claire Littleton",
+      "Hugo Reyes (“Hurley”)",
+      "Thea Queen",
+      "Remy Hadley (“Thirteen”)",
+      "Edith Crawley",
     ],
   ),
   "ESTP": PersonalityType(
@@ -467,6 +726,26 @@ final Map<String, PersonalityType> personalityTypes = {
       "Investor",
       "Event Coordinator"
     ],
+    knownPersons: [
+      "Ernest Hemingway",
+      "Jack Nicholson",
+      "Eddie Murphy",
+      "Madonna",
+      "Bruce Willis",
+      "Michael J. Fox",
+      "Nicolas Sarkozy",
+      "Samuel L. Jackson",
+      "Jaime Lannister",
+      "Hank Schrader",
+      "Lincoln Burrows",
+      "Seth Grayson",
+      "Gabrielle Solis",
+      "Fiona Glenanne",
+      "Rocket",
+      "Ant-Man",
+      "D'Artagnan",
+      "Philip Wenneck",
+    ],
   ),
   "ESFP": PersonalityType(
     category: "Explorers",
@@ -482,12 +761,18 @@ final Map<String, PersonalityType> personalityTypes = {
       "Travel Industry"
     ],
     workEnvironment: [
-      "Prefers social and lively environments with room for creativity.",
-      "Enjoys working with people and keeping things exciting."
+      "ESFPs thrive in dynamic, social work environments and prefer freedom to achieve goals effectively.",
+      "As subordinates, ESFPs embrace change and creativity but struggle with repetitive tasks and criticism.",
+      "ESFP colleagues foster a fun, friendly atmosphere, using social skills to maintain team harmony.",
+      "As managers, ESFPs energize teams, engage directly in tasks, and prioritize teamwork over authority.",
+      "They excel at preventing conflicts, encouraging open communication, and creating enjoyable workplaces."
     ],
     strengths: [
-      "Naturally charismatic and great at entertaining audiences.",
-      "Excellent interpersonal and networking skills."
+      "ESFPs are bold, original, and thrive on new experiences, stepping out of their comfort zones easily.",
+      "They exude positivity, enthusiasm, and charisma, making them engaging and inspiring to others.",
+      "With excellent people skills, ESFPs are observant, hands-on, and prefer action over theory.",
+      "Their weaknesses include sensitivity to criticism, conflict avoidance, and a tendency to get bored easily.",
+      "ESFPs struggle with long-term planning and focus, often prioritizing excitement over future stability."
     ],
     recommendedRoles: [
       "Actor",
@@ -495,6 +780,25 @@ final Map<String, PersonalityType> personalityTypes = {
       "Event Planner",
       "TV Host",
       "Social Media Influencer"
+    ],
+    knownPersons: [
+      "Elton John",
+      "Marilyn Monroe",
+      "Jamie Oliver",
+      "Adele",
+      "Jamie Foxx",
+      "Steve Irwin",
+      "Miley Cyrus",
+      "Adam Levine",
+      "Dandelion",
+      "Ygritte",
+      "Penny",
+      "Captain Marvel",
+      "Angela Montenegro",
+      "Peregrin Took",
+      "Gob Bluth",
+      "Lindsay Bluth Fünke",
+      "Jack Dawson",
     ],
   ),
 };
