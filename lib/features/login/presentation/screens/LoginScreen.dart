@@ -3,7 +3,7 @@ import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/AuthService.dart';
-import 'package:career_canvas/features/DashBoard/presentation/screens/dashboardScreen.dart';
+import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/features/login/presentation/getx/controller/SocialMediaLoginController.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
@@ -29,6 +29,10 @@ class LoginScreen extends StatelessWidget {
       Get.put(PhoneNumberController());
   final WhatsAppController whatsAppController = Get.put(WhatsAppController());
 
+  final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> phoneFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> whatsappFormKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +51,6 @@ class LoginScreen extends StatelessWidget {
                   "assets/svg/Career_Canvas_Logo_black.svg",
                   width: 200,
                   fit: BoxFit.fitWidth,
-                  color: primaryBlue,
                 ),
                 SizedBox(height: context.screenHeight * 0.12),
                 // Input Method Tabs
@@ -227,6 +230,7 @@ class LoginScreen extends StatelessWidget {
               // );
               emailController.onEmailButtonPressed(
                 context,
+                formKey: emailFormKey,
                 onDone: (String? message) async {
                   await CustomDialog.showCustomOTPDialog(
                     context,
@@ -268,7 +272,7 @@ class LoginScreen extends StatelessWidget {
                         // );
                       } else {
                         Get.to(
-                          () => DashboardScreen(),
+                          () => HomePage(),
                           arguments: {
                             'type': 'Email',
                             'username': response.email,
@@ -302,6 +306,7 @@ class LoginScreen extends StatelessWidget {
               // );
               emailController.onEmailButtonPressed(
                 context,
+                formKey: emailFormKey,
                 type: EmailLoginType.MagicLink,
                 onDone: (String? message) async {
                   CustomDialog.showCustomDialog(
@@ -335,7 +340,7 @@ class LoginScreen extends StatelessWidget {
               }
               return null;
             },
-            formKey: emailController.formKey,
+            formKey: emailFormKey,
           ),
           _buildTabContent(
             'Enter your phone number',
@@ -352,7 +357,7 @@ class LoginScreen extends StatelessWidget {
               }
               return null;
             },
-            formKey: phoneNumberController.formKey,
+            formKey: phoneFormKey,
           ),
           _buildTabContent(
             'Enter your WhatsApp number',
@@ -369,7 +374,7 @@ class LoginScreen extends StatelessWidget {
               }
               return null;
             },
-            formKey: whatsAppController.formKey,
+            formKey: whatsappFormKey,
           ),
         ],
       ),

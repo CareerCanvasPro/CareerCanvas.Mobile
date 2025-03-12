@@ -187,6 +187,7 @@ class _SearchPageState extends State<SearchPage> {
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10),
                 ),
+                color: Colors.white,
               ),
               width: 120,
               height: 100,

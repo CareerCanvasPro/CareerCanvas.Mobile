@@ -12,13 +12,13 @@ class EmailController extends GetxController {
   var isLoading = false.obs;
   var isSecondaryLoading = false.obs;
   TextEditingController emailController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void onEmailButtonPressed(
     BuildContext context, {
     EmailLoginType type = EmailLoginType.Otp,
     required Function(String?) onDone,
     required Function(String) onError,
+    required GlobalKey<FormState> formKey,
   }) async {
     if (type == EmailLoginType.MagicLink) {
       isSecondaryLoading.value = true;

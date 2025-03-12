@@ -7,6 +7,7 @@ import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../../../../src/profile/presentation/profile_view.dart';
 import '../../../Career/presentation/screens/CareerScreen.dart';
@@ -35,7 +36,9 @@ class _HomePageState extends State<HomePage> {
     userProfileController = getIt<UserProfileController>();
 
     _pages = [
-      CareerScreen(),
+      ShowCaseWidget(builder: (context) {
+        return CareerScreen();
+      }),
       UserProfile(),
       SearchPage(),
       SkillsPage(),

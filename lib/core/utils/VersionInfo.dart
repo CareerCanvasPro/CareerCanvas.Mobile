@@ -13,6 +13,6 @@ class VersionInfo {
 
   // Method to retrieve formatted version info
   static String getVersionInfo() {
-    return 'Version: $version  Build: $buildNumber \n©Carrer Canvas \nAll Right Reserved';
+    return 'Version: $version  Build: $buildNumber';
   }
 }

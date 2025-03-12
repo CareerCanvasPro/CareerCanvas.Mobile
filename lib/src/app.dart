@@ -22,7 +22,6 @@ import '../features/Career/presentation/screens/PersonalityTest/JobRecommendatio
 import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
 import '../features/DashBoard/presentation/screens/HomePage.dart';
-import '../features/DashBoard/presentation/screens/dashboardScreen.dart';
 import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
 import '../features/Networking/presentation/screens/Mentors/MyMentorsTab.dart';
 import '../features/Networking/presentation/screens/networkingScreen.dart';
@@ -30,7 +29,6 @@ import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart'
 import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import '../features/user/presentation/screens/user_screen.dart';
 import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatefulWidget {
@@ -103,7 +101,7 @@ class _MyAppState extends State<MyApp> {
               },
             );
           } else {
-            openAppLink(DashboardScreen.routeName);
+            openAppLink(HomePage.routeName);
           }
         } catch (e) {
           CustomDialog.showCustomDialog(
@@ -198,8 +196,6 @@ class _MyAppState extends State<MyApp> {
                     return UserScreen();
                   case UserProfile.routeName:
                     return UserProfile();
-                  case DashboardScreen.routeName:
-                    return DashboardScreen();
                   case NetworkingScreen.routeName:
                     return NetworkingScreen();
                   case CareerScreen.routeName:

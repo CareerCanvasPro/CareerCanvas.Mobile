@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
@@ -10,96 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:timelines_plus/timelines_plus.dart';
-
-// Job Model
-class Job {
-  final int id;
-  final String role;
-  final String company;
-  final String location;
-  final List<String> tags;
-  final String salary;
-
-  Job({
-    required this.id,
-    required this.role,
-    required this.company,
-    required this.location,
-    required this.tags,
-    required this.salary,
-  });
-
-  factory Job.fromJson(Map<String, dynamic> json) {
-    return Job(
-      id: json['id'] ?? 0,
-      role: json['role'] ?? '',
-      company: json['company'] ?? '',
-      location: json['location'] ?? '',
-      tags: List<String>.from(json['tags'] ?? []),
-      salary: json['salary'] ?? '',
-    );
-  }
-}
-
-// JobService: API Service for fetching jobs
-class JobService {
-  Future<List<Job>> fetchJobs() async {
-    // Simulate an API delay
-    await Future.delayed(const Duration(seconds: 0));
-
-    // Mock API response
-    final response = [
-      {
-        "id": 1,
-        "role": "UI/UX Designer",
-        "company": "Google Inc.",
-        "location": "California, USA",
-        "tags": ["Design", "Full time", "Senior Designer"],
-        "salary": "\$15K/Mo"
-      },
-      {
-        "id": 2,
-        "role": "UX Researcher",
-        "company": "Twitter Inc.",
-        "location": "California, USA",
-        "tags": ["Research", "Full time", "Mid-level"],
-        "salary": "\$12K/Mo"
-      },
-      {
-        "id": 3,
-        "role": "Frontend Developer",
-        "company": "Meta Platforms",
-        "location": "Seattle, USA",
-        "tags": ["Development", "Full time", "Junior Developer"],
-        "salary": "\$10K/Mo"
-      }
-    ];
-
-    // Convert the response to a list of Job objects
-    return response.map((job) => Job.fromJson(job)).toList();
-  }
-}
-
-class UserGoal {
-  final String title;
-  final String description;
-  final int date;
-
-  UserGoal({
-    required this.title,
-    required this.description,
-    required this.date,
-  });
-
-  factory UserGoal.fromJson(Map<String, dynamic> json) {
-    return UserGoal(
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      date: json['date'] ?? 0,
-    );
-  }
-}
+import 'package:showcaseview/showcaseview.dart';
 
 // CareerScreen
 class CareerScreen extends StatefulWidget {
@@ -112,7 +24,6 @@ class CareerScreen extends StatefulWidget {
 }
 
 class _CareerScreenState extends State<CareerScreen> {
-  final JobService jobService = JobService();
   late final JobsController jobsController;
   late final UserProfileController userProfileController;
 
@@ -127,30 +38,17 @@ class _CareerScreenState extends State<CareerScreen> {
     if (userProfileController.userProfile.value == null) {
       userProfileController.getUserProfile();
     }
+    if (!TokenInfo.careerTutorialViewDone) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          ShowCaseWidget.of(context).startShowCase(
+            [_one, _two, _three, _four],
+          );
+          TokenInfo.careerTutorialViewDoneNow();
+        },
+      );
+    }
   }
-
-  final List<UserGoal> userGoals = [
-    UserGoal(
-      title: 'Master a New Programming Language',
-      description: 'Bachelor\'s Degree, Career Canvas',
-      date: DateTime.now().add(Duration(days: 10)).millisecondsSinceEpoch,
-    ),
-    UserGoal(
-      title: 'Build and Deploy a Full-Stack App',
-      description: 'Internship, Career Canvas',
-      date: DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch,
-    ),
-    UserGoal(
-      title: 'Improve Code Quality',
-      description: 'MBA, Career Canvas',
-      date: DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch,
-    ),
-    UserGoal(
-      title: 'Automate a Repetitive Task',
-      description: 'MBA, Career Canvas',
-      date: DateTime.now().subtract(Duration(days: 3)).millisecondsSinceEpoch,
-    ),
-  ];
 
   String getFormatedDateForTimeline(DateTime date) {
     return DateFormat().add_MMM().add_y().format(date);
@@ -196,6 +94,11 @@ class _CareerScreenState extends State<CareerScreen> {
     }
   }
 
+  GlobalKey _one = GlobalKey();
+  GlobalKey _two = GlobalKey();
+  GlobalKey _three = GlobalKey();
+  GlobalKey _four = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -238,51 +141,59 @@ class _CareerScreenState extends State<CareerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "Start Assessment to know better yourself ",
-                                textAlign: TextAlign.center,
-                                style: getCTATextStyle(
-                                  context,
-                                  16,
-                                  color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Showcase(
+                    key: _one,
+                    title: "Free Personality Test",
+                    targetBorderRadius: BorderRadius.circular(16),
+                    description:
+                        "Take the Personality test assesment and get to know yourself better and we will be able to suggest you career guid based on your personalities.",
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Start Assessment to know better yourself ",
+                                  textAlign: TextAlign.center,
+                                  style: getCTATextStyle(
+                                    context,
+                                    16,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                PersonalityTestScreen.routeName,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              PersonalityTestScreen.routeName,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
+                            child: Text(
+                              'Start Assessment',
+                              style: getCTATextStyle(
+                                context,
+                                16,
+                                color: primaryBlue,
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'Start Assessment',
-                            style: getCTATextStyle(
-                              context,
-                              16,
-                              color: primaryBlue,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -297,131 +208,159 @@ class _CareerScreenState extends State<CareerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                  strokeAlign: BorderSide.strokeAlignOutside,
-                                ),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: CachedNetworkImage(
-                                imageUrl: userProfileController
-                                        .userProfile.value?.profilePicture ??
-                                    "",
-                                placeholder: (context, url) => Center(
-                                    child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                )),
-                                errorWidget: (context, url, error) => Center(
-                                  child: Icon(
-                                    Icons.error,
+                  clipBehavior: Clip.antiAlias,
+                  child: Showcase(
+                    key: _two,
+                    title: "Who am I",
+                    targetBorderRadius: BorderRadius.circular(16),
+                    description:
+                        "This is the user profile of the user who is logged in. You can edit your profile and change your profile picture here.",
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                    strokeAlign: BorderSide.strokeAlignOutside,
                                   ),
                                 ),
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userProfileController
-                                            .userProfile.value?.name ??
-                                        "",
-                                    style: getCTATextStyle(
-                                      context,
-                                      16,
-                                      color: Colors.white,
+                                clipBehavior: Clip.antiAlias,
+                                child: CachedNetworkImage(
+                                  imageUrl: userProfileController
+                                          .userProfile.value?.profilePicture ??
+                                      "",
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  )),
+                                  errorWidget: (context, url, error) => Center(
+                                    child: Icon(
+                                      Icons.error,
                                     ),
                                   ),
-                                  Text(
-                                    userProfileController.userProfile.value
-                                            ?.personalityType ??
-                                        "",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      userProfileController
+                                              .userProfile.value?.name ??
+                                          "",
+                                      style: getCTATextStyle(
+                                        context,
+                                        16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      userProfileController.userProfile.value
+                                              ?.personalityType ??
+                                          "",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Goals & Timeline",
-                      style: getCTATextStyle(context, 16, color: Colors.black),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => AlertDialog.adaptive(
-                            scrollable: true,
-                            content: AddGoals(
-                              onSubmit: (List<String> goals) async {
-                                await userProfileController.updateGoals(goals);
-                                await userProfileController.getUserProfile();
-                              },
+                Showcase(
+                  key: _three,
+                  title: "Your Goals",
+                  targetBorderRadius: BorderRadius.circular(16),
+                  description:
+                      "Here you can see and add your goals so that we can suggest you career guides based on your goals.",
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Goals",
+                            style: getCTATextStyle(context, 16,
+                                color: Colors.black),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => AlertDialog.adaptive(
+                                  scrollable: true,
+                                  content: AddGoals(
+                                    existingGoals: userProfileController
+                                        .userProfile.value?.goals,
+                                    onSubmit: (List<String> goals) async {
+                                      await userProfileController
+                                          .updateGoals(goals);
+                                      await userProfileController
+                                          .getUserProfile();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
+                            child: Text(
+                              "Add New Goal",
+                              style: getCTATextStyle(
+                                context,
+                                14,
+                                color: primaryBlue,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                      child: Text(
-                        "Add New Goal",
-                        style: getCTATextStyle(
-                          context,
-                          14,
-                          color: primaryBlue,
-                        ),
-                      ),
-                    )
-                  ],
+                      (userProfileController
+                                  .userProfile.value?.goals.isNotEmpty ??
+                              false)
+                          ? getGoals(
+                              userProfileController.userProfile.value?.goals)
+                          : Center(
+                              child: Text(
+                                "No Goals Yet",
+                                style: getCTATextStyle(
+                                  context,
+                                  16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
                 ),
-                (userProfileController.userProfile.value?.goals.isNotEmpty ??
-                        false)
-                    ? getGoals(userProfileController.userProfile.value?.goals)
-                    : Center(
-                        child: Text(
-                          "No Goals Yet",
-                          style: getCTATextStyle(
-                            context,
-                            16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
                 SizedBox(height: 20),
                 // Courses Section
 
@@ -436,40 +375,48 @@ class _CareerScreenState extends State<CareerScreen> {
                 SizedBox(
                   height: 8,
                 ),
-                Container(
-                  constraints: const BoxConstraints(maxHeight: 210),
-                  child: Obx(() {
-                    if (jobsController.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (jobsController.errorMessage.isNotEmpty) {
-                      return Center(
-                        child: Text(
-                          jobsController.errorMessage.value,
-                          style: TextStyle(
-                            color: Colors.red,
+                Showcase(
+                  key: _four,
+                  title: "Jobs for you",
+                  targetBorderRadius: BorderRadius.circular(16),
+                  description:
+                      "Here you can see some job suggestions based on your profile.",
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 210),
+                    child: Obx(() {
+                      if (jobsController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (jobsController.errorMessage.isNotEmpty) {
+                        return Center(
+                          child: Text(
+                            jobsController.errorMessage.value,
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                    if (jobsController.jobs.value == null ||
-                        jobsController.jobs.value!.data == null ||
-                        jobsController.jobs.value!.data!.jobs == null) {
-                      return const Center(child: Text('No Jobs Available'));
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return getJobItem(
-                          context,
-                          jobsController.jobs.value!.data!.jobs![index],
                         );
-                      },
-                      itemCount: jobsController.jobs.value!.data!.jobs!.length,
-                    );
-                  }),
+                      }
+                      if (jobsController.jobs.value == null ||
+                          jobsController.jobs.value!.data == null ||
+                          jobsController.jobs.value!.data!.jobs == null) {
+                        return const Center(child: Text('No Jobs Available'));
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return getJobItem(
+                            context,
+                            jobsController.jobs.value!.data!.jobs![index],
+                          );
+                        },
+                        itemCount:
+                            jobsController.jobs.value!.data!.jobs!.length,
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),

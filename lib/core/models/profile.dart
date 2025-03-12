@@ -49,7 +49,10 @@ class UserProfileData {
     return UserProfileData(
       following: (map['following'] as int?) ?? 0,
       followers: (map['followers'] as int?) ?? 0,
-      goals: (map['goals'] as List<String>?) ?? [],
+      goals: (map['goals'] as List<dynamic>?)
+              ?.map<String>((e) => e as String)
+              .toList() ??
+          [],
       coins: (map['coins'] as int?) ?? 0,
       address: (map['address'] as String?) ?? "",
       email: (map['email'] as String?) ?? "",

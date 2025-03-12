@@ -6,6 +6,7 @@ class TokenInfo {
   static late String type;
   static late DateTime expiresAt;
   static late SharedPreferences prefs;
+  static late bool careerTutorialViewDone;
 
   static final TokenInfo _instance = TokenInfo._internal();
   TokenInfo._internal();
@@ -22,6 +23,7 @@ class TokenInfo {
     expiresAt = DateTime.fromMillisecondsSinceEpoch(expiry);
     username = prefs.getString('username') ?? '';
     type = prefs.getString('type') ?? '';
+    careerTutorialViewDone = prefs.getBool('careerTutorialViewDone') ?? false;
   }
 
   static Future setToken(
@@ -38,6 +40,11 @@ class TokenInfo {
     await prefs.setString('username', username);
     await prefs.setString('type', type);
     await prefs.setInt('expiresAt', expiresAt.millisecondsSinceEpoch);
+  }
+
+  static void careerTutorialViewDoneNow() {
+    careerTutorialViewDone = true;
+    prefs.setBool('careerTutorialViewDone', true);
   }
 
   static Future<void> clear() async {
