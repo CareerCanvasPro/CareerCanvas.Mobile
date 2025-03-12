@@ -1,10 +1,6 @@
-import 'package:career_canvas/features/Networking/presentation/screens/Mentions/MentionsTab.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'Community/CommunityTab.dart';
-import 'Feeds/MyFeedTab.dart';
-import 'Mentors/MyMentorsTab.dart';
 
 class NetworkingScreen extends StatelessWidget {
   NetworkingScreen({super.key});

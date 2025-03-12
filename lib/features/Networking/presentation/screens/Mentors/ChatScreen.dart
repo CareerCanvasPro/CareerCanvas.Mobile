@@ -14,7 +14,11 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _messages = [
     {'sender': 'other', 'text': 'Hello sir, Good Morning'},
     {'sender': 'self', 'text': 'Morning, Can I help you?'},
-    {'sender': 'other', 'text': 'I saw the UI/UX Designer vacancy that you uploaded on LinkedIn yesterday and I am interested in joining your company.'},
+    {
+      'sender': 'other',
+      'text':
+          'I saw the UI/UX Designer vacancy that you uploaded on LinkedIn yesterday and I am interested in joining your company.'
+    },
     {'sender': 'self', 'text': 'Oh yes, please send your CV/Resume here'},
     {'sender': 'other', 'text': 'Jamet - CV - UI/UX Designer.PDF'},
   ];
@@ -45,10 +49,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final String name = arguments['name'];
-    final String role = arguments['role'];
-    final String location = arguments['location'];
     final String imageUrl = arguments['imageUrl'];
     final String status = arguments['status'];
 
@@ -72,7 +75,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     status,
@@ -102,11 +106,19 @@ class _ChatScreenState extends State<ChatScreen> {
           final message = _messages[index];
           final isSelf = message['sender'] == 'self';
           final bubbleColor = isSelf
-              ? (theme.brightness == Brightness.dark ? Colors.blue[700] : Colors.blue[100])
-              : (theme.brightness == Brightness.dark ? Colors.grey[800] : Colors.grey[200]);
+              ? (theme.brightness == Brightness.dark
+                  ? Colors.blue[700]
+                  : Colors.blue[100])
+              : (theme.brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[200]);
           final textColor = isSelf
-              ? (theme.brightness == Brightness.dark ? Colors.white : Colors.black)
-              : (theme.brightness == Brightness.dark ? Colors.white : Colors.black);
+              ? (theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black)
+              : (theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black);
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
