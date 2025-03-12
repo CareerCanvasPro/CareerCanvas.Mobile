@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/education.dart';
@@ -11,6 +13,7 @@ import 'package:career_canvas/src/profile/presentation/getx/controllers/user_pro
 import 'package:career_canvas/src/profile/presentation/screens/widgets/language_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/skills_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/text_field_dialog.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -128,6 +131,62 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  // void pickFileAndUpload() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+  //   if (result != null) {
+  //     File file = File(result.files.single.path!);
+  //     userProfileController.uploadResume(
+  //         file, userProfileController.resumes.length + 1);
+  //   }
+  // }
+
+void pickFileAndUpload() async {
+  try {
+    // Show file picker and allow the user to pick a file
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    // Check if a file was selected
+    if (result != null) {
+      // Get the picked file's path
+      String? filePath = result.files.single.path;
+
+      if (filePath != null) {
+        // Platform-specific file path handling
+        File file;
+        
+        if (Platform.isAndroid) {
+          // For Android, you may need to resolve content URI to file path
+          // Here we're assuming you have a method to resolve the content URI into a file path
+          file = File(filePath); // Assuming it's a cached file path or resolved URI
+        } else if (Platform.isIOS) {
+          // For iOS, file paths are directly accessible
+          file = File(filePath);
+        } else {
+          // Default fallback for other platforms (e.g., Web)
+          file = File(filePath);
+        }
+
+        // Get the index of the new resume
+        int index = userProfileController.resumes.length + 1;
+
+        // Proceed to upload the resume
+        await userProfileController.uploadResume(file, index);
+        
+      } else {
+        // Handle case where filePath is null
+        Get.snackbar("Error", "Failed to get the file path.");
+      }
+    } else {
+      // Handle case where no file was selected
+      Get.snackbar("Error", "No file selected.");
+    }
+  } catch (e) {
+    // Handle errors that may occur during the file picking or upload process
+    Get.snackbar("Error", "An error occurred while picking or uploading the file: $e");
+  }
+}
+
   String formatBytes(int bytes, {int decimals = 2}) {
     if (bytes <= 0) return "0 B";
     const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -198,11 +257,19 @@ class _UserProfileState extends State<UserProfile> {
                     // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
 
                     // Resume section
-
+                      // GestureDetector(
+                      //   onTap: pickFileAndUpload,
+                      //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
+                      // ),
                     _resumeSection(
                       context,
-                      userProfileController.userProfile.value?.resumes ?? [],
+                      userProfileController
+                          .resumes, // Assuming resumes are loaded into this list
                     ),
+                    // _resumeSection(
+                    //   context,
+                    //   userProfileController.userProfile.value?.resumes ?? [],
+                    // ),
                   ],
                 ),
               ),
@@ -864,6 +931,78 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Container _resumeSection(BuildContext context, List<Resume> data) {
+    return Container(
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 20,
+      ),
+      margin: const EdgeInsets.only(
+        top: 20,
+        left: 24,
+        right: 24,
+        bottom: 20,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 0,
+            offset: const Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                "assets/svg/icons/Icon_Appreciation.svg",
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                "Resume",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: pickFileAndUpload, // Trigger file picker when tapped
+                child: SvgPicture.asset(
+                  "assets/svg/icons/Add.svg",
+                ),
+              ),
+            ],
+          ),
+          Divider(
+            color: Colors.black.withOpacity(0.15),
+            height: 24,
+            thickness: 1,
+          ),
+          if (data.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return getResumeItem(
+                  context,
+                  resume: data[index],
+                  onRemove: () {},
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  Container _resumeSectionold(BuildContext context, List<Resume> data) {
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
