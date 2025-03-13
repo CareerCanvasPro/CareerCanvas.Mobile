@@ -52,6 +52,7 @@ class TokenInfo {
     TokenInfo.username = '';
     TokenInfo.type = '';
     TokenInfo.expiresAt = DateTime.now();
+    TokenInfo.careerTutorialViewDone = false;
     await prefs.clear();
   }
 

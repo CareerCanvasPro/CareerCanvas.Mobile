@@ -54,8 +54,6 @@ void main() async {
   // Log table data
   await logUsersTableData();
   final mainRouteData = await checkIfUserLoggedIn();
-  PhoneNumber? phone = PhoneNumberParser.parse("+880178-737-3715");
-  print(phone);
   //-------------
   runApp(
     MyApp(

@@ -44,7 +44,7 @@ class _CareerScreenState extends State<CareerScreen> {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
           ShowCaseWidget.of(context).startShowCase(
-            [_one, _two, _three, _four],
+            [_one, _three, _four],
           );
           TokenInfo.careerTutorialViewDoneNow();
         },
@@ -137,104 +137,106 @@ class _CareerScreenState extends State<CareerScreen> {
                   "Personality Assesment",
                   style: getCTATextStyle(context, 16, color: Colors.black),
                 ),
+                SizedBox(height: 8),
                 getPersonalityTest(context),
-                SizedBox(height: 20),
-                Text(
-                  "Who am I",
-                  style: getCTATextStyle(context, 16, color: Colors.black),
-                ),
-                Card(
-                  color: primaryBlue,
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Showcase(
-                    key: _two,
-                    title: "Who am I",
-                    targetBorderRadius: BorderRadius.circular(16),
-                    description:
-                        "This is the user profile of the user who is logged in. You can edit your profile and change your profile picture here.",
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                    strokeAlign: BorderSide.strokeAlignOutside,
-                                  ),
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: CachedNetworkImage(
-                                  imageUrl: userProfileController
-                                          .userProfile.value?.profilePicture ??
-                                      "",
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  )),
-                                  errorWidget: (context, url, error) => Center(
-                                    child: Icon(
-                                      Icons.error,
-                                    ),
-                                  ),
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      userProfileController
-                                              .userProfile.value?.name ??
-                                          "",
-                                      style: getCTATextStyle(
-                                        context,
-                                        16,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Text(
-                                      userProfileController
-                                              .userProfile.value?.aboutMe ??
-                                          "",
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // SizedBox(height: 20),
+                // Text(
+                //   "Who am I",
+                //   style: getCTATextStyle(context, 16, color: Colors.black),
+                // ),
+                // Card(
+                //   color: primaryBlue,
+                //   elevation: 3,
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(16),
+                //   ),
+                //   clipBehavior: Clip.antiAlias,
+                //   child: Showcase(
+                //     key: _two,
+                //     title: "Who am I",
+                //     targetBorderRadius: BorderRadius.circular(16),
+                //     description:
+                //         "This is the user profile of the user who is logged in. You can edit your profile and change your profile picture here.",
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(16.0),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [
+                //           Row(
+                //             children: [
+                //               Container(
+                //                 decoration: BoxDecoration(
+                //                   borderRadius: BorderRadius.circular(10),
+                //                   border: Border.all(
+                //                     color: Colors.white,
+                //                     width: 2,
+                //                     strokeAlign: BorderSide.strokeAlignOutside,
+                //                   ),
+                //                 ),
+                //                 clipBehavior: Clip.antiAlias,
+                //                 child: CachedNetworkImage(
+                //                   imageUrl: userProfileController
+                //                           .userProfile.value?.profilePicture ??
+                //                       "",
+                //                   placeholder: (context, url) => Center(
+                //                       child: CircularProgressIndicator(
+                //                     valueColor: AlwaysStoppedAnimation<Color>(
+                //                       Colors.white,
+                //                     ),
+                //                   )),
+                //                   errorWidget: (context, url, error) => Center(
+                //                     child: Icon(
+                //                       Icons.error,
+                //                     ),
+                //                   ),
+                //                   height: 100,
+                //                   width: 100,
+                //                   fit: BoxFit.cover,
+                //                 ),
+                //               ),
+                //               SizedBox(width: 16),
+                //               Expanded(
+                //                 child: Column(
+                //                   crossAxisAlignment: CrossAxisAlignment.start,
+                //                   children: [
+                //                     Text(
+                //                       userProfileController
+                //                               .userProfile.value?.name ??
+                //                           "",
+                //                       style: getCTATextStyle(
+                //                         context,
+                //                         16,
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //                     Text(
+                //                       userProfileController
+                //                               .userProfile.value?.aboutMe ??
+                //                           "",
+                //                       maxLines: 3,
+                //                       overflow: TextOverflow.ellipsis,
+                //                       style: TextStyle(
+                //                         fontSize: 14,
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 20),
                 Showcase(
                   key: _three,
                   title: "Your Goals",
                   targetBorderRadius: BorderRadius.circular(16),
+                  targetPadding: const EdgeInsets.all(16.0),
                   description:
                       "Here you can see and add your goals so that we can suggest you career guides based on your goals.",
                   child: Column(
@@ -291,13 +293,16 @@ class _CareerScreenState extends State<CareerScreen> {
                               false)
                           ? getGoals(
                               userProfileController.userProfile.value?.goals)
-                          : Center(
-                              child: Text(
-                                "No Goals Yet",
-                                style: getCTATextStyle(
-                                  context,
-                                  16,
-                                  color: Colors.grey,
+                          : Container(
+                              height: 150,
+                              child: Center(
+                                child: Text(
+                                  "No Goals Yet",
+                                  style: getCTATextStyle(
+                                    context,
+                                    16,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
                             ),
@@ -403,9 +408,8 @@ class _CareerScreenState extends State<CareerScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (userProfileController.userProfile.value != null &&
-                  userProfileController
-                          .userProfile.value!.personalityTestStatus ==
-                      'pending')
+                  userProfileController.userProfile.value!.personalityType ==
+                      null)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -450,9 +454,11 @@ class _CareerScreenState extends State<CareerScreen> {
                   ],
                 ),
               if (userProfileController.userProfile.value != null &&
+                  userProfileController.userProfile.value!.personalityType !=
+                      null &&
                   userProfileController
-                          .userProfile.value!.personalityTestStatus !=
-                      'pending')
+                          .userProfile.value!.personalityTestResult !=
+                      null)
                 getPersonalityTestInfo(
                   context,
                   userProfileController.userProfile.value?.personalityType ??
