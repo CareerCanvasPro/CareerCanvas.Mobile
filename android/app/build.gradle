@@ -6,10 +6,10 @@ plugins {
 }
 
 def keystoreProperties = new Properties()
-   def keystorePropertiesFile = rootProject.file('key.properties')
-   if (keystorePropertiesFile.exists()) {
-       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-   }
+    def keystorePropertiesFile = rootProject.file('key.properties')
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
 
 android {
     namespace = "pro.careercanvas.app"
@@ -26,14 +26,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "pro.careercanvas.app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 6
+        versionName = "1.0.5"
     }
 
     bundle {
@@ -52,16 +49,16 @@ android {
     }
 
     signingConfigs {
-       release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
-       }
-   }
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
 
     buildTypes {
-       release {
+        release {
            // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             minifyEnabled false
@@ -71,9 +68,9 @@ android {
             shrinkResources false
 
            //signingConfig signingConfigs.release
-           signingConfig signingConfigs.release
-       }
-       debug {
+            signingConfig signingConfigs.release
+        }
+        debug {
            // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             minifyEnabled false
@@ -84,7 +81,7 @@ android {
 
             signingConfig signingConfigs.release
         }
-   }
+    }
 }
 
 flutter {

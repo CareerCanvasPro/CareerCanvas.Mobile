@@ -185,4 +185,29 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
       return "Failed to update goals: $e";
     }
   }
+
+  @override
+  Future<String> updateResumes(List<Resume> resumes) async {
+    try {
+      await apiClient.put(
+        ApiClient.userBase + '/user/profile',
+        data: {
+          "resumes": resumes.map((e) => e.toMap()).toList(),
+        },
+        useToken: true,
+      );
+      return "Updated your resumes.";
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        return e.response!.data?["message"].toString() ??
+            'Failed to update resumes';
+      } else {
+        return e.message ?? e.toString();
+      }
+    } catch (e) {
+      return "Failed to update resumes: $e";
+    }
+  }
 }

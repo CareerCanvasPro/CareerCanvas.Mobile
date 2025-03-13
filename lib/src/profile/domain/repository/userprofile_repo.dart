@@ -10,6 +10,7 @@ abstract class UserProfileRepository {
   Future<String> updateSkills(List<String> experiance);
   Future<String> updateLanguage(List<String> languages);
   Future<String> updateGoals(List<String> goals);
+  Future<String> updateResumes(List<Resume> resumes);
   Future addResume(Resume resume);
   Future<String> updateAboutMe(String aboutMe);
 }

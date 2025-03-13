@@ -21,6 +21,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class UserProfile extends StatefulWidget {
   const UserProfile({
     super.key,
@@ -141,51 +143,52 @@ class _UserProfileState extends State<UserProfile> {
   //   }
   // }
 
-void pickFileAndUpload() async {
-  try {
-    // Show file picker and allow the user to pick a file
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+  void pickFileAndUpload() async {
+    try {
+      // Show file picker and allow the user to pick a file
+      FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    // Check if a file was selected
-    if (result != null) {
-      // Get the picked file's path
-      String? filePath = result.files.single.path;
+      // Check if a file was selected
+      if (result != null) {
+        // Get the picked file's path
+        String? filePath = result.files.single.path;
 
-      if (filePath != null) {
-        // Platform-specific file path handling
-        File file;
-        
-        if (Platform.isAndroid) {
-          // For Android, you may need to resolve content URI to file path
-          // Here we're assuming you have a method to resolve the content URI into a file path
-          file = File(filePath); // Assuming it's a cached file path or resolved URI
-        } else if (Platform.isIOS) {
-          // For iOS, file paths are directly accessible
-          file = File(filePath);
+        if (filePath != null) {
+          // Platform-specific file path handling
+          File file;
+
+          if (Platform.isAndroid) {
+            // For Android, you may need to resolve content URI to file path
+            // Here we're assuming you have a method to resolve the content URI into a file path
+            file = File(
+                filePath); // Assuming it's a cached file path or resolved URI
+          } else if (Platform.isIOS) {
+            // For iOS, file paths are directly accessible
+            file = File(filePath);
+          } else {
+            // Default fallback for other platforms (e.g., Web)
+            file = File(filePath);
+          }
+
+          // Get the index of the new resume
+          int index = userProfileController.resumes.length + 1;
+
+          // Proceed to upload the resume
+          await userProfileController.uploadResume(file, index);
         } else {
-          // Default fallback for other platforms (e.g., Web)
-          file = File(filePath);
+          // Handle case where filePath is null
+          Get.snackbar("Error", "Failed to get the file path.");
         }
-
-        // Get the index of the new resume
-        int index = userProfileController.resumes.length + 1;
-
-        // Proceed to upload the resume
-        await userProfileController.uploadResume(file, index);
-        
       } else {
-        // Handle case where filePath is null
-        Get.snackbar("Error", "Failed to get the file path.");
+        // Handle case where no file was selected
+        Get.snackbar("Error", "No file selected.");
       }
-    } else {
-      // Handle case where no file was selected
-      Get.snackbar("Error", "No file selected.");
+    } catch (e) {
+      // Handle errors that may occur during the file picking or upload process
+      Get.snackbar(
+          "Error", "An error occurred while picking or uploading the file: $e");
     }
-  } catch (e) {
-    // Handle errors that may occur during the file picking or upload process
-    Get.snackbar("Error", "An error occurred while picking or uploading the file: $e");
   }
-}
 
   String formatBytes(int bytes, {int decimals = 2}) {
     if (bytes <= 0) return "0 B";
@@ -257,10 +260,10 @@ void pickFileAndUpload() async {
                     // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
 
                     // Resume section
-                      // GestureDetector(
-                      //   onTap: pickFileAndUpload,
-                      //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
-                      // ),
+                    // GestureDetector(
+                    //   onTap: pickFileAndUpload,
+                    //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
+                    // ),
                     _resumeSection(
                       context,
                       userProfileController
@@ -1081,51 +1084,69 @@ void pickFileAndUpload() async {
     required Resume resume,
     required Function()? onRemove,
   }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            "assets/svg/icons/PDF.svg",
+    return GestureDetector(
+      onTap: () {
+        launchUrl(
+          Uri.parse(resume.url),
+          webOnlyWindowName: 'Resume',
+          mode: LaunchMode.inAppWebView,
+          browserConfiguration: const BrowserConfiguration(
+            showTitle: false,
           ),
-          const SizedBox(
-            width: 8,
+          webViewConfiguration: const WebViewConfiguration(
+            headers: {
+              'User-Agent':
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+            },
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  resume.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  "${formatBytes(resume.size)} . ${getFormatedDateForResume(resume.uploadedAt)}",
-                  overflow: TextOverflow.ellipsis,
-                  style: getBodyTextStyle(
-                    context,
-                    12,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              "assets/svg/icons/PDF.svg",
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          GestureDetector(
-            onTap: onRemove,
-            child: SvgPicture.asset(
-              "assets/svg/icons/Icon_Remove.svg",
+            const SizedBox(
+              width: 8,
             ),
-          ),
-        ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    resume.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    "${formatBytes(resume.size)} . ${getFormatedDateForResume(resume.uploadedAt)}",
+                    overflow: TextOverflow.ellipsis,
+                    style: getBodyTextStyle(
+                      context,
+                      12,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            GestureDetector(
+              onTap: onRemove,
+              child: SvgPicture.asset(
+                "assets/svg/icons/Icon_Remove.svg",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
