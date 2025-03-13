@@ -12,9 +12,8 @@ import 'package:get/get.dart' as getIt;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../core/ImagePath/ImageAssets.dart';
 
 class ProfileCompletionScreenTwo extends StatefulWidget {
   static const String routeName = '/profileCompletiontwo';
@@ -51,6 +50,14 @@ class _ProfileCompletionScreenTwoState
     );
   }
 
+  void _removeEducation(int index) {
+    if (_educationList.isNotEmpty && index < _educationList.length) {
+      setState(() {
+        _educationList.removeAt(index);
+      });
+    }
+  }
+
   String formatDate(DateTime date) {
     return DateFormat().add_yMMMMd().format(date);
   }
@@ -64,9 +71,12 @@ class _ProfileCompletionScreenTwoState
       child: ExpansionTile(
         initiallyExpanded: index == selectedIndex,
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            _removeEducation(index);
+          },
           icon: Icon(
             Icons.delete_forever_rounded,
+            color: Colors.red,
           ),
         ),
         collapsedBackgroundColor: primaryBlue,
@@ -222,10 +232,7 @@ class _ProfileCompletionScreenTwoState
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: scaffoldBackgroundColor,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         height: context.screenHeight,
@@ -237,9 +244,12 @@ class _ProfileCompletionScreenTwoState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      ImageAssets.logo, // Replace with your logo path
-                      height: 50,
+                    Center(
+                      child: SvgPicture.asset(
+                        "assets/svg/Career_Canvas_Logo_black.svg",
+                        height: 50,
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                     SizedBox(
                       width: 2,
@@ -257,6 +267,21 @@ class _ProfileCompletionScreenTwoState
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               SizedBox(height: 16),
+
+              if (_educationList.isEmpty)
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'No Education Info Added.',
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
 
               // Form fields
               // Dynamic list of education fields
@@ -316,24 +341,16 @@ class _ProfileCompletionScreenTwoState
   }
 
   Widget buildProgressBar({required double progress}) {
-    return Stack(
+    return Row(
       children: [
-        Container(
-          height: 5,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: progress, // Dynamic progress
-          child: Container(
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(5),
-            ),
+        Expanded(
+          child: LinearPercentIndicator(
+            lineHeight: 10,
+            animation: true,
+            percent: progress,
+            backgroundColor: Colors.grey.shade300,
+            progressColor: primaryBlue,
+            barRadius: Radius.circular(10),
           ),
         ),
       ],

@@ -50,9 +50,12 @@ class _UserProfileState extends State<UserProfile> {
       context,
       onPressedSubmit: (education) async {
         Get.back();
+        List<Education> educations =
+            userProfileController.userProfile.value?.education ?? [];
+        educations.add(education);
         await userProfileController.uploadEducation(
           UploadEducation(
-            education: [education],
+            education: educations,
           ),
         );
         await userProfileController.getUserProfile();
@@ -60,19 +63,52 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  void _removeEducation(int index) async {
+    if (userProfileController.userProfile.value?.education != null) {
+      List<Education> educations =
+          userProfileController.userProfile.value!.education;
+      if (educations.isNotEmpty && index < educations.length) {
+        await userProfileController.uploadEducation(
+          UploadEducation(
+            education: educations,
+          ),
+        );
+        await userProfileController.getUserProfile();
+      }
+    }
+  }
+
   void _addWorkExperiance() async {
     CustomDialog.showAddExperianceDialog(
       context,
       onPressedSubmit: (experiance) async {
         Get.back();
+        List<Experiance> experiances =
+            userProfileController.userProfile.value?.occupation ?? [];
+        experiances.add(experiance);
         await userProfileController.uploadExperiance(
           UploadExperiance(
-            occupation: [experiance],
+            occupation: experiances,
           ),
         );
         await userProfileController.getUserProfile();
       },
     );
+  }
+
+  void _removeExperiance(int index) async {
+    if (userProfileController.userProfile.value?.occupation != null) {
+      List<Experiance> experiances =
+          userProfileController.userProfile.value!.occupation;
+      if (experiances.isNotEmpty && index < experiances.length) {
+        await userProfileController.uploadExperiance(
+          UploadExperiance(
+            occupation: experiances,
+          ),
+        );
+        await userProfileController.getUserProfile();
+      }
+    }
   }
 
   void _updateAboutMe() async {
@@ -125,7 +161,7 @@ class _UserProfileState extends State<UserProfile> {
         content: LanguageAddDialog(
           existingLanguages: userProfileController.userProfile.value?.languages,
           onSubmit: (List<String> languages) async {
-            // await userProfileController.upda(skills);
+            await userProfileController.updateLanguage(languages);
             await userProfileController.getUserProfile();
           },
         ),
@@ -539,6 +575,7 @@ class _UserProfileState extends State<UserProfile> {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -1089,16 +1126,7 @@ class _UserProfileState extends State<UserProfile> {
         launchUrl(
           Uri.parse(resume.url),
           webOnlyWindowName: 'Resume',
-          mode: LaunchMode.inAppWebView,
-          browserConfiguration: const BrowserConfiguration(
-            showTitle: false,
-          ),
-          webViewConfiguration: const WebViewConfiguration(
-            headers: {
-              'User-Agent':
-                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-            },
-          ),
+          mode: LaunchMode.inAppBrowserView,
         );
       },
       child: Padding(

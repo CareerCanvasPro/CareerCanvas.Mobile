@@ -10,8 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../core/ImagePath/ImageAssets.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class ProfileCompletionScreenThree extends StatefulWidget {
   static const String routeName = '/profileCompletionThree';
@@ -51,6 +50,14 @@ class _ProfileCompletionScreenThreeState
     );
   }
 
+  void _removeExperiance(int index) {
+    if (_experiances.isNotEmpty && index < _experiances.length) {
+      setState(() {
+        _experiances.removeAt(index);
+      });
+    }
+  }
+
   String formatDate(DateTime date) {
     return DateFormat().add_yMMMMd().format(date);
   }
@@ -80,9 +87,12 @@ class _ProfileCompletionScreenThreeState
         ),
         controlAffinity: ListTileControlAffinity.leading,
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            _removeExperiance(index);
+          },
           icon: Icon(
             Icons.delete_forever_rounded,
+            color: Colors.red,
           ),
         ),
         collapsedBackgroundColor: primaryBlue,
@@ -231,9 +241,12 @@ class _ProfileCompletionScreenThreeState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      ImageAssets.logo, // Replace with your logo path
-                      height: 50,
+                    Center(
+                      child: SvgPicture.asset(
+                        "assets/svg/Career_Canvas_Logo_black.svg",
+                        height: 50,
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                     SizedBox(
                       width: 2,
@@ -251,6 +264,20 @@ class _ProfileCompletionScreenThreeState
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               SizedBox(height: 20),
+              if (_experiances.isEmpty)
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'No Experiance Info Added.',
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
               // Form fields
               // Dynamic list of experience fields
               if (_experiances.isNotEmpty)
@@ -300,24 +327,16 @@ class _ProfileCompletionScreenThreeState
   }
 
   Widget buildProgressBar({required double progress}) {
-    return Stack(
+    return Row(
       children: [
-        Container(
-          height: 5,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: progress, // Dynamic progress
-          child: Container(
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(5),
-            ),
+        Expanded(
+          child: LinearPercentIndicator(
+            lineHeight: 10,
+            animation: true,
+            percent: progress,
+            backgroundColor: Colors.grey.shade300,
+            progressColor: primaryBlue,
+            barRadius: Radius.circular(10),
           ),
         ),
       ],

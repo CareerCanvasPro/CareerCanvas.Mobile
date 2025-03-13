@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/skills.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
@@ -5,13 +6,13 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-import '../../../../core/ImagePath/ImageAssets.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class ProfileCompletionScreenFour extends StatefulWidget {
   static const String routeName = '/profileCompletionFour';
@@ -190,9 +191,12 @@ class _ProfileCompletionScreenFourState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        ImageAssets.logo, // Replace with your logo path
-                        height: 50,
+                      Center(
+                        child: SvgPicture.asset(
+                          "assets/svg/Career_Canvas_Logo_black.svg",
+                          height: 50,
+                          fit: BoxFit.fitHeight,
+                        ),
                       ),
                       SizedBox(
                         width: 2,
@@ -282,24 +286,16 @@ class _ProfileCompletionScreenFourState
   }
 
   Widget buildProgressBar({required double progress}) {
-    return Stack(
+    return Row(
       children: [
-        Container(
-          height: 5,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: progress, // Dynamic progress
-          child: Container(
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(5),
-            ),
+        Expanded(
+          child: LinearPercentIndicator(
+            lineHeight: 10,
+            animation: true,
+            percent: progress,
+            backgroundColor: Colors.grey.shade300,
+            progressColor: primaryBlue,
+            barRadius: Radius.circular(10),
           ),
         ),
       ],
@@ -379,6 +375,7 @@ class _ProfileCompletionScreenFourState
                         setState(() {
                           isUploadingData = false;
                         });
+                        getIt<UserProfileController>().getUserProfile();
                         Get.to(
                           () => HomePage(),
                         );

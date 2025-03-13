@@ -35,7 +35,7 @@ class ApiClient {
 
   Future<Response> put(
     String path, {
-    Map<String, dynamic>? data,
+    Object? data,
     bool useToken = false,
   }) async {
     Map<String, dynamic> headers = {

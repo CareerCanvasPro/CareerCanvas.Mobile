@@ -263,13 +263,6 @@ class LoginScreen extends StatelessWidget {
                             'token': response.accessToken
                           },
                         );
-                        // Get.to(
-                        //   () => PersonalityTestScreen(),
-                        //   arguments: {
-
-                        //     'token': response.accessToken
-                        //   },
-                        // );
                       } else {
                         Get.to(
                           () => HomePage(),

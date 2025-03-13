@@ -2,7 +2,9 @@ import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/models/resume.dart';
+import 'package:career_canvas/core/models/skills.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/src/profile/domain/models/UploadLanguage.dart';
 import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dart';
 import 'package:dio/dio.dart';
 
@@ -38,7 +40,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
       print(education.toMap());
       await apiClient.put(
         ApiClient.userBase + '/user/profile',
-        data: education.toMap(),
+        data: education.toJson(),
         useToken: true,
       );
       return "Uploaded Education";
@@ -69,7 +71,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
     try {
       await apiClient.put(
         ApiClient.userBase + '/user/profile',
-        data: experiance.toMap(),
+        data: experiance.toJson(),
         useToken: true,
       );
       return "Uploaded Experiance";
@@ -118,9 +120,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
     try {
       await apiClient.put(
         ApiClient.userBase + '/user/profile',
-        data: {
-          "skills": skills,
-        },
+        data: UploadSkills(skills: skills).toJson(),
         useToken: true,
       );
       return "Updated your skills.";
@@ -142,9 +142,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
     try {
       await apiClient.put(
         ApiClient.userBase + '/user/profile',
-        data: {
-          "languages": languages,
-        },
+        data: UploadLanguage(languages: languages).toJson(),
         useToken: true,
       );
       return "Updated your languages.";

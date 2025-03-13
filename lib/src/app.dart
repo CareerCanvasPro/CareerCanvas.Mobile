@@ -167,7 +167,8 @@ class _MyAppState extends State<MyApp> {
           darkTheme: ThemeData.dark(),
           themeMode: widget.settingsController.themeMode,
 
-          initialRoute: widget.mainRouteData.initialRoute,
+          initialRoute: ProfileCompletionScreenTwo.routeName,
+          //TODO:  widget.mainRouteData.initialRoute,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.

@@ -1,16 +1,21 @@
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/models/onBoardingOne.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/PhoneNumberParser.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart' as getIt;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileCompletionScreenOne extends StatefulWidget {
@@ -155,30 +160,27 @@ class _ProfileCompletionScreenOneState
 
   String type = "Unknown";
 
-  getExistingData() async {
-    if (getIt.Get.arguments != null) {
-      arguments = getIt.Get.arguments;
-    }
-    if (arguments.isNotEmpty) {
-      type = arguments['type'] ?? 'Unknown';
-      if (type == "Email") {
-        emailController.text = arguments['username'] ?? '';
-      } else {
-        mobileController.text = arguments['username'] ?? '';
-      }
+  getExistingData() {
+    type = TokenInfo.type;
+    if (type == "Email") {
+      emailController.text = TokenInfo.username;
     } else {
-      final prefs = await SharedPreferences.getInstance();
-      type = prefs.getString('type') ?? 'Unknown';
-      if (type == "Email") {
-        emailController.text = prefs.getString('username') ?? '';
-      } else {
-        mobileController.text = prefs.getString('username') ?? '';
+      String phoneNumber = TokenInfo.username;
+      PhoneNumber? phone = PhoneNumberParser.parse(phoneNumber);
+      if (phone != null) {
+        countryCode = phone.isoCode.name;
+        phoneNumber = phone.nsn;
+        phoneCode = "+${phone.countryCode}";
       }
+      mobileController.text = phoneNumber;
     }
     setState(() {});
   }
 
   final Map<String, String?> uploadedFiles = {};
+
+  String countryCode = 'BD';
+  String phoneCode = "+880";
 
   Widget _buildEducationCard() {
     return Container(
@@ -202,11 +204,91 @@ class _ProfileCompletionScreenOneState
             const SizedBox(height: 10),
             _buildTextField('Present Address', addressController),
             const SizedBox(height: 10),
-            _buildTextField(
-              'Phone',
-              mobileController,
-              isEnabled: !(type == 'Phone'),
+            TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter a valid phone number";
+                } else if (!PhoneNumberParser.isValidSubscriberNumber(value)) {
+                  return "Please enter a valid phone number";
+                } else {
+                  return null;
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+                PhoneNumberInputFormatter(),
+              ],
+              enabled: (TokenInfo.type == 'Email'),
+              controller: mobileController,
+              autofocus: false,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              keyboardType: TextInputType.number,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: "1XXXXXXXXX",
+                // contentPadding: const EdgeInsets.symmetric(
+                //   horizontal: 16,
+                //   vertical: 8,
+                // ),
+                prefixIconConstraints: BoxConstraints(
+                  maxHeight: 55,
+                ),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      showCountryPicker(
+                        context: context,
+                        favorite: ["BD", "US"],
+                        showPhoneCode: true,
+                        onSelect: (Country country) {
+                          countryCode = country.countryCode;
+                          phoneCode = "+${country.phoneCode}";
+                          setState(() {});
+                        },
+                      );
+                    },
+                    child: Text(
+                      phoneCode,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: const BorderSide(
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: const BorderSide(color: AppColors.secondaryColor),
+                ),
+              ),
             ),
+            // _buildTextField(
+            //   'Phone',
+            //   mobileController,
+            //   isEnabled: !(type == 'Phone'),
+            // ),
             const SizedBox(height: 10),
             _buildTextField(
               'Email',
@@ -239,12 +321,7 @@ class _ProfileCompletionScreenOneState
       appBar: AppBar(
         elevation: 0,
         backgroundColor: scaffoldBackgroundColor,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -253,18 +330,10 @@ class _ProfileCompletionScreenOneState
           children: [
             // Logo
             Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    ImageAssets.logo, // Replace with your logo path
-                    height: 50,
-                  ),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  Text("Career\nCanvas")
-                ],
+              child: SvgPicture.asset(
+                "assets/svg/Career_Canvas_Logo_black.svg",
+                height: 50,
+                fit: BoxFit.fitHeight,
               ),
             ),
             const SizedBox(height: 16),
@@ -293,24 +362,16 @@ class _ProfileCompletionScreenOneState
   }
 
   Widget buildProgressBar({required double progress}) {
-    return Stack(
+    return Row(
       children: [
-        Container(
-          height: 5,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: progress, // Dynamic progress
-          child: Container(
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(5),
-            ),
+        Expanded(
+          child: LinearPercentIndicator(
+            lineHeight: 10,
+            animation: true,
+            percent: progress,
+            backgroundColor: Colors.grey.shade300,
+            progressColor: primaryBlue,
+            barRadius: Radius.circular(10),
           ),
         ),
       ],
@@ -462,10 +523,16 @@ class _ProfileCompletionScreenOneState
                           // final allValues = _getAllEducationValues();
                           // print(allValues);
                           // Example: Access user inputs
+                          debugPrint(
+                            "phoneNumber: " +
+                                phoneCode +
+                                mobileController.text.replaceAll("-", ""),
+                          );
                           Onboardingone onboardingone = Onboardingone(
                             profilePicture: imageUrl,
                             name: fullNameController.text,
-                            phone: mobileController.text,
+                            phone: phoneCode +
+                                mobileController.text.replaceAll("-", ""),
                             address: addressController.text,
                             email: emailController.text,
                           );
