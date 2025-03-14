@@ -2,7 +2,6 @@ import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/network/api_client.dart';
-import 'package:career_canvas/core/utils/PhoneNumberParser.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
@@ -15,7 +14,6 @@ import 'package:career_canvas/src/profile/presentation/getx/controllers/user_pro
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'src/app.dart';

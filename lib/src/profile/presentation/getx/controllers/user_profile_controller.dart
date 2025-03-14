@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
-import 'package:career_canvas/features/AuthService.dart';
-import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart' as dio;
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/profile.dart';
@@ -20,8 +17,11 @@ class UserProfileController extends GetxController {
   UserProfileController(this.userProfileRepository);
   var userProfile = Rxn<UserProfileData>();
   var isLoading = false.obs;
+  var isUploadingResume = false.obs;
+  RxDouble progress = 0.0.obs;
   var errorMessage = ''.obs;
   RxList<Resume> resumes = <Resume>[].obs;
+  dio.CancelToken? cancelToken;
 
   Future<void> getUserProfile() async {
     isLoading.value = true;
@@ -121,61 +121,89 @@ class UserProfileController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> uploadResume(File file, int index) async {
-    var url = Uri.parse(
-        "https://media.api.careercanvas.pro/media/resume?index=$index");
-
-    var request = http.MultipartRequest('POST', url)
-      ..headers['Authorization'] = "Bearer ${TokenInfo.token}";
-
+  Future<void> uploadResume(
+    File file,
+    int index,
+  ) async {
     try {
-      var filePart = await http.MultipartFile.fromPath(
-        'file',
-        file.path,
-        filename: basename(file.path),
-        contentType: DioMediaType.parse(
-          lookupMimeType(basename(file.path)) ?? 'image/jpeg',
+      cancelToken = dio.CancelToken();
+      dio.FormData formData = dio.FormData.fromMap(
+        {
+          "file": await dio.MultipartFile.fromFile(
+            file.path,
+            filename: basename(file.path),
+            contentType: dio.DioMediaType.parse(
+              lookupMimeType(basename(file.path)) ?? 'image/jpeg',
+            ),
+          ),
+        },
+      );
+      final dioA = dio.Dio(
+        dio.BaseOptions(
+          baseUrl: ApiClient.mediaBase,
+          connectTimeout: const Duration(seconds: 3000),
+          receiveTimeout: const Duration(seconds: 3000),
         ),
       );
-      request.files.add(filePart);
 
-      var response = await request.send();
+      isUploadingResume.value = true;
+      final response = await dioA.post(
+        "${ApiClient.mediaBase}/media/resume?index=$index",
+        data: formData,
+        cancelToken: cancelToken,
+        options: dio.Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "Authorization": "Bearer ${TokenInfo.token}",
+          },
+        ),
+        onSendProgress: (count, total) {
+          progress.value = (count / total) * 100;
+        },
+      );
 
-      var responseBody = await response.stream.bytesToString();
+      isUploadingResume.value = false;
+      progress.value = 0;
 
       if (response.statusCode == 200) {
-        var jsonResponse = json.decode(responseBody);
-        var uploadedResume = Resume(
-          name: basename(file.path),
-          size: jsonResponse['data']['file']['size'],
-          type: jsonResponse['data']['file']['type'],
-          uploadedAt: DateTime.fromMillisecondsSinceEpoch(
-            jsonResponse['data']['file']['uploadedAt'],
-          ),
-          url: jsonResponse['data']['file']['url'],
-        );
-
-        resumes.add(uploadedResume);
+        Resume uploadedResume = Resume.fromMap(response.data["data"]["file"]);
+        resumes.add(uploadedResume.copyWith(name: basename(file.path)));
         updateResume(resumes);
-        // Get.snackbar("Success", "Resume uploaded successfully");
       } else {
         Fluttertoast.showToast(
-          msg: "Failed to upload resume",
+          msg: "Failed to upload resume.",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           fontSize: 14.0,
         );
-        // Get.snackbar("Error", "Failed to upload resume");
+      }
+    } on dio.DioException catch (e) {
+      isUploadingResume.value = false;
+      progress.value = 0;
+      if (e.type == dio.DioExceptionType.cancel) {
+        Fluttertoast.showToast(
+          msg: "Uploading Resume Cancelled.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: e.message ?? "An error occurred.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
       }
     } catch (e) {
-      print('Error: $e');
+      isUploadingResume.value = false;
+      progress.value = 0;
       Fluttertoast.showToast(
-        msg: "An error occurred: $e",
+        msg: e.toString(),
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         fontSize: 14.0,
       );
-      // Get.snackbar("Error", "An error occurred: $e");
     }
   }
 }

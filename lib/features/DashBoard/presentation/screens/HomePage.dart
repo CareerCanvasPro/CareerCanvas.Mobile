@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
@@ -6,6 +8,7 @@ import 'package:career_canvas/features/Skill/presentations/screens/SkillPage.dar
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -61,6 +64,15 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: scaffoldBackgroundColor,
       body: PopScope(
         canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (_selectedIndex != 0) {
+            setState(() {
+              _selectedIndex = 0;
+            });
+          } else if (Platform.isAndroid) {
+            SystemNavigator.pop();
+          }
+        },
         child: _pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(

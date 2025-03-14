@@ -17,6 +17,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
@@ -184,7 +185,7 @@ class _UserProfileState extends State<UserProfile> {
       // Show file picker and allow the user to pick a file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf', 'jpg', 'jpeg'],
+        allowedExtensions: ['pdf', 'jpeg'],
       );
 
       // Check if a file was selected
@@ -215,17 +216,28 @@ class _UserProfileState extends State<UserProfile> {
           // Proceed to upload the resume
           await userProfileController.uploadResume(file, index);
         } else {
-          // Handle case where filePath is null
-          Get.snackbar("Error", "Failed to get the file path.");
+          Fluttertoast.showToast(
+            msg: "Failed to get the file path.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            fontSize: 14.0,
+          );
         }
       } else {
-        // Handle case where no file was selected
-        Get.snackbar("Error", "No file selected.");
+        Fluttertoast.showToast(
+          msg: "No file selected.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
       }
     } catch (e) {
-      // Handle errors that may occur during the file picking or upload process
-      Get.snackbar(
-          "Error", "An error occurred while picking or uploading the file: $e");
+      Fluttertoast.showToast(
+        msg: "An error occurred while picking or uploading the file: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
     }
   }
 
@@ -245,29 +257,35 @@ class _UserProfileState extends State<UserProfile> {
       right: 0,
       child: Container(
         color: primaryBlue,
-        height: kToolbarHeight,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        height: kToolbarHeight + 20,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               backgroundImage: CachedNetworkImageProvider(
                 userProfileData?.profilePicture ?? "",
               ),
-              radius: 20,
+              radius: 25,
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                userProfileData?.name ?? "",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    userProfileData?.name ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  Text(
+                    userProfileData != null ? userProfileData.address : "",
+                    overflow: TextOverflow.ellipsis,
+                    style: getBodyTextStyle(context, 12, color: Colors.white),
+                  ),
+                ],
               ),
-            ),
-            IconButton(
-              onPressed: () {
-                Get.toNamed(ProfileSettings.routeName);
-              },
-              icon: const Icon(Icons.settings, color: Colors.white),
             ),
           ],
         ),
@@ -299,6 +317,21 @@ class _UserProfileState extends State<UserProfile> {
           slivers: [
             SliverAppBar(
               expandedHeight: 270,
+              collapsedHeight: kToolbarHeight + 20,
+              actions: [
+                IconButton(
+                  color: Colors.white,
+                  onPressed: () {},
+                  icon: const Icon(Icons.ios_share),
+                ),
+                IconButton(
+                  color: Colors.white,
+                  onPressed: () {
+                    Get.toNamed(ProfileSettings.routeName);
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
+              ],
               floating: false,
               pinned: true,
               automaticallyImplyLeading: false,
@@ -440,19 +473,6 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  color: Colors.white,
-                  onPressed: () {},
-                  icon: const Icon(Icons.ios_share),
-                ),
-                IconButton(
-                  color: Colors.white,
-                  onPressed: () {
-                    Get.toNamed(ProfileSettings.routeName);
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -526,8 +546,8 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       TextSpan(
                         text: userProfileData != null
-                            ? userProfileData.followers.toString()
-                            : "",
+                            ? formatNumber(userProfileData.followers)
+                            : "0",
                         style: getCTATextStyle(
                           context,
                           14,
@@ -553,8 +573,8 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       TextSpan(
                         text: userProfileData != null
-                            ? userProfileData.following.toString()
-                            : "",
+                            ? formatNumber(userProfileData.following)
+                            : "0",
                         style: getCTATextStyle(
                           context,
                           14,
@@ -1107,7 +1127,11 @@ class _UserProfileState extends State<UserProfile> {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: pickFileAndUpload, // Trigger file picker when tapped
+                onTap: userProfileController.isUploadingResume.value
+                    ? null
+                    : () {
+                        pickFileAndUpload();
+                      },
                 child: SvgPicture.asset(
                   "assets/svg/icons/Add.svg",
                 ),
@@ -1143,9 +1167,30 @@ class _UserProfileState extends State<UserProfile> {
                       },
                     );
                   },
+                  onCancel: null,
                 );
               },
             ),
+          if (userProfileController.isUploadingResume.value == true)
+            getResumeItem(
+              context,
+              resume: Resume(
+                name:
+                    "Uploading Resume ${userProfileController.progress.toStringAsFixed(2)}%",
+                uploadedAt: DateTime.now(),
+                size: 0,
+                type: "",
+                url: "",
+              ),
+              isUploading: userProfileController.isUploadingResume.value,
+              onRemove: () async {},
+              onCancel: () {
+                userProfileController.cancelToken
+                    ?.cancel("Uploading resume cancelled");
+                // userProfileController.isUploadingResume.value = false;
+                // userProfileController.progress.value = 0;
+              },
+            )
         ],
       ),
     );
@@ -1159,6 +1204,8 @@ class _UserProfileState extends State<UserProfile> {
     BuildContext context, {
     required Resume resume,
     required Function()? onRemove,
+    bool isUploading = false,
+    required Function()? onCancel,
   }) {
     return GestureDetector(
       onTap: () {
@@ -1192,36 +1239,48 @@ class _UserProfileState extends State<UserProfile> {
                       fontSize: 14,
                     ),
                   ),
-                  Text(
-                    "${formatBytes(resume.size)}",
-                    overflow: TextOverflow.ellipsis,
-                    style: getBodyTextStyle(
-                      context,
-                      12,
-                      color: Colors.black,
+                  if (!isUploading)
+                    Text(
+                      "${formatBytes(resume.size)}",
+                      overflow: TextOverflow.ellipsis,
+                      style: getBodyTextStyle(
+                        context,
+                        12,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "${getFormatedDateForResume(resume.uploadedAt)}",
-                    overflow: TextOverflow.ellipsis,
-                    style: getBodyTextStyle(
-                      context,
-                      12,
-                      color: Colors.black,
+                  if (!isUploading)
+                    Text(
+                      "${getFormatedDateForResume(resume.uploadedAt)}",
+                      overflow: TextOverflow.ellipsis,
+                      style: getBodyTextStyle(
+                        context,
+                        12,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              width: 8,
-            ),
-            GestureDetector(
-              onTap: onRemove,
-              child: SvgPicture.asset(
-                "assets/svg/icons/Icon_Remove.svg",
+            if (!isUploading)
+              const SizedBox(
+                width: 8,
               ),
-            ),
+            if (!isUploading)
+              GestureDetector(
+                onTap: onRemove,
+                child: SvgPicture.asset(
+                  "assets/svg/icons/Icon_Remove.svg",
+                ),
+              ),
+            if (isUploading)
+              GestureDetector(
+                onTap: onCancel,
+                child: Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                ),
+              ),
           ],
         ),
       ),
