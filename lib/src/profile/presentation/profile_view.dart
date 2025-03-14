@@ -237,10 +237,44 @@ class _UserProfileState extends State<UserProfile> {
     return "${size.toStringAsFixed(decimals)} ${suffixes[i]}";
   }
 
+  Widget _collapsedHeader(
+      BuildContext context, UserProfileData? userProfileData) {
+    return Positioned(
+      left: 0,
+      top: 0,
+      right: 0,
+      child: Container(
+        color: primaryBlue,
+        height: kToolbarHeight,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(
+                userProfileData?.profilePicture ?? "",
+              ),
+              radius: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                userProfileData?.name ?? "",
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.settings, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    ScrollController? controller = ScrollController();
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: primaryBlue,
@@ -257,63 +291,83 @@ class _UserProfileState extends State<UserProfile> {
         toolbarHeight: 0,
       ),
       body: Obx(() {
-        return Column(
-          children: [
-            _profileHeaderSection(
-              context,
-              userProfileController.userProfile.value,
+        return CustomScrollView(
+          shrinkWrap: true,
+          primary: true,
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 270,
+              floating: false,
+              pinned: true,
+              automaticallyImplyLeading: false,
+              flexibleSpace: LayoutBuilder(
+                builder: (context, constraints) {
+                  bool isCollapsed =
+                      constraints.maxHeight <= kToolbarHeight + 20;
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (!isCollapsed)
+                        _profileHeaderSection(
+                          context,
+                          userProfileController.userProfile.value,
+                        ),
+                      if (isCollapsed)
+                        _collapsedHeader(
+                          context,
+                          userProfileController.userProfile.value,
+                        ),
+                    ],
+                  );
+                },
+              ),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: controller,
-                child: Column(
-                  children: [
-                    // About Me Section
-                    _aboutMeSection(
-                      context,
-                      userProfileController.userProfile.value,
-                    ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  // About Me Section
+                  _aboutMeSection(
+                    context,
+                    userProfileController.userProfile.value,
+                  ),
 
-                    // Work Experience Section
-                    _workExperianceSection(
-                      context,
-                      userProfileController.userProfile.value?.occupation ?? [],
-                    ),
+                  // Work Experience Section
+                  _workExperianceSection(
+                    context,
+                    userProfileController.userProfile.value?.occupation ?? [],
+                  ),
 
-                    // Education Section
-                    _educationSection(
-                      context,
-                      userProfileController.userProfile.value?.education ?? [],
-                    ),
-                    // Skills Section
-                    _skillsSection(context,
-                        userProfileController.userProfile.value?.skills ?? []),
+                  // Education Section
+                  _educationSection(
+                    context,
+                    userProfileController.userProfile.value?.education ?? [],
+                  ),
+                  // Skills Section
+                  _skillsSection(context,
+                      userProfileController.userProfile.value?.skills ?? []),
 
-                    // Language Section
-                    _languageSection(
-                        context,
-                        userProfileController.userProfile.value?.languages ??
-                            []),
+                  // Language Section
+                  _languageSection(context,
+                      userProfileController.userProfile.value?.languages ?? []),
 
-                    // Appreciation Section
-                    // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
+                  // Appreciation Section
+                  // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
 
-                    // Resume section
-                    // GestureDetector(
-                    //   onTap: pickFileAndUpload,
-                    //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
-                    // ),
-                    _resumeSection(
-                      context,
-                      userProfileController
-                          .resumes, // Assuming resumes are loaded into this list
-                    ),
-                    // _resumeSection(
-                    //   context,
-                    //   userProfileController.userProfile.value?.resumes ?? [],
-                    // ),
-                  ],
-                ),
+                  // Resume section
+                  // GestureDetector(
+                  //   onTap: pickFileAndUpload,
+                  //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
+                  // ),
+                  _resumeSection(
+                    context,
+                    userProfileController
+                        .resumes, // Assuming resumes are loaded into this list
+                  ),
+                  // _resumeSection(
+                  //   context,
+                  //   userProfileController.userProfile.value?.resumes ?? [],
+                  // ),
+                ],
               ),
             ),
           ],
@@ -562,11 +616,11 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -633,11 +687,11 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -728,11 +782,11 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -817,11 +871,11 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -884,11 +938,11 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -955,7 +1009,7 @@ class _UserProfileState extends State<UserProfile> {
         right: 24,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -1018,12 +1072,12 @@ class _UserProfileState extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(
         top: 20,
-        left: 24,
-        right: 24,
+        left: 12,
+        right: 12,
         bottom: 20,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
