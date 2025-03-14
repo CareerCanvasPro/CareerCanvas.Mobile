@@ -182,7 +182,10 @@ class _UserProfileState extends State<UserProfile> {
   void pickFileAndUpload() async {
     try {
       // Show file picker and allow the user to pick a file
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg'],
+      );
 
       // Check if a file was selected
       if (result != null) {
@@ -689,6 +692,24 @@ class _UserProfileState extends State<UserProfile> {
                   endDate: data[index].to != null
                       ? DateTime.fromMillisecondsSinceEpoch(data[index].to!)
                       : null,
+                  onRemove: () async {
+                    CustomDialog.showCustomDialog(
+                      context,
+                      title: "Remove Experiance",
+                      content:
+                          "Are you sure you want to remove this experiance?",
+                      buttonText: "Remove",
+                      button2Text: "Cancel",
+                      onPressed: () async {
+                        Get.back();
+                        data.removeAt(index);
+                        await userProfileController.uploadExperiance(
+                          UploadExperiance(occupation: data),
+                        );
+                        await userProfileController.getUserProfile();
+                      },
+                    );
+                  },
                 );
               },
             ),
@@ -760,6 +781,24 @@ class _UserProfileState extends State<UserProfile> {
                 return EducationItem(
                   context,
                   education: data[index],
+                  onRemove: () async {
+                    CustomDialog.showCustomDialog(
+                      context,
+                      title: "Remove Education",
+                      content:
+                          "Are you sure you want to remove this education?",
+                      buttonText: "Remove",
+                      button2Text: "Cancel",
+                      onPressed: () async {
+                        Get.back();
+                        data.removeAt(index);
+                        await userProfileController.uploadEducation(
+                          UploadEducation(education: data),
+                        );
+                        await userProfileController.getUserProfile();
+                      },
+                    );
+                  },
                 );
               },
             ),
@@ -1033,77 +1072,21 @@ class _UserProfileState extends State<UserProfile> {
                 return getResumeItem(
                   context,
                   resume: data[index],
-                  onRemove: () {},
-                );
-              },
-            ),
-        ],
-      ),
-    );
-  }
-
-  Container _resumeSectionold(BuildContext context, List<Resume> data) {
-    return Container(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 20,
-        // vertical: 20,
-      ),
-      margin: const EdgeInsets.only(
-        top: 20,
-        left: 24,
-        right: 24,
-        bottom: 20,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 0,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                "assets/svg/icons/Icon_Appreciation.svg",
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "Resume",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              const Spacer(),
-              SvgPicture.asset(
-                "assets/svg/icons/Add.svg",
-              ),
-            ],
-          ),
-          Divider(
-            color: Colors.black.withOpacity(0.15),
-            height: 24,
-            thickness: 1,
-          ),
-          if (data.isNotEmpty)
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return getResumeItem(
-                  context,
-                  resume: data[index],
-                  onRemove: () {},
+                  onRemove: () async {
+                    CustomDialog.showCustomDialog(
+                      context,
+                      title: "Remove Resume",
+                      content: "Are you sure you want to remove this resume?",
+                      buttonText: "Remove",
+                      button2Text: "Cancel",
+                      onPressed: () async {
+                        Get.back();
+                        data.removeAt(index);
+                        await userProfileController.updateResume(data);
+                        await userProfileController.getUserProfile();
+                      },
+                    );
+                  },
                 );
               },
             ),
@@ -1143,6 +1126,7 @@ class _UserProfileState extends State<UserProfile> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     resume.name,
@@ -1153,7 +1137,16 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                   Text(
-                    "${formatBytes(resume.size)} . ${getFormatedDateForResume(resume.uploadedAt)}",
+                    "${formatBytes(resume.size)}",
+                    overflow: TextOverflow.ellipsis,
+                    style: getBodyTextStyle(
+                      context,
+                      12,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    "${getFormatedDateForResume(resume.uploadedAt)}",
                     overflow: TextOverflow.ellipsis,
                     style: getBodyTextStyle(
                       context,
@@ -1218,6 +1211,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget EducationItem(
     BuildContext context, {
     required Education education,
+    required Function()? onRemove,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -1236,8 +1230,11 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               const Spacer(),
-              SvgPicture.asset(
-                "assets/svg/icons/Edit.svg",
+              GestureDetector(
+                onTap: onRemove,
+                child: SvgPicture.asset(
+                  "assets/svg/icons/Icon_Remove.svg",
+                ),
               ),
             ],
           ),
@@ -1306,6 +1303,7 @@ class _UserProfileState extends State<UserProfile> {
     required String company,
     required DateTime startDate,
     required DateTime? endDate,
+    required Function()? onRemove,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -1324,8 +1322,11 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               const Spacer(),
-              SvgPicture.asset(
-                "assets/svg/icons/Edit.svg",
+              GestureDetector(
+                onTap: onRemove,
+                child: SvgPicture.asset(
+                  "assets/svg/icons/Icon_Remove.svg",
+                ),
               ),
             ],
           ),

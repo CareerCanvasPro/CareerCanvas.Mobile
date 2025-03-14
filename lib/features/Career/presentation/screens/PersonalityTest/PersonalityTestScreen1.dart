@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PersonalityTestScreen1 extends StatefulWidget {
   static const String routeName = "/PersonalityTestScreen1";
@@ -381,11 +382,23 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
 
         return Column(
           children: [
-            LinearProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                primaryBlue,
+            Container(
+              margin: const EdgeInsets.only(top: 6.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: LinearPercentIndicator(
+                      lineHeight: 10,
+                      animation: true,
+                      percent: currentProgress,
+                      backgroundColor: Colors.grey.shade300,
+                      progressColor: primaryBlue,
+                      barRadius: Radius.circular(10),
+                      animateFromLastPercent: true,
+                    ),
+                  ),
+                ],
               ),
-              value: currentProgress,
             ),
             Expanded(
               child: ListView.builder(
@@ -394,13 +407,13 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                 controller: scrollController,
                 itemBuilder: (context, index) {
                   final question = questionsToDisplay[index];
-                  return Card(
+                  return Container(
                     margin: const EdgeInsets.symmetric(
                       vertical: 12,
-                      horizontal: 18,
+                      horizontal: 12,
                     ),
                     color: scaffoldBackgroundColor,
-                    elevation: 3,
+                    // elevation: 3,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: 12,
@@ -410,94 +423,70 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            question.question ?? '',
+                            "${index + 1}. ${question.question ?? ''}",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          // const SizedBox(height: 8),
-                          // Text(
-                          //   'Category: ${question.category ?? 'N/A'}',
-                          //   style: TextStyle(
-                          //     fontSize: 14,
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
                           const SizedBox(height: 16),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Text("Agree"),
-                          //     Text("Neutral"),
-                          //     Text("Disagree"),
-                          //   ],
-                          // ),
                           LayoutBuilder(
                             builder: (context, constraints) {
-                              // Calculate the scale factor based on the available width
-                              final screenWidth = constraints.maxWidth;
+                              final screenWidth =
+                                  constraints.maxWidth - (2 * 18);
                               const totalRadioButtons = 7;
-                              const spacingBetweenButtons =
-                                  8.0; // Adjust spacing as needed
-                              const padding = 16.0; // Adjust padding as needed
-
-                              // Calculate the available width for each radio button
-                              final availableWidthPerButton = (screenWidth -
-                                      (totalRadioButtons - 1) *
-                                          spacingBetweenButtons -
-                                      2 * padding) /
-                                  totalRadioButtons;
-
-                              // Define a base size for the radio button (you can adjust this)
-                              const baseRadioButtonSize = 24.0;
-
-                              // Calculate the scale factor
-                              final scale =
-                                  availableWidthPerButton / baseRadioButtonSize;
+                              final availableWidthPerButton =
+                                  screenWidth / totalRadioButtons;
+                              const maxScale = 1.3;
 
                               return Column(
                                 children: [
-                                  // Texts above the radio buttons
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Agree"),
-                                      SizedBox(
-                                          width: (screenWidth - 2 * padding) /
-                                              3), // Spacing for "Neutral"
-                                      Text("Neutral"),
-                                      SizedBox(
-                                          width:
-                                              (screenWidth - 2 * padding) / 3 -
-                                                  7), // Spacing for "Disagree"
-                                      Text("Disagree"),
+                                      Text(
+                                        "Agree",
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      Text(
+                                        "Neutral",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      Text(
+                                        "Disagree",
+                                        textAlign: TextAlign.right,
+                                      ),
                                     ],
                                   ),
-                                  SizedBox(
-                                      height:
-                                          8), // Space between texts and radio buttons
-                                  // Radio buttons
+                                  const SizedBox(height: 8),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment.spaceEvenly,
                                     children:
                                         List.generate(totalRadioButtons, (i) {
                                       final value = 3 - i;
-                                      return Transform.scale(
-                                        scale: scale,
-                                        child: Radio(
-                                          value: value,
-                                          activeColor: primaryBlue,
-                                          groupValue: question.selectedOption,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              onAnswerSelected(
-                                                  question.questionID ?? '',
-                                                  value);
-                                            });
-                                          },
+                                      final scaleFactor =
+                                          maxScale - ((3 - value.abs()) * 0.2);
+                                      return SizedBox(
+                                        width: availableWidthPerButton,
+                                        child: Center(
+                                          child: Transform.scale(
+                                            scale: scaleFactor,
+                                            child: Radio(
+                                              value: value,
+                                              activeColor: primaryBlue,
+                                              groupValue:
+                                                  question.selectedOption,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  onAnswerSelected(
+                                                      question.questionID ?? '',
+                                                      value);
+                                                });
+                                              },
+                                            ),
+                                          ),
                                         ),
                                       );
                                     }),
@@ -505,30 +494,7 @@ class _PersonalityTestScreen1State extends State<PersonalityTestScreen1> {
                                 ],
                               );
                             },
-                          )
-                          // SingleChildScrollView(
-                          //   scrollDirection: Axis.horizontal,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          //     children: List.generate(7, (i) {
-                          //       final value = 3 - i;
-                          //       return Transform.scale(
-                          //         scale: 1.5,
-                          //         child: Radio(
-                          //           value: value,
-                          //           activeColor: primaryBlue,
-                          //           groupValue: question.selectedOption,
-                          //           onChanged: (val) {
-                          //             setState(() {
-                          //               onAnswerSelected(
-                          //                   question.questionID ?? '', value);
-                          //             });
-                          //           },
-                          //         ),
-                          //       );
-                          //     }),
-                          //   ),
-                          // ),
+                          ),
                         ],
                       ),
                     ),

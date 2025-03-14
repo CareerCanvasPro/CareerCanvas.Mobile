@@ -59,7 +59,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
-      body: _pages[_selectedIndex],
+      body: PopScope(
+        canPop: false,
+        child: _pages[_selectedIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: primaryBlue,

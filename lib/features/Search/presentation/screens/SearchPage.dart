@@ -170,98 +170,91 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget getCourseItem(BuildContext context, CoursesModel course) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 4),
-      elevation: 3,
-      color: const Color.fromARGB(255, 231, 231, 231),
-      child: Container(
-        padding: const EdgeInsets.only(right: 16.0),
-        width: MediaQuery.of(context).size.width,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                ),
-                color: Colors.white,
-              ),
-              width: 120,
-              height: 100,
-              clipBehavior: Clip.antiAlias,
-              child: CachedNetworkImage(
-                imageUrl: course.image,
-                placeholder: (context, url) => Center(
-                    child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    primaryBlue,
-                  ),
-                )),
-                errorWidget: (context, url, error) => Center(
-                  child: Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                ),
-                fit: BoxFit.cover,
-              ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+      padding: const EdgeInsets.only(right: 16.0),
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
             ),
-            SizedBox(width: 16),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 50,
-                      child: Text(
-                        course.name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+            width: 120,
+            height: 100,
+            clipBehavior: Clip.antiAlias,
+            child: CachedNetworkImage(
+              imageUrl: course.image,
+              placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  primaryBlue,
+                ),
+              )),
+              errorWidget: (context, url, error) => Center(
+                child: Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 50,
+                    child: Text(
+                      course.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    course.authors.first,
+                    style: getBodyTextStyle(context, 12, color: Colors.grey),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "${formatNumber(course.studentCount)} Students",
                         style: getCTATextStyle(
                           context,
-                          16,
+                          12,
                           color: Colors.black,
                         ),
                       ),
-                    ),
-                    Text(
-                      course.authors.first,
-                      style: getBodyTextStyle(context, 12, color: Colors.grey),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "${formatNumber(course.studentCount)} Students",
-                          style: getCTATextStyle(
-                            context,
-                            12,
-                            color: Colors.black,
-                          ),
+                      Spacer(),
+                      Icon(Icons.star, color: orangeStar, size: 18),
+                      SizedBox(width: 4),
+                      Text(
+                        "${course.rating} (${formatNumber(course.ratingCount ?? 0)})",
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.black,
                         ),
-                        Spacer(),
-                        Icon(Icons.star, color: orangeStar, size: 18),
-                        SizedBox(width: 4),
-                        Text(
-                          "${course.rating} (${course.ratingCount})",
-                          style: getCTATextStyle(
-                            context,
-                            12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
