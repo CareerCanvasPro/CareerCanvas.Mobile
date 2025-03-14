@@ -264,7 +264,9 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(ProfileSettings.routeName);
+              },
               icon: const Icon(Icons.settings, color: Colors.white),
             ),
           ],
