@@ -12,4 +12,12 @@ class JobsRemoteDataSource {
     );
     return response;
   }
+
+  Future<Response<dynamic>> getCareerTrends() async {
+    final response = await apiClient.get(
+      '${ApiClient.jobsBase}/jobs/career-trends',
+      useToken: true,
+    );
+    return response;
+  }
 }
