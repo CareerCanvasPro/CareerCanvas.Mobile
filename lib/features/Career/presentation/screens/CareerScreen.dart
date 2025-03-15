@@ -179,6 +179,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   Showcase(
                     key: _two,
                     title: "Your Goals",
+                    enableAutoScroll: true,
                     targetBorderRadius: BorderRadius.circular(16),
                     targetPadding: const EdgeInsets.all(16.0),
                     description:
@@ -274,6 +275,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   ),
                   Showcase(
                     key: _three,
+                    enableAutoScroll: true,
                     title: "Career Trends",
                     targetBorderRadius: BorderRadius.circular(16),
                     description:
@@ -351,6 +353,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   ),
                   Showcase(
                     key: _four,
+                    enableAutoScroll: true,
                     title: "Jobs for you",
                     targetBorderRadius: BorderRadius.circular(16),
                     description:
@@ -428,6 +431,7 @@ class _CareerScreenState extends State<CareerScreen> {
       clipBehavior: Clip.antiAlias,
       child: Showcase(
         key: _one,
+        enableAutoScroll: true,
         title: "Free Personality Test",
         targetBorderRadius: BorderRadius.circular(16),
         description:
@@ -757,7 +761,7 @@ class _CareerScreenState extends State<CareerScreen> {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                height: 40,
+                height: 45,
                 child: Text(
                   job.position,
                   maxLines: 2,
@@ -887,7 +891,7 @@ class _CareerScreenState extends State<CareerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 40,
+                    height: 45,
                     child: Text(
                       career.name,
                       maxLines: 2,
@@ -904,7 +908,7 @@ class _CareerScreenState extends State<CareerScreen> {
                     height: 85,
                     child: Text(
                       career.description,
-                      maxLines: 5,
+                      maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                       style: getBodyTextStyle(
                         context,

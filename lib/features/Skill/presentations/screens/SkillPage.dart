@@ -251,20 +251,50 @@ class _SkillsPageState extends State<SkillsPage> {
               width: 312,
               height: 130,
               clipBehavior: Clip.antiAlias,
-              child: CachedNetworkImage(
-                imageUrl: course.image,
-                placeholder: (context, url) => Center(
-                    child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    primaryBlue,
+              child: Stack(
+                children: [
+                  Container(
+                    width: 312,
+                    height: 130,
+                    child: CachedNetworkImage(
+                      imageUrl: course.image,
+                      placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          primaryBlue,
+                        ),
+                      )),
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
+                      ),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                )),
-                errorWidget: (context, url, error) => Center(
-                  child: Icon(
-                    Icons.error,
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      margin: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        getFormatedDutaionForCourse(course.duration),
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                fit: BoxFit.cover,
+                ],
               ),
             ),
             const SizedBox(height: 8),
@@ -275,7 +305,7 @@ class _SkillsPageState extends State<SkillsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 40,
+                    height: 45,
                     child: Text(
                       course.name,
                       overflow: TextOverflow.ellipsis,
@@ -288,22 +318,18 @@ class _SkillsPageState extends State<SkillsPage> {
                     ),
                   ),
                   Text(
-                    "${course.level} · ${getFormatedDutaionForCourse(course.duration)} · ${course.authors.first}",
+                    "${course.authors.first} · ${course.sourceName}",
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
                     ),
                   ),
-                  Divider(
-                    color: Colors.black.withOpacity(0.15),
-                    height: 12,
-                    thickness: 1,
-                  ),
+                  SizedBox(height: 4),
                   Row(
                     children: [
                       Text(
-                        course.sourceName,
+                        course.level,
                       ),
                       Spacer(),
                       Icon(Icons.star, color: orangeStar, size: 18),
