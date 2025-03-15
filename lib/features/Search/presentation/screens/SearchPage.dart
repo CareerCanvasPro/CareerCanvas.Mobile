@@ -45,127 +45,127 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: scaffoldBackgroundColor,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: 24.0),
-            elevation: 3,
-            color: scaffoldBackgroundColor,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      onFieldSubmitted: (value) {
-                        focusNode.unfocus();
-                        searchController.searchCourses(value);
-                      },
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.search,
-                      decoration: InputDecoration(
-                        hintText: "Search...",
-                        isCollapsed: false,
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
+      body: CustomMaterialIndicator(
+        onRefresh: onRefresh,
+        backgroundColor: Colors.white,
+        indicatorBuilder: (context, controller) {
+          return Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: CircularProgressIndicator(
+              color: primaryBlue,
+              value: controller.state.isLoading
+                  ? null
+                  : min(controller.value, 1.0),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              elevation: 3,
+              color: scaffoldBackgroundColor,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        onFieldSubmitted: (value) {
+                          focusNode.unfocus();
+                          searchController.searchCourses(value);
+                        },
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.search,
+                        decoration: InputDecoration(
+                          hintText: "Search...",
+                          isCollapsed: false,
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: SvgPicture.asset(
-                      "assets/svg/icons/search_icon.svg",
-                      height: 20,
-                      width: 20,
-                      colorFilter: ColorFilter.mode(
-                        Colors.grey,
-                        BlendMode.srcIn,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: SvgPicture.asset(
+                        "assets/svg/icons/search_icon.svg",
+                        height: 20,
+                        width: 20,
+                        colorFilter: ColorFilter.mode(
+                          Colors.grey,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 12),
-          Obx(() {
-            if (searchController.isLoading.value) {
-              return Expanded(
-                child: Container(
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        primaryBlue,
+            SizedBox(height: 12),
+            Obx(() {
+              if (searchController.isLoading.value) {
+                return Expanded(
+                  child: Container(
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          primaryBlue,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            }
-            if (searchController.errorMessage.isNotEmpty) {
-              return Center(
-                child: Text(
-                  searchController.errorMessage.value,
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
-              );
-            }
-            if (searchController.courses.value == null ||
-                searchController.courses.value!.data == null ||
-                searchController.courses.value!.data!.courses == null) {
-              return const Center(child: Text('No Courses Available'));
-            }
-            return Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    searchController.searchQuery.value.isEmpty
-                        ? 'Recomended Courses'
-                        : 'Search Result for: "${searchController.searchQuery.value}"',
-                    style: getCTATextStyle(
-                      context,
-                      16,
-                      color: Colors.black,
+                );
+              }
+              if (searchController.errorMessage.isNotEmpty) {
+                return Center(
+                  child: Text(
+                    searchController.errorMessage.value,
+                    style: TextStyle(
+                      color: Colors.red,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  (searchController.courses.value == null ||
-                          searchController.courses.value!.data == null ||
-                          searchController.courses.value!.data!.courses ==
-                              null ||
-                          searchController
-                              .courses.value!.data!.courses!.isEmpty)
-                      ? Center(
-                          child: Text(
-                            'No Courses Available',
-                            style: getCTATextStyle(
-                              context,
-                              20,
-                              color: Colors.red,
+                );
+              }
+              if (searchController.courses.value == null ||
+                  searchController.courses.value!.data == null ||
+                  searchController.courses.value!.data!.courses == null) {
+                return const Center(child: Text('No Courses Available'));
+              }
+              return Expanded(
+                child: Column(
+                  children: [
+                    Text(
+                      searchController.searchQuery.value.isEmpty
+                          ? 'Recomended Courses'
+                          : 'Search Result for: "${searchController.searchQuery.value}"',
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    (searchController.courses.value == null ||
+                            searchController.courses.value!.data == null ||
+                            searchController.courses.value!.data!.courses ==
+                                null ||
+                            searchController
+                                .courses.value!.data!.courses!.isEmpty)
+                        ? Center(
+                            child: Text(
+                              'No Courses Available',
+                              style: getCTATextStyle(
+                                context,
+                                20,
+                                color: Colors.red,
+                              ),
                             ),
-                          ),
-                        )
-                      : Expanded(
-                          child: CustomMaterialIndicator(
-                            onRefresh: onRefresh,
-                            backgroundColor: Colors.white,
-                            indicatorBuilder: (context, controller) {
-                              return Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: CircularProgressIndicator(
-                                  color: primaryBlue,
-                                  value: controller.state.isLoading
-                                      ? null
-                                      : min(controller.value, 1.0),
-                                ),
-                              );
-                            },
+                          )
+                        : Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const BouncingScrollPhysics(),
@@ -180,12 +180,12 @@ class _SearchPageState extends State<SearchPage> {
                                   .courses.value!.data!.courses!.length,
                             ),
                           ),
-                        ),
-                ],
-              ),
-            );
-          }),
-        ],
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

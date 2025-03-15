@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
+import 'package:career_canvas/features/ProfileSettings/presentation/getx/controllers/profileSettingsController.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
@@ -19,10 +20,12 @@ class ProfileSettings extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   late UserProfileController userProfileController;
+  late ProfileSettingsController profileSettingsController;
   @override
   void initState() {
     super.initState();
     userProfileController = getIt<UserProfileController>();
+    profileSettingsController = getIt<ProfileSettingsController>();
     if (userProfileController.userProfile.value == null) {
       userProfileController.getUserProfile();
     }
@@ -45,29 +48,91 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       ),
       body: Column(
         children: [
-          Container(
-            height: 100,
-            width: 100,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: CachedNetworkImage(
-              imageUrl:
-                  userProfileController.userProfile.value?.profilePicture ?? "",
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Center(
-                  child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.white,
+          Obx(
+            () {
+              return Container(
+                height: 100,
+                width: 100,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
                 ),
-              )),
-              errorWidget: (context, url, error) => Center(
-                child: Icon(
-                  Icons.error,
+                child: GestureDetector(
+                  onTap: () async {
+                    await profileSettingsController.uploadProfileImage(context);
+                    await userProfileController.getUserProfile();
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      userProfileController.isLoading.value
+                          ? Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    primaryBlue,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : CachedNetworkImage(
+                              imageUrl:
+                                  userProfileController.userProfile.value !=
+                                          null
+                                      ? userProfileController
+                                          .userProfile.value!.profilePicture
+                                      : "",
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    primaryBlue,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Center(
+                                child: Icon(
+                                  Icons.error,
+                                ),
+                              ),
+                            ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: Container(
+                          width: 100,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.camera_alt_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      if (profileSettingsController.imageUploading.value)
+                        Container(
+                          height: 100,
+                          width: 100,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                primaryBlue,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           SizedBox(
             height: 8,

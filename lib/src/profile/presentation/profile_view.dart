@@ -477,22 +477,28 @@ class _UserProfileState extends State<UserProfile> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                   ),
-                  child: CachedNetworkImage(
-                    imageUrl: userProfileData != null
-                        ? userProfileData.profilePicture
-                        : "",
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white,
+                  child: Stack(
+                    children: [
+                      CachedNetworkImage(
+                        height: 50,
+                        width: 50,
+                        imageUrl: userProfileData != null
+                            ? userProfileData.profilePicture
+                            : "",
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        )),
+                        errorWidget: (context, url, error) => Center(
+                          child: Icon(
+                            Icons.error,
+                          ),
+                        ),
                       ),
-                    )),
-                    errorWidget: (context, url, error) => Center(
-                      child: Icon(
-                        Icons.error,
-                      ),
-                    ),
+                    ],
                   ),
                 ),
               ],

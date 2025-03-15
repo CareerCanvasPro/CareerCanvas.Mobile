@@ -6,6 +6,7 @@ import 'package:career_canvas/features/Career/domain/usecases/get_courses_recome
 import 'package:career_canvas/features/Career/domain/usecases/get_jobs_recomendation.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/CoursesController.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
+import 'package:career_canvas/features/ProfileSettings/presentation/getx/controllers/profileSettingsController.dart';
 import 'package:career_canvas/features/Search/presentation/getx/controllers/searchController.dart';
 import 'package:career_canvas/features/personalitytest/domain/repositories/PersonalityTestRepository.dart';
 import 'package:career_canvas/features/personalitytest/domain/repository_impl/PersonalityTestRepositoryImpl.dart';
@@ -76,6 +77,9 @@ Future<void> setupDependencies() async {
 
   getIt.registerLazySingleton<UserProfileController>(
     () => UserProfileController(getIt<UserProfileRepository>()),
+  );
+  getIt.registerLazySingleton<ProfileSettingsController>(
+    () => ProfileSettingsController(),
   );
 
   final dbPath = await getDatabasesPath();

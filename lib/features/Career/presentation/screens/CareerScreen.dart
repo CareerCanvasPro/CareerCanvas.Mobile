@@ -890,31 +890,25 @@ class _CareerScreenState extends State<CareerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 45,
-                    child: Text(
-                      career.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: getCTATextStyle(
-                        context,
-                        16,
-                        color: Colors.black,
-                      ),
+                  Text(
+                    career.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getCTATextStyle(
+                      context,
+                      16,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  SizedBox(
-                    height: 85,
-                    child: Text(
-                      career.description,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: getBodyTextStyle(
-                        context,
-                        12,
-                        color: Colors.grey,
-                      ),
+                  Text(
+                    career.description,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: getBodyTextStyle(
+                      context,
+                      12,
+                      color: Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 16),

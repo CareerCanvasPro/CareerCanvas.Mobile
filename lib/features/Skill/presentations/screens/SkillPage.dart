@@ -73,6 +73,18 @@ class _SkillsPageState extends State<SkillsPage> {
     return remainingSeconds > 0 ? "${m}m ${remainingSeconds}s" : "${m}m";
   }
 
+  String formatNumber(num value) {
+    if (value >= 1e9) {
+      return '${(value / 1e9).toStringAsFixed(1)}B'; // Billion
+    } else if (value >= 1e6) {
+      return '${(value / 1e6).toStringAsFixed(1)}M'; // Million
+    } else if (value >= 1e3) {
+      return '${(value / 1e3).toStringAsFixed(1)}K'; // Thousand
+    } else {
+      return value.toString(); // No formatting needed
+    }
+  }
+
   Future<void> onRefresh() async {
     await coursesController.getCoursesRecomendation();
     await coursesController.getCoursesBasedOnGoals();
@@ -335,7 +347,7 @@ class _SkillsPageState extends State<SkillsPage> {
                       Icon(Icons.star, color: orangeStar, size: 18),
                       SizedBox(width: 4),
                       Text(
-                        "${course.rating} (${course.ratingCount})",
+                        "${course.rating} (${formatNumber(course.ratingCount ?? 0)})",
                         style: getCTATextStyle(
                           context,
                           12,
