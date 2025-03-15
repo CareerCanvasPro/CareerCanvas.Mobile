@@ -29,8 +29,8 @@ android {
         applicationId = "pro.careercanvas.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 17
-        versionName = "1.1.8"
+        versionCode = 18
+        versionName = "1.1.9"
     }
 
     bundle {
