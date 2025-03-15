@@ -31,18 +31,16 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="careercanvas" android:host="auth"/>
-                <data android:scheme="careercanvas" android:host="pages" android:pathPrefix="/notifications"/>
-
+                <data android:scheme="careercanvas" android:host="careercanvas.pro" android:path="/auth/callback"/>
+                <data android:scheme="careercanvas" android:host="careercanvas.pro" android:path="/open-app"/>
             </intent-filter>
-
             <!-- App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with https://careercanvas.pro -->
-                <data android:scheme="https" android:host="careercanvas.pro" />
+                <data android:scheme="https" android:host="careercanvas.pro" android:path="/auth/callback"/>
+                <data android:scheme="https" android:host="careercanvas.pro" android:path="/open-app"/>
             </intent-filter>
         </activity>
         <activity android:name="com.yalantis.ucrop.UCropActivity" android:screenOrientation="portrait" android:theme="@style/Ucrop.CropTheme"/>
