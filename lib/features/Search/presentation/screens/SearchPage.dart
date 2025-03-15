@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Search/presentation/getx/controllers/searchController.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -26,6 +29,10 @@ class _SearchPageState extends State<SearchPage> {
     if (searchController.courses.value == null) {
       searchController.getCoursesRecomendation();
     }
+  }
+
+  Future<void> onRefresh() async {
+    await searchController.searchCourses(null);
   }
 
   @override
@@ -114,7 +121,6 @@ class _SearchPageState extends State<SearchPage> {
                 searchController.courses.value!.data!.courses == null) {
               return const Center(child: Text('No Courses Available'));
             }
-
             return Expanded(
               child: Column(
                 children: [
@@ -146,18 +152,33 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         )
                       : Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) {
-                              return getCourseItem(
-                                  context,
-                                  searchController
-                                      .courses.value!.data!.courses![index]);
+                          child: CustomMaterialIndicator(
+                            onRefresh: onRefresh,
+                            backgroundColor: Colors.white,
+                            indicatorBuilder: (context, controller) {
+                              return Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: CircularProgressIndicator(
+                                  color: primaryBlue,
+                                  value: controller.state.isLoading
+                                      ? null
+                                      : min(controller.value, 1.0),
+                                ),
+                              );
                             },
-                            itemCount: searchController
-                                .courses.value!.data!.courses!.length,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (context, index) {
+                                return getCourseItem(
+                                    context,
+                                    searchController
+                                        .courses.value!.data!.courses![index]);
+                              },
+                              itemCount: searchController
+                                  .courses.value!.data!.courses!.length,
+                            ),
                           ),
                         ),
                 ],

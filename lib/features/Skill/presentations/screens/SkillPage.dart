@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/CoursesController.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -70,6 +73,11 @@ class _SkillsPageState extends State<SkillsPage> {
     return remainingSeconds > 0 ? "${m}m ${remainingSeconds}s" : "${m}m";
   }
 
+  Future<void> onRefresh() async {
+    await coursesController.getCoursesRecomendation();
+    await coursesController.getCoursesBasedOnGoals();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,106 +105,126 @@ class _SkillsPageState extends State<SkillsPage> {
         automaticallyImplyLeading: false,
         centerTitle: false,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0),
-                child: Text(
-                  "Skills for you",
-                  style: getCTATextStyle(
-                    context,
-                    16,
-                    color: Colors.black,
+      body: CustomMaterialIndicator(
+        onRefresh: onRefresh,
+        triggerMode: IndicatorTriggerMode.onEdge,
+        backgroundColor: Colors.white,
+        indicatorBuilder: (context, controller) {
+          return Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: CircularProgressIndicator(
+              color: primaryBlue,
+              value: controller.state.isLoading
+                  ? null
+                  : min(controller.value, 1.0),
+            ),
+          );
+        },
+        child: SingleChildScrollView(
+          primary: true,
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    "Skills for you",
+                    style: getCTATextStyle(
+                      context,
+                      16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(maxHeight: 250),
-                child: Obx(() {
-                  if (coursesController.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (coursesController.errorMessage.isNotEmpty) {
-                    return Center(
-                      child: Text(
-                        coursesController.errorMessage.value,
-                        style: TextStyle(
-                          color: Colors.red,
+                SizedBox(height: 8),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  constraints: const BoxConstraints(maxHeight: 250),
+                  child: Obx(() {
+                    if (coursesController.isLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (coursesController.errorMessage.isNotEmpty) {
+                      return Center(
+                        child: Text(
+                          coursesController.errorMessage.value,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
                         ),
-                      ),
+                      );
+                    }
+                    if (coursesController.courses.value == null ||
+                        coursesController.courses.value!.data == null ||
+                        coursesController.courses.value!.data!.courses ==
+                            null) {
+                      return const Center(child: Text('No Courses Available'));
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return getCourseItem(
+                            context,
+                            coursesController
+                                .courses.value!.data!.courses![index]);
+                      },
+                      itemCount: coursesController
+                          .courses.value!.data!.courses!.length,
                     );
-                  }
-                  if (coursesController.courses.value == null ||
-                      coursesController.courses.value!.data == null ||
-                      coursesController.courses.value!.data!.courses == null) {
-                    return const Center(child: Text('No Courses Available'));
-                  }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return getCourseItem(
-                          context,
-                          coursesController
-                              .courses.value!.data!.courses![index]);
-                    },
-                    itemCount:
-                        coursesController.courses.value!.data!.courses!.length,
-                  );
-                }),
-              ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0),
-                child: Text(
-                  "Skills based on your goals",
-                  style: getCTATextStyle(
-                    context,
-                    16,
-                    color: Colors.black,
+                  }),
+                ),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    "Skills based on your goals",
+                    style: getCTATextStyle(
+                      context,
+                      16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(maxHeight: 250),
-                child: Obx(() {
-                  if (coursesController.isLoadingGolsBasedCourses.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (coursesController.courses.value == null ||
-                      coursesController.courses.value!.data == null ||
-                      coursesController.courses.value!.data!.courses == null) {
-                    return const Center(child: Text('No Courses Available'));
-                  }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return getCourseItem(
-                          context,
-                          coursesController
-                              .coursesGoals.value!.data!.courses![index]);
-                    },
-                    itemCount: coursesController
-                        .coursesGoals.value!.data!.courses!.length,
-                  );
-                }),
-              ),
-              SizedBox(height: 8),
-            ],
+                SizedBox(height: 8),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  constraints: const BoxConstraints(maxHeight: 250),
+                  child: Obx(() {
+                    if (coursesController.isLoadingGolsBasedCourses.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (coursesController.courses.value == null ||
+                        coursesController.courses.value!.data == null ||
+                        coursesController.courses.value!.data!.courses ==
+                            null) {
+                      return const Center(child: Text('No Courses Available'));
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return getCourseItem(
+                            context,
+                            coursesController
+                                .coursesGoals.value!.data!.courses![index]);
+                      },
+                      itemCount: coursesController
+                          .coursesGoals.value!.data!.courses!.length,
+                    );
+                  }),
+                ),
+                SizedBox(height: 8),
+              ],
+            ),
           ),
         ),
       ),

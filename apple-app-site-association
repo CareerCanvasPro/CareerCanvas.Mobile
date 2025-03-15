@@ -6,12 +6,18 @@
                 "appIDs": [
                     "AF33ZWKYYH.pro.careercanvas.app"
                 ],
-                "paths": [
-                    "*"
-                ],
                 "components": [
                     {
-                        "/": "/*"
+                        "/": "/auth/callback",
+                        "query": {
+                            "token": "*",
+                            "isNewUser": "*",
+                            "username": "*",
+                            "expiresAt": "*"
+                        }
+                    },
+                    {
+                        "/": "/open-app"
                     }
                 ]
             }

@@ -23,12 +23,14 @@ class GlobalSearchController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> searchCourses(String query) async {
+  Future<void> searchCourses(String? query) async {
     isLoading.value = true;
-    searchQuery.value = query;
+    if (query != null) {
+      searchQuery.value = query;
+    }
     var result;
-    if (query.isNotEmpty) {
-      result = await coursesRepository.searchCourses(query);
+    if (searchQuery.value.isNotEmpty) {
+      result = await coursesRepository.searchCourses(searchQuery.value);
     } else {
       result = await coursesRepository.getCoursesRecomendation();
     }

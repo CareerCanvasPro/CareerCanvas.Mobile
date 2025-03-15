@@ -13,6 +13,7 @@ import 'package:career_canvas/src/profile/presentation/getx/controllers/user_pro
 import 'package:career_canvas/src/profile/presentation/screens/widgets/language_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/skills_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/text_field_dialog.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -293,6 +294,10 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Future<void> onRefresh() async {
+    await userProfileController.getUserProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -311,101 +316,118 @@ class _UserProfileState extends State<UserProfile> {
         toolbarHeight: 0,
       ),
       body: Obx(() {
-        return CustomScrollView(
-          shrinkWrap: true,
-          primary: true,
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 270,
-              collapsedHeight: kToolbarHeight + 20,
-              actions: [
-                IconButton(
-                  color: Colors.white,
-                  onPressed: () {},
-                  icon: const Icon(Icons.ios_share),
-                ),
-                IconButton(
-                  color: Colors.white,
-                  onPressed: () {
-                    Get.toNamed(ProfileSettings.routeName);
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
-              ],
-              floating: false,
-              pinned: true,
-              automaticallyImplyLeading: false,
-              flexibleSpace: LayoutBuilder(
-                builder: (context, constraints) {
-                  bool isCollapsed =
-                      constraints.maxHeight <= kToolbarHeight + 20;
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      if (!isCollapsed)
-                        _profileHeaderSection(
-                          context,
-                          userProfileController.userProfile.value,
-                        ),
-                      if (isCollapsed)
-                        _collapsedHeader(
-                          context,
-                          userProfileController.userProfile.value,
-                        ),
-                    ],
-                  );
-                },
+        return CustomMaterialIndicator(
+          onRefresh: onRefresh,
+          backgroundColor: Colors.white,
+          indicatorBuilder: (context, controller) {
+            return Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: CircularProgressIndicator(
+                color: primaryBlue,
+                value: controller.state.isLoading
+                    ? null
+                    : min(controller.value, 1.0),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  // About Me Section
-                  _aboutMeSection(
-                    context,
-                    userProfileController.userProfile.value,
+            );
+          },
+          child: CustomScrollView(
+            shrinkWrap: true,
+            primary: true,
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 270,
+                collapsedHeight: kToolbarHeight + 20,
+                actions: [
+                  IconButton(
+                    color: Colors.white,
+                    onPressed: () {},
+                    icon: const Icon(Icons.ios_share),
                   ),
-
-                  // Work Experience Section
-                  _workExperianceSection(
-                    context,
-                    userProfileController.userProfile.value?.occupation ?? [],
+                  IconButton(
+                    color: Colors.white,
+                    onPressed: () {
+                      Get.toNamed(ProfileSettings.routeName);
+                    },
+                    icon: const Icon(Icons.settings),
                   ),
-
-                  // Education Section
-                  _educationSection(
-                    context,
-                    userProfileController.userProfile.value?.education ?? [],
-                  ),
-                  // Skills Section
-                  _skillsSection(context,
-                      userProfileController.userProfile.value?.skills ?? []),
-
-                  // Language Section
-                  _languageSection(context,
-                      userProfileController.userProfile.value?.languages ?? []),
-
-                  // Appreciation Section
-                  // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
-
-                  // Resume section
-                  // GestureDetector(
-                  //   onTap: pickFileAndUpload,
-                  //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
-                  // ),
-                  _resumeSection(
-                    context,
-                    userProfileController
-                        .resumes, // Assuming resumes are loaded into this list
-                  ),
-                  // _resumeSection(
-                  //   context,
-                  //   userProfileController.userProfile.value?.resumes ?? [],
-                  // ),
                 ],
+                floating: false,
+                pinned: true,
+                automaticallyImplyLeading: false,
+                flexibleSpace: LayoutBuilder(
+                  builder: (context, constraints) {
+                    bool isCollapsed =
+                        constraints.maxHeight <= kToolbarHeight + 20;
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        if (!isCollapsed)
+                          _profileHeaderSection(
+                            context,
+                            userProfileController.userProfile.value,
+                          ),
+                        if (isCollapsed)
+                          _collapsedHeader(
+                            context,
+                            userProfileController.userProfile.value,
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // About Me Section
+                    _aboutMeSection(
+                      context,
+                      userProfileController.userProfile.value,
+                    ),
+
+                    // Work Experience Section
+                    _workExperianceSection(
+                      context,
+                      userProfileController.userProfile.value?.occupation ?? [],
+                    ),
+
+                    // Education Section
+                    _educationSection(
+                      context,
+                      userProfileController.userProfile.value?.education ?? [],
+                    ),
+                    // Skills Section
+                    _skillsSection(context,
+                        userProfileController.userProfile.value?.skills ?? []),
+
+                    // Language Section
+                    _languageSection(
+                        context,
+                        userProfileController.userProfile.value?.languages ??
+                            []),
+
+                    // Appreciation Section
+                    // _appreciationSection(context, userProfileController.userProfile.value?. ?? []),
+
+                    // Resume section
+                    // GestureDetector(
+                    //   onTap: pickFileAndUpload,
+                    //   child: SvgPicture.asset("assets/svg/icons/Add.svg"),
+                    // ),
+                    _resumeSection(
+                      context,
+                      userProfileController
+                          .resumes, // Assuming resumes are loaded into this list
+                    ),
+                    // _resumeSection(
+                    //   context,
+                    //   userProfileController.userProfile.value?.resumes ?? [],
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       }),
     );

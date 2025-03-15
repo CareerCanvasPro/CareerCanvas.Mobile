@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/personalityInfo.dart';
@@ -12,6 +14,7 @@ import 'package:career_canvas/features/Career/presentation/screens/PersonalityTe
 import 'package:career_canvas/features/Career/presentation/screens/widgets/goals_dialog.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -56,6 +59,12 @@ class _CareerScreenState extends State<CareerScreen> {
         },
       );
     }
+  }
+
+  Future<void> onRefresh() async {
+    await userProfileController.getUserProfile();
+    await jobsController.getCareerTrends();
+    await jobsController.getJobsRecomendation();
   }
 
   String getFormatedDateForTimeline(DateTime date) {
@@ -134,248 +143,267 @@ class _CareerScreenState extends State<CareerScreen> {
       ),
       body: Obx(
         () {
-          return SingleChildScrollView(
-            // padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    "Personality Assesment",
-                    style: getCTATextStyle(context, 16, color: Colors.black),
-                  ),
+          return CustomMaterialIndicator(
+            onRefresh: onRefresh,
+            backgroundColor: Colors.white,
+            indicatorBuilder: (context, controller) {
+              return Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: CircularProgressIndicator(
+                  color: primaryBlue,
+                  value: controller.state.isLoading
+                      ? null
+                      : min(controller.value, 1.0),
                 ),
-                SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: getPersonalityTest(context),
-                ),
-                SizedBox(height: 20),
-                Showcase(
-                  key: _two,
-                  title: "Your Goals",
-                  targetBorderRadius: BorderRadius.circular(16),
-                  targetPadding: const EdgeInsets.all(16.0),
-                  description:
-                      "Here you can see and add your goals so that we can suggest you career guides based on your goals.",
-                  child: Padding(
+              );
+            },
+            child: SingleChildScrollView(
+              // padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Goals",
-                              style: getCTATextStyle(context, 16,
-                                  color: Colors.black),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context) => AlertDialog.adaptive(
-                                    scrollable: true,
-                                    content: AddGoals(
-                                      existingGoals: userProfileController
-                                          .userProfile.value?.goals,
-                                      onSubmit: (List<String> goals) async {
-                                        await userProfileController
-                                            .updateGoals(goals);
-                                        await userProfileController
-                                            .getUserProfile();
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24.0),
-                                ),
-                              ),
-                              child: Text(
-                                "Add New Goal",
-                                style: getCTATextStyle(
-                                  context,
-                                  14,
-                                  color: primaryBlue,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        (userProfileController
-                                    .userProfile.value?.goals.isNotEmpty ??
-                                false)
-                            ? getGoals(
-                                userProfileController.userProfile.value?.goals)
-                            : Container(
-                                height: 150,
-                                child: Center(
-                                  child: Text(
-                                    "No Goals Yet",
-                                    style: getCTATextStyle(
-                                      context,
-                                      16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                      ],
+                    child: Text(
+                      "Personality Assesment",
+                      style: getCTATextStyle(context, 16, color: Colors.black),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
-                //Career Trends
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    "Current Career Trends",
-                    style: getCTATextStyle(
-                      context,
-                      16,
-                      color: Colors.black,
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: getPersonalityTest(context),
+                  ),
+                  SizedBox(height: 20),
+                  Showcase(
+                    key: _two,
+                    title: "Your Goals",
+                    targetBorderRadius: BorderRadius.circular(16),
+                    targetPadding: const EdgeInsets.all(16.0),
+                    description:
+                        "Here you can see and add your goals so that we can suggest you career guides based on your goals.",
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Goals",
+                                style: getCTATextStyle(context, 16,
+                                    color: Colors.black),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) => AlertDialog.adaptive(
+                                      scrollable: true,
+                                      content: AddGoals(
+                                        existingGoals: userProfileController
+                                            .userProfile.value?.goals,
+                                        onSubmit: (List<String> goals) async {
+                                          await userProfileController
+                                              .updateGoals(goals);
+                                          await userProfileController
+                                              .getUserProfile();
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24.0),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Add New Goal",
+                                  style: getCTATextStyle(
+                                    context,
+                                    14,
+                                    color: primaryBlue,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          (userProfileController
+                                      .userProfile.value?.goals.isNotEmpty ??
+                                  false)
+                              ? getGoals(userProfileController
+                                  .userProfile.value?.goals)
+                              : Container(
+                                  height: 150,
+                                  child: Center(
+                                    child: Text(
+                                      "No Goals Yet",
+                                      style: getCTATextStyle(
+                                        context,
+                                        16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Showcase(
-                  key: _three,
-                  title: "Career Trends",
-                  targetBorderRadius: BorderRadius.circular(16),
-                  description:
-                      "Here you can see some career trends based on your profile.",
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxHeight:
-                          ((MediaQuery.of(context).size.width - 60) / 16 * 9) +
-                              230,
+                  SizedBox(height: 20),
+                  //Career Trends
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Current Career Trends",
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.black,
+                      ),
                     ),
-                    child: Obx(() {
-                      if (jobsController.isLoadingCareerTrends.value) {
-                        return const Center(
-                            child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            primaryBlue,
-                          ),
-                        ));
-                      }
-                      if (jobsController.errorMessageCareerTrends.isNotEmpty) {
-                        return Center(
-                          child: Text(
-                            jobsController.errorMessageCareerTrends.value,
-                            style: TextStyle(
-                              color: Colors.red,
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Showcase(
+                    key: _three,
+                    title: "Career Trends",
+                    targetBorderRadius: BorderRadius.circular(16),
+                    description:
+                        "Here you can see some career trends based on your profile.",
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: ((MediaQuery.of(context).size.width - 60) /
+                                16 *
+                                9) +
+                            230,
+                      ),
+                      child: Obx(() {
+                        if (jobsController.isLoadingCareerTrends.value) {
+                          return const Center(
+                              child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              primaryBlue,
                             ),
-                          ),
-                        );
-                      }
-                      if (jobsController.careerTrends.value?.data?.careers ==
-                              null ||
-                          jobsController
-                              .careerTrends.value!.data!.careers.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            'No career trends available for you at the moment.\nPlease check back later.',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return getCareerTrendItem(
-                            context,
+                          ));
+                        }
+                        if (jobsController
+                            .errorMessageCareerTrends.isNotEmpty) {
+                          return Center(
+                            child: Text(
+                              jobsController.errorMessageCareerTrends.value,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          );
+                        }
+                        if (jobsController.careerTrends.value?.data?.careers ==
+                                null ||
                             jobsController
-                                .careerTrends.value!.data!.careers[index],
+                                .careerTrends.value!.data!.careers.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'No career trends available for you at the moment.\nPlease check back later.',
+                              textAlign: TextAlign.center,
+                            ),
                           );
-                        },
-                        itemCount: jobsController
-                            .careerTrends.value!.data!.careers.length,
-                      );
-                    }),
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    "Jobs for you",
-                    style: getCTATextStyle(
-                      context,
-                      16,
-                      color: Colors.black,
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return getCareerTrendItem(
+                              context,
+                              jobsController
+                                  .careerTrends.value!.data!.careers[index],
+                            );
+                          },
+                          itemCount: jobsController
+                              .careerTrends.value!.data!.careers.length,
+                        );
+                      }),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Showcase(
-                  key: _four,
-                  title: "Jobs for you",
-                  targetBorderRadius: BorderRadius.circular(16),
-                  description:
-                      "Here you can see some job suggestions based on your profile.",
-                  child: Container(
-                    constraints: const BoxConstraints(maxHeight: 210),
-                    child: Obx(() {
-                      if (jobsController.isLoading.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (jobsController.errorMessage.isNotEmpty) {
-                        return Center(
-                          child: Text(
-                            jobsController.errorMessage.value,
-                            style: TextStyle(
-                              color: Colors.red,
-                            ),
-                          ),
-                        );
-                      }
-                      if (jobsController.jobs.value == null ||
-                          jobsController.jobs.value!.data == null ||
-                          jobsController.jobs.value!.data!.jobs == null ||
-                          jobsController.jobs.value!.data!.jobs!.length == 0) {
-                        return const Center(
-                          child: Text(
-                            'No job recommendations for you at the moment.\nPlease check back later.',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        // itemExtent: 8,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return getJobItem(
-                            context,
-                            jobsController.jobs.value!.data!.jobs![index],
-                          );
-                        },
-                        itemCount:
-                            jobsController.jobs.value!.data!.jobs!.length,
-                      );
-                    }),
+                  SizedBox(height: 20),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Jobs for you",
+                      style: getCTATextStyle(
+                        context,
+                        16,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-              ],
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Showcase(
+                    key: _four,
+                    title: "Jobs for you",
+                    targetBorderRadius: BorderRadius.circular(16),
+                    description:
+                        "Here you can see some job suggestions based on your profile.",
+                    child: Container(
+                      constraints: const BoxConstraints(maxHeight: 210),
+                      child: Obx(() {
+                        if (jobsController.isLoading.value) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (jobsController.errorMessage.isNotEmpty) {
+                          return Center(
+                            child: Text(
+                              jobsController.errorMessage.value,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          );
+                        }
+                        if (jobsController.jobs.value == null ||
+                            jobsController.jobs.value!.data == null ||
+                            jobsController.jobs.value!.data!.jobs == null ||
+                            jobsController.jobs.value!.data!.jobs!.length ==
+                                0) {
+                          return const Center(
+                            child: Text(
+                              'No job recommendations for you at the moment.\nPlease check back later.',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          // itemExtent: 8,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return getJobItem(
+                              context,
+                              jobsController.jobs.value!.data!.jobs![index],
+                            );
+                          },
+                          itemCount:
+                              jobsController.jobs.value!.data!.jobs!.length,
+                        );
+                      }),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
           );
         },
