@@ -4,6 +4,7 @@ import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/otpVerificationResponse.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
+import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart' as http;
 import 'package:file_picker/file_picker.dart';
@@ -67,8 +68,11 @@ class CustomDialog {
                         title: button2Text,
                         onPressed: onPressed2 ?? () => Get.back(),
                         backgroundColor: primaryBlue.withOpacity(0.8),
-                        textStyle:
-                            getCTATextStyle(context, 16, color: Colors.white),
+                        textStyle: getCTATextStyle(
+                          context,
+                          16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -112,6 +116,15 @@ class CustomDialog {
         return AlertDialog(
           backgroundColor: Colors.white,
           scrollable: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          contentPadding: const EdgeInsets.all(0),
+          titlePadding: const EdgeInsets.all(0),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
           content: AddEducationDialog(
             onPressedSubmit: onPressedSubmit,
           ),
@@ -468,258 +481,444 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Education Details",
-                style: getCTATextStyle(
-                  context,
-                  18,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                "Enter your education details below.",
-                style: getCTATextStyle(
-                  context,
-                  12,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: instituteNameController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Institute name is required';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Institute Name",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+    return Container(
+      width: context.screenWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: primaryBlue,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8,
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: fieldOfEducationController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Field of education is required';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Field of Education",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: academicAchievementsController,
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                minLines: 1,
-                decoration: InputDecoration(
-                  hintText: "Academic Achievements",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Expected Graduation Date"),
-                      if (expectedGraduationDate != null)
-                        Text(
-                          formatDate(expectedGraduationDate!),
-                          style: TextStyle(color: Colors.grey),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Education Details",
+                              style: getCTATextStyle(
+                                context,
+                                16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "Enter your education details below.",
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.white,
                         ),
+                      ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () async {
-                      expectedGraduationDate = await showDatePicker(
-                        context: context,
-                        initialDate: expectedGraduationDate,
-                        currentDate: DateTime.now(),
-                        firstDate: DateTime(1971),
-                        lastDate: DateTime(2071),
-                        barrierDismissible: false,
-                      );
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      Icons.calendar_month_rounded,
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Checkbox(
-                    value: isCurrentEducation,
-                    activeColor: primaryBlue,
-                    onChanged: (value) {
-                      isCurrentEducation = value ?? false;
-                      setState(() {});
-                    },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 40,
+                        child: TextFormField(
+                          controller: instituteNameController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Institute name is required';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Institute Name",
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFfb0102),
+                              ),
+                            ),
+                            errorMaxLines: 1,
+                            // errorText: '',
+                            errorStyle: TextStyle(
+                              fontSize: 0,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            height: 1,
+                            color: Colors.black,
+                          ),
+                          cursorColor: primaryBlue,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 40,
+                        child: TextFormField(
+                          controller: fieldOfEducationController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Field of education is required';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Field of Education",
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFfb0102),
+                              ),
+                            ),
+                            errorMaxLines: 1,
+                            // errorText: '',
+                            errorStyle: TextStyle(
+                              fontSize: 0,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            height: 1,
+                            color: Colors.black,
+                          ),
+                          cursorColor: primaryBlue,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 40,
+                        child: TextFormField(
+                          controller: academicAchievementsController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            hintText: "Academic Achievements",
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFfb0102),
+                              ),
+                            ),
+                            errorMaxLines: 1,
+                            // errorText: '',
+                            errorStyle: TextStyle(
+                              fontSize: 0,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            height: 1,
+                            color: Colors.black,
+                          ),
+                          cursorColor: primaryBlue,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      if (certificateFile != null)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Certificate.${extensionFromMime(certificateFile!.type)}",
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  certificateFile = null;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.delete_forever_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (certificateFile == null)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomOutlinedButton(
+                                title: "Upload Certificate",
+                                onPressed: imageUploading
+                                    ? null
+                                    : () async {
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                          type: FileType.custom,
+                                          allowedExtensions: [
+                                            'pdf',
+                                            'png',
+                                            'jpg',
+                                            "jpeg",
+                                            "heic",
+                                            "webp"
+                                          ],
+                                          dialogTitle: 'Upload Certificate',
+                                        );
+                                        if (result != null) {
+                                          print(result.files.first.path);
+                                          await uploadCertifiate(
+                                              result.files.first.path!);
+                                        }
+                                      },
+                                // backgroundColor: primaryBlue,
+
+                                textStyle: getCTATextStyle(
+                                  context,
+                                  14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Expected Graduation Date"),
+                              if (expectedGraduationDate != null)
+                                Text(
+                                  formatDate(expectedGraduationDate!),
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                            ],
+                          ),
+                          Spacer(),
+                          IconButton(
+                            onPressed: () async {
+                              expectedGraduationDate = await showDatePicker(
+                                context: context,
+                                initialDate: expectedGraduationDate,
+                                currentDate: DateTime.now(),
+                                firstDate: DateTime(1971),
+                                lastDate: DateTime(2071),
+                                barrierDismissible: false,
+                              );
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.calendar_month_rounded,
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          isCurrentEducation = !isCurrentEducation;
+                          setState(() {});
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 16,
+                              child: Checkbox(
+                                value: isCurrentEducation,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                activeColor: primaryBlue,
+                                onChanged: (value) {
+                                  isCurrentEducation = !isCurrentEducation;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text("Current Education"),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  // SizedBox(
-                  //   width: 8,
-                  // ),
-                  Text("Current Education"),
-                ],
-              ),
-              if (certificateFile != null)
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        "Certificate.${extensionFromMime(certificateFile!.type)}",
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          certificateFile = null;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.delete_forever_rounded,
+                      child: CustomTextButton(
+                        title: "Add Education",
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (formKey.currentState!.validate()) {
+                            Education education = Education(
+                              achievements: academicAchievementsController.text,
+                              field: fieldOfEducationController.text,
+                              institute: instituteNameController.text,
+                              isCurrent: isCurrentEducation,
+                              graduationDate: expectedGraduationDate != null
+                                  ? expectedGraduationDate!
+                                      .millisecondsSinceEpoch
+                                  : null,
+                              certificate: certificateFile,
+                            );
+                            widget.onPressedSubmit(education);
+                          }
+                        },
+                        backgroundColor: primaryBlue,
+                        textStyle:
+                            getCTATextStyle(context, 14, color: Colors.white),
                       ),
                     ),
                   ],
                 ),
-              if (certificateFile == null)
+                SizedBox(height: 4),
                 Row(
                   children: [
                     Expanded(
                       child: CustomOutlinedButton(
-                        title: "Add Certificate",
-                        onPressed: imageUploading
-                            ? null
-                            : () async {
-                                FilePickerResult? result =
-                                    await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: [
-                                    'pdf',
-                                    'png',
-                                    'jpg',
-                                    "jpeg",
-                                    "heic",
-                                    "webp"
-                                  ],
-                                  dialogTitle: 'Upload Certificate',
-                                );
-                                if (result != null) {
-                                  print(result.files.first.path);
-                                  await uploadCertifiate(
-                                      result.files.first.path!);
-                                }
-                              },
-                        // backgroundColor: primaryBlue,
-                        textStyle:
-                            getCTATextStyle(context, 16, color: Colors.black),
+                        title: "Cancel",
+                        onPressed: () => Get.back(),
+                        color: primaryBlue,
+                        textStyle: getCTATextStyle(
+                          context,
+                          14,
+                          color: primaryBlue,
+                        ),
                       ),
                     ),
                   ],
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextButton(
-                title: "Add Education",
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  if (formKey.currentState!.validate()) {
-                    Education education = Education(
-                      achievements: academicAchievementsController.text,
-                      field: fieldOfEducationController.text,
-                      institute: instituteNameController.text,
-                      isCurrent: isCurrentEducation,
-                      graduationDate: expectedGraduationDate != null
-                          ? expectedGraduationDate!.millisecondsSinceEpoch
-                          : null,
-                      certificate: certificateFile,
-                    );
-                    widget.onPressedSubmit(education);
-                  }
-                },
-                backgroundColor: primaryBlue,
-                textStyle: getCTATextStyle(context, 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 4),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextButton(
-                title: "Cancel",
-                onPressed: () => Get.back(),
-                backgroundColor: primaryBlue.withOpacity(0.8),
-                textStyle: getCTATextStyle(context, 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ],
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }

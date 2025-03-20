@@ -32,7 +32,7 @@ class CustomButton extends StatelessWidget {
         elevation: elevation,
         backgroundColor: color,
         side: borderSide,
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       ),
     );
   }
@@ -58,8 +58,11 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         padding:
-            padding ?? EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            padding ?? EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         backgroundColor: backgroundColor,
       ),
       child: Text(
@@ -92,6 +95,9 @@ class CustomOutlinedButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         side: borderSide ??
             BorderSide(
               color: color ?? Theme.of(context).primaryColor,
@@ -99,7 +105,7 @@ class CustomOutlinedButton extends StatelessWidget {
             ),
         padding: padding ??
             EdgeInsets.symmetric(
-              vertical: 12.0,
+              vertical: 8.0,
               horizontal: 16.0,
             ),
       ),

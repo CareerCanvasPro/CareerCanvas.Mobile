@@ -1,8 +1,8 @@
 import 'package:career_canvas/core/models/onBoardingOne.dart';
 import 'package:career_canvas/core/network/api_client.dart';
-import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/PhoneNumberParser.dart';
+import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -35,6 +35,7 @@ class _ProfileCompletionScreenOneState
   // Controllers for input fields
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController zipCodeController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   bool imageUploading = false;
@@ -185,12 +186,8 @@ class _ProfileCompletionScreenOneState
   Widget _buildEducationCard() {
     return Container(
       margin: const EdgeInsets.only(bottom: 6.0),
-      decoration: BoxDecoration(
-        color: scaffoldBackgroundColor,
-        // color: Colors.white,
-      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -202,85 +199,127 @@ class _ProfileCompletionScreenOneState
             // const SizedBox(height: 10),
             // _buildTextField('Date of Birth', controllers['dob']! ),
             const SizedBox(height: 10),
-            _buildTextField('Present Address', addressController),
-            const SizedBox(height: 10),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Please enter a valid phone number";
-                } else if (!PhoneNumberParser.isValidSubscriberNumber(value)) {
-                  return "Please enter a valid phone number";
-                } else {
-                  return null;
-                }
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(10),
-                PhoneNumberInputFormatter(),
-              ],
-              enabled: (TokenInfo.type == 'Email'),
-              controller: mobileController,
-              autofocus: false,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              keyboardType: TextInputType.number,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: "1XXXXXXXXX",
-                // contentPadding: const EdgeInsets.symmetric(
-                //   horizontal: 16,
-                //   vertical: 8,
-                // ),
-                prefixIconConstraints: BoxConstraints(
-                  maxHeight: 55,
+            Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: _buildTextField('Present Address', addressController),
                 ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      showCountryPicker(
-                        context: context,
-                        favorite: ["BD", "US"],
-                        showPhoneCode: true,
-                        onSelect: (Country country) {
-                          countryCode = country.countryCode;
-                          phoneCode = "+${country.phoneCode}";
-                          setState(() {});
-                        },
-                      );
-                    },
-                    child: Text(
-                      phoneCode,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
+                SizedBox(width: 4),
+                Expanded(
+                  flex: 3,
+                  child: _buildTextField(
+                    'Zip Code',
+                    zipCodeController,
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 40,
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a valid phone number";
+                  } else if (!PhoneNumberParser.isValidSubscriberNumber(
+                      value)) {
+                    return "Please enter a valid phone number";
+                  } else {
+                    return null;
+                  }
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                  PhoneNumberInputFormatter(),
+                ],
+                enabled: (TokenInfo.type == 'Email'),
+                controller: mobileController,
+                autofocus: false,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: "1XXXXXXXXX",
+                  // contentPadding: const EdgeInsets.symmetric(
+                  //   horizontal: 16,
+                  //   vertical: 8,
+                  // ),
+                  prefixIconConstraints: BoxConstraints(
+                    maxHeight: 55,
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        showCountryPicker(
+                          context: context,
+                          favorite: ["BD", "US"],
+                          showPhoneCode: true,
+                          onSelect: (Country country) {
+                            countryCode = country.countryCode;
+                            phoneCode = "+${country.phoneCode}";
+                            setState(() {});
+                          },
+                        );
+                      },
+                      child: Text(
+                        phoneCode,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                hintStyle: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32.0),
-                  borderSide: const BorderSide(
-                    color: AppColors.secondaryColor,
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32.0),
-                  borderSide: const BorderSide(color: AppColors.secondaryColor),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFfb0102),
+                    ),
+                  ),
+                  errorMaxLines: 1,
+                  // errorText: '',
+                  errorStyle: TextStyle(
+                    fontSize: 0,
+                  ),
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: primaryBlue,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: primaryBlue,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: primaryBlue,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -314,47 +353,191 @@ class _ProfileCompletionScreenOneState
     super.dispose();
   }
 
+  Future<void> _onNext(BuildContext context) async {
+    debugPrint("Uploading data");
+    try {
+      FocusScope.of(context).unfocus();
+      debugPrint(
+        "phoneNumber: " + phoneCode + mobileController.text.replaceAll("-", ""),
+      );
+      Onboardingone onboardingone = Onboardingone(
+        profilePicture: imageUrl,
+        name: fullNameController.text,
+        phone: phoneCode + mobileController.text.replaceAll("-", ""),
+        address: addressController.text,
+        email: emailController.text,
+      );
+      debugPrint(onboardingone.toString());
+
+      setState(() {
+        isUploadingData = true;
+      });
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: ApiClient.userBase,
+          connectTimeout: const Duration(seconds: 3000),
+          receiveTimeout: const Duration(seconds: 3000),
+        ),
+      );
+      await dio.post(
+        "${ApiClient.userBase}/user/profile",
+        data: onboardingone.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': "application/json",
+            "Authorization": "Bearer ${TokenInfo.token}",
+          },
+        ),
+      );
+      setState(() {
+        isUploadingData = false;
+      });
+      // Navigator.pushNamed(context, '/profileCompletiontwo');
+      getIt.Get.to(
+        () => ProfileCompletionScreenTwo(),
+      );
+    } on DioException catch (e) {
+      setState(() {
+        isUploadingData = false;
+      });
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response!.data["message"]);
+        print(e.response!.headers);
+        print(e.response!.requestOptions);
+        CustomDialog.showCustomDialog(
+          context,
+          title: "Error",
+          content: e.response!.data["message"].toString(),
+        );
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+        CustomDialog.showCustomDialog(
+          context,
+          title: "Error",
+          content: e.message.toString(),
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      setState(() {
+        isUploadingData = false;
+      });
+      CustomDialog.showCustomDialog(
+        context,
+        title: "Error",
+        content: e.toString(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBlue,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: scaffoldBackgroundColor,
+        toolbarHeight: 0,
+        backgroundColor: primaryBlue,
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            // Logo
-            Center(
-              child: SvgPicture.asset(
-                "assets/svg/Career_Canvas_Logo_black.svg",
-                height: 50,
-                fit: BoxFit.fitHeight,
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Image.asset(
+                  "assets/icons/cc_bg.png",
+                  width: context.screenWidth,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            // Progress Bar
-            buildProgressBar(progress: 0.2),
-            const SizedBox(height: 16),
-            // Welcome Text
-            const Text(
-              'Hello! Complete your profile to onboard',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              height: context.screenHeight - 36,
+              width: context.screenWidth,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 16),
+                  Text(
+                    "Welcome to Career Canvas",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    "Complete your profile to onboard",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  buildProgressBar(progress: 0.2),
+                  const SizedBox(height: 16),
+                  _buildEducationCard(),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/svg/icons/icon_coin_5.svg',
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(child: Container()),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: isUploadingData
+                                    ? null
+                                    : () async {
+                                        await _onNext(context);
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isUploadingData
+                                      ? Colors.white
+                                      : Colors.white,
+                                  disabledBackgroundColor: Colors.white,
+                                  disabledForegroundColor: Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  minimumSize: const Size(80, 35),
+                                ),
+                                child: Text(
+                                  'Next',
+                                  style: getCTATextStyle(
+                                    context,
+                                    14,
+                                    color: primaryBlue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-
-            _buildEducationCard(),
-            // const SizedBox(height: 4),
-            // Footer
-            _buildFooter(context),
           ],
         ),
       ),
@@ -365,13 +548,24 @@ class _ProfileCompletionScreenOneState
     return Row(
       children: [
         Expanded(
-          child: LinearPercentIndicator(
-            lineHeight: 10,
-            animation: true,
-            percent: progress,
-            backgroundColor: Colors.grey.shade300,
-            progressColor: primaryBlue,
-            barRadius: Radius.circular(10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+            ),
+            child: LinearPercentIndicator(
+              lineHeight: 10,
+              animation: true,
+              percent: progress,
+              backgroundColor: Colors.white,
+              progressColor: primaryBlue,
+              barRadius: Radius.circular(10),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ),
       ],
@@ -390,6 +584,10 @@ class _ProfileCompletionScreenOneState
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
               shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.grey.shade300,
+                width: 2,
+              ),
             ),
             clipBehavior: Clip.antiAlias,
             child: imageUploading == true
@@ -439,21 +637,65 @@ class _ProfileCompletionScreenOneState
     String hintText,
     TextEditingController controller, {
     bool isEnabled = true,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
   }) {
-    return TextField(
-      controller: controller,
-      enabled: isEnabled,
-      decoration: InputDecoration(
-        hintText: hintText,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+    return SizedBox(
+      height: 40,
+      child: TextFormField(
+        controller: controller,
+        enabled: isEnabled,
+        cursorColor: primaryBlue,
+        cursorOpacityAnimates: true,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        style: TextStyle(
+          fontSize: 14,
+          height: 1,
+          color: Colors.black,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Colors.grey.shade500),
+        decoration: InputDecoration(
+          hintText: hintText,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Color(0xFFfb0102),
+            ),
+          ),
+          errorMaxLines: 1,
+          // errorText: '',
+          errorStyle: TextStyle(
+            fontSize: 0,
+          ),
+          hintStyle: TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontWeight: FontWeight.normal,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: primaryBlue,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: primaryBlue,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: primaryBlue,
+            ),
+          ),
         ),
       ),
     );
@@ -465,78 +707,39 @@ class _ProfileCompletionScreenOneState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // const Text(
-          //   'Earn 5 coins',
-          //   style: TextStyle(color: Colors.green, fontSize: 14),
-          // ),
           SvgPicture.asset(
             'assets/svg/icons/icon_coin_5.svg',
           ),
           Expanded(
             child: Row(
               children: [
-                // TextButton(
-                //   onPressed: () {},
-                //   child: const Text(
-                //     'Skip',
-                //     style: TextStyle(color: primaryBlue, fontSize: 16),
-                //   ),
-                // ),
                 SizedBox(
                   width: 10,
                 ),
-                // ElevatedButton(
-                //   onPressed: isUploadingData
-                //       ? null
-                //       : () {
-                //           // Action for skip button
-                //           debugPrint("Skip button clicked");
-                //           Navigator.pushNamed(
-                //             context,
-                //             ProfileCompletionScreenTwo.routeName,
-                //           );
-                //         },
-                //   style: ElevatedButton.styleFrom(
-                //     backgroundColor: scaffoldBackgroundColor,
-                //     side: BorderSide(color: primaryBlue),
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(24.0),
-                //     ),
-                //     minimumSize: const Size(80, 48),
-                //   ),
-                //   child: Text(
-                //     'Skip',
-                //     style: getCTATextStyle(
-                //       context,
-                //       16,
-                //       color: primaryBlue,
-                //     ),
-                //   ),
-                // ),
                 Expanded(child: Container()),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: isUploadingData
                       ? null
                       : () async {
-                          FocusScope.of(context).unfocus();
-                          // final allValues = _getAllEducationValues();
-                          // print(allValues);
-                          // Example: Access user inputs
-                          debugPrint(
-                            "phoneNumber: " +
-                                phoneCode +
-                                mobileController.text.replaceAll("-", ""),
-                          );
-                          Onboardingone onboardingone = Onboardingone(
-                            profilePicture: imageUrl,
-                            name: fullNameController.text,
-                            phone: phoneCode +
-                                mobileController.text.replaceAll("-", ""),
-                            address: addressController.text,
-                            email: emailController.text,
-                          );
+                          debugPrint("Uploading data");
                           try {
+                            FocusScope.of(context).unfocus();
+                            debugPrint(
+                              "phoneNumber: " +
+                                  phoneCode +
+                                  mobileController.text.replaceAll("-", ""),
+                            );
+                            Onboardingone onboardingone = Onboardingone(
+                              profilePicture: imageUrl,
+                              name: fullNameController.text,
+                              phone: phoneCode +
+                                  mobileController.text.replaceAll("-", ""),
+                              address: addressController.text,
+                              email: emailController.text,
+                            );
+                            debugPrint(onboardingone.toString());
+
                             setState(() {
                               isUploadingData = true;
                             });
@@ -603,15 +806,19 @@ class _ProfileCompletionScreenOneState
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        isUploadingData ? Colors.grey : primaryBlue,
+                        isUploadingData ? Colors.grey : Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    minimumSize: const Size(80, 48),
+                    minimumSize: const Size(80, 35),
                   ),
                   child: Text(
                     'Next',
-                    style: getCTATextStyle(context, 16),
+                    style: getCTATextStyle(
+                      context,
+                      14,
+                      color: primaryBlue,
+                    ),
                   ),
                 ),
               ],

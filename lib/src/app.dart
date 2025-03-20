@@ -161,8 +161,14 @@ class _MyAppState extends State<MyApp> {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(
-            primaryColor: primaryBlue,
+          theme: ThemeData.light().copyWith(
+            primaryColor: primaryBlue, // Sets primary color
+            colorScheme: ColorScheme.light(
+              primary: primaryBlue, // Sets highlight color
+              onPrimary: Colors.white, // Text color on primary
+              onSurface: primaryBlue, // Other text colors
+            ),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           darkTheme: ThemeData.dark(),
           themeMode: widget.settingsController.themeMode,

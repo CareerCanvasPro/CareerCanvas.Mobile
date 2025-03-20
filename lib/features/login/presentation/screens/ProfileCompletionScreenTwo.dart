@@ -63,164 +63,194 @@ class _ProfileCompletionScreenTwoState
   }
 
   Widget _buildEducationCard(int index) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      color: scaffoldBackgroundColor,
-      elevation: 5,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.white,
+          width: 1,
+          strokeAlign: BorderSide.strokeAlignOutside,
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
-      child: ExpansionTile(
-        initiallyExpanded: index == selectedIndex,
-        trailing: IconButton(
-          onPressed: () {
-            _removeEducation(index);
-          },
-          icon: Icon(
-            Icons.delete_forever_rounded,
-            color: Colors.red,
-          ),
-        ),
-        collapsedBackgroundColor: primaryBlue,
-        collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        collapsedTextColor: Colors.white,
-        collapsedIconColor: Colors.white,
-        controlAffinity: ListTileControlAffinity.leading,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        onExpansionChanged: (value) {
-          setState(() {
-            selectedIndex = value ? index : 0;
-          });
-        },
-        expandedAlignment: Alignment.topLeft,
-        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-        childrenPadding: const EdgeInsets.only(
-          left: 24,
-          bottom: 16,
-          right: 24,
-        ),
-        title: Text(
-          _educationList[index].field,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                "Institute : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  "${_educationList[index].institute}",
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          if (_educationList[index].graduationDate != null)
-            Row(
+          Container(
+            decoration: BoxDecoration(
+              color: primaryBlue,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Graduation Date : ",
+                  _educationList[index].field,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Expanded(
-                  child: Text(
-                    formatDate(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        _educationList[index].graduationDate!,
-                      ),
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                IconButton(
+                  onPressed: () {
+                    _removeEducation(index);
+                  },
+                  icon: Image.asset(
+                    "assets/icons/delete_icon.png",
+                    height: 20,
                   ),
                 ),
               ],
             ),
-          Row(
-            children: [
-              Text(
-                "Current Education : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  _educationList[index].isCurrent ? 'Current' : 'Past',
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
           ),
-          Row(
-            children: [
-              Text(
-                "Achievements : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  _educationList[index].achievements,
-                ),
-              ),
-            ],
-          ),
-          if (_educationList[index].certificate != null)
-            Row(
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Certificate : ",
+                  "Institute : ",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () async {
-                      print(_educationList[index].certificate!.url);
-                      try {
-                        await launchUrl(
-                          Uri.parse(
-                            _educationList[index].certificate!.url,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${_educationList[index].institute}",
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                if (_educationList[index].graduationDate != null)
+                  SizedBox(
+                    height: 8,
+                  ),
+                if (_educationList[index].graduationDate != null)
+                  Text(
+                    "${DateTime.fromMillisecondsSinceEpoch(
+                      _educationList[index].graduationDate!,
+                    ).isAfter(DateTime.now()) ? "Expected " : ""}Graduation Date : ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                if (_educationList[index].graduationDate != null)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          formatDate(
+                            DateTime.fromMillisecondsSinceEpoch(
+                              _educationList[index].graduationDate!,
+                            ),
                           ),
-                          mode: LaunchMode.inAppWebView,
-                        );
-                      } catch (e) {
-                        print(e.toString());
-                      }
-                    },
-                    child: Text(
-                      "Certificate.${extensionFromMime(_educationList[index].certificate!.type)}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
-                        color: primaryBlue,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
+                    ],
+                  ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "Status : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _educationList[index].isCurrent
+                            ? 'Running'
+                            : 'Completed',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "Achievements : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _educationList[index].achievements,
+                      ),
+                    ),
+                  ],
+                ),
+                if (_educationList[index].certificate != null)
+                  SizedBox(
+                    height: 8,
+                  ),
+                if (_educationList[index].certificate != null)
+                  Row(
+                    children: [
+                      Text(
+                        "Certificate : ",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () async {
+                            print(_educationList[index].certificate!.url);
+                            try {
+                              await launchUrl(
+                                Uri.parse(
+                                  _educationList[index].certificate!.url,
+                                ),
+                                mode: LaunchMode.inAppWebView,
+                              );
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                          },
+                          child: Text(
+                            "Certificate.${extensionFromMime(_educationList[index].certificate!.type)}",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                              color: primaryBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
+          ),
         ],
       ),
     );
@@ -229,113 +259,119 @@ class _ProfileCompletionScreenTwoState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBlue,
       appBar: AppBar(
-        backgroundColor: scaffoldBackgroundColor,
+        backgroundColor: primaryBlue,
         automaticallyImplyLeading: false,
+        elevation: 0,
+        toolbarHeight: 0,
       ),
-      body: Container(
-        height: context.screenHeight,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Image.asset(
+                "assets/icons/cc_bg.png",
+                width: context.screenWidth,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+          Container(
+            height: context.screenHeight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
                   children: [
-                    Center(
-                      child: SvgPicture.asset(
-                        "assets/svg/Career_Canvas_Logo_black.svg",
-                        height: 50,
-                        fit: BoxFit.fitHeight,
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Welcome to Career Canvas",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(
-                      width: 2,
+                    Text(
+                      "Add your education details below.",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                    Text("Career\nCanvas")
+                    const SizedBox(height: 16),
+                    // Progress Bar
+                    buildProgressBar(progress: 0.4),
+                    SizedBox(height: 16),
+
+                    if (_educationList.isEmpty)
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'No Education Info Added.',
+                          style: getCTATextStyle(
+                            context,
+                            16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+
+                    // Form fields
+                    // Dynamic list of education fields
+                    if (_educationList.isNotEmpty)
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _educationList.length,
+                        itemBuilder: (context, index) {
+                          return _buildEducationCard(index);
+                        },
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _addEducationField,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: scaffoldBackgroundColor,
+                              side: BorderSide(color: primaryBlue),
+                              fixedSize: Size(double.maxFinite, 35),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: Text(
+                              '+ Add Education',
+                              style: getCTATextStyle(
+                                context,
+                                14,
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+
+                    // Action buttons
+                    _buildFooter(context),
+                    SizedBox(height: 30),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              // Progress Bar
-              buildProgressBar(progress: 0.4),
-              SizedBox(height: 10),
-              Text(
-                'Hello! Please add your education details below.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              SizedBox(height: 16),
-
-              if (_educationList.isEmpty)
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'No Education Info Added.',
-                      style: getCTATextStyle(
-                        context,
-                        16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-
-              // Form fields
-              // Dynamic list of education fields
-              if (_educationList.isNotEmpty)
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _educationList.length,
-                    itemBuilder: (context, index) {
-                      return _buildEducationCard(index);
-                    },
-                  ),
-                ),
-
-              // Add and Remove Education Buttons
-              // Row(
-              //   children: [
-              //     TextButton(
-              //       onPressed: _addEducationField,
-              //       child: Text('+ Add Education'),
-              //     ),
-              //   ],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: _addEducationField,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: scaffoldBackgroundColor,
-                      side: BorderSide(color: primaryBlue),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                    ),
-                    child: Text(
-                      '+ Add Education',
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: primaryBlue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-
-              // Action buttons
-              _buildFooter(context),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -344,13 +380,25 @@ class _ProfileCompletionScreenTwoState
     return Row(
       children: [
         Expanded(
-          child: LinearPercentIndicator(
-            lineHeight: 10,
-            animation: true,
-            percent: progress,
-            backgroundColor: Colors.grey.shade300,
-            progressColor: primaryBlue,
-            barRadius: Radius.circular(10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+            ),
+            child: LinearPercentIndicator(
+              lineHeight: 10,
+              animation: true,
+              percent: progress,
+              animateFromLastPercent: true,
+              backgroundColor: Colors.white,
+              progressColor: primaryBlue,
+              barRadius: Radius.circular(10),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ),
       ],
@@ -381,15 +429,15 @@ class _ProfileCompletionScreenTwoState
                   backgroundColor: scaffoldBackgroundColor,
                   side: BorderSide(color: primaryBlue),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  minimumSize: const Size(80, 48),
+                  minimumSize: const Size(80, 35),
                 ),
                 child: Text(
                   'Skip',
                   style: getCTATextStyle(
                     context,
-                    16,
+                    14,
                     color: primaryBlue,
                   ),
                 ),
@@ -476,13 +524,14 @@ class _ProfileCompletionScreenTwoState
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryBlue,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: Colors.white),
                   ),
-                  minimumSize: const Size(80, 48),
+                  minimumSize: const Size(80, 35),
                 ),
                 child: Text(
                   'Next',
-                  style: getCTATextStyle(context, 16),
+                  style: getCTATextStyle(context, 14),
                 ),
               ),
             ],
