@@ -7,6 +7,7 @@ import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
@@ -419,10 +420,18 @@ class _UserProfileState extends State<UserProfile> {
                       userProfileController
                           .resumes, // Assuming resumes are loaded into this list
                     ),
-                    // _resumeSection(
-                    //   context,
-                    //   userProfileController.userProfile.value?.resumes ?? [],
-                    // ),
+                    Center(
+                      child: Text(
+                        VersionInfo.getVersionInfo(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -729,6 +738,9 @@ class _UserProfileState extends State<UserProfile> {
     List<Experiance> data,
   ) {
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
       padding: const EdgeInsets.only(
         left: 24,
         right: 24,
@@ -824,6 +836,9 @@ class _UserProfileState extends State<UserProfile> {
 
   Container _educationSection(BuildContext context, List<Education> data) {
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
       padding: const EdgeInsets.only(
         left: 24,
         right: 24,
@@ -913,6 +928,9 @@ class _UserProfileState extends State<UserProfile> {
 
   Container _skillsSection(BuildContext context, List<String> data) {
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
       padding: const EdgeInsets.only(
         left: 24,
         right: 24,
@@ -980,6 +998,9 @@ class _UserProfileState extends State<UserProfile> {
 
   Container _languageSection(BuildContext context, List<String> data) {
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
       padding: const EdgeInsets.only(
         left: 24,
         right: 24,
@@ -1115,6 +1136,9 @@ class _UserProfileState extends State<UserProfile> {
 
   Container _resumeSection(BuildContext context, List<Resume> data) {
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
       padding: const EdgeInsets.only(
         left: 24,
         right: 24,

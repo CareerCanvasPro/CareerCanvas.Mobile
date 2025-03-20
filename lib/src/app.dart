@@ -166,7 +166,6 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.light(
               primary: primaryBlue, // Sets highlight color
               onPrimary: Colors.white, // Text color on primary
-              onSurface: primaryBlue, // Other text colors
             ),
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
