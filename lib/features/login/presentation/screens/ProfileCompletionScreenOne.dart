@@ -510,9 +510,7 @@ class _ProfileCompletionScreenOneState
                                         await _onNext(context);
                                       },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: isUploadingData
-                                      ? Colors.white
-                                      : Colors.white,
+                                  backgroundColor: Colors.white,
                                   disabledBackgroundColor: Colors.white,
                                   disabledForegroundColor: Colors.grey,
                                   shape: RoundedRectangleBorder(

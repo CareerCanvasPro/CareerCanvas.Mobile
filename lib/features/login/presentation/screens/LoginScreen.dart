@@ -589,6 +589,7 @@ class LoginScreen extends StatelessWidget {
                   : onPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
+                disabledBackgroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -599,7 +600,7 @@ class LoginScreen extends StatelessWidget {
                       width: 24,
                       height: 24,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: primaryBlue,
                         strokeWidth: 2.0,
                       ),
                     )

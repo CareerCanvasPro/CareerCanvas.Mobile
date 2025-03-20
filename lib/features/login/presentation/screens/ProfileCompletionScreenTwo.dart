@@ -426,7 +426,9 @@ class _ProfileCompletionScreenTwoState
                             context, ProfileCompletionScreenThree.routeName);
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: scaffoldBackgroundColor,
+                  backgroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.white,
+                  disabledForegroundColor: Colors.grey,
                   side: BorderSide(color: primaryBlue),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -523,6 +525,8 @@ class _ProfileCompletionScreenTwoState
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryBlue,
+                  disabledBackgroundColor: primaryBlue,
+                  disabledForegroundColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: BorderSide(color: Colors.white),
@@ -531,7 +535,11 @@ class _ProfileCompletionScreenTwoState
                 ),
                 child: Text(
                   'Next',
-                  style: getCTATextStyle(context, 14),
+                  style: getCTATextStyle(
+                    context,
+                    14,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
