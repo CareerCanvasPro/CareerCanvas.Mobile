@@ -1,16 +1,20 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/models/personalityInfo.dart';
+import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/CareerTrendDetailsScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/personalityDetailsScreen.dart';
+import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/EntjDetailsScreen.dart';
+import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
+import 'package:career_canvas/features/Career/presentation/screens/widgets/AnalyticsItem.dart';
 import 'package:career_canvas/features/Career/presentation/screens/widgets/goals_dialog.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
@@ -18,7 +22,9 @@ import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 // CareerScreen
@@ -38,6 +44,8 @@ class _CareerScreenState extends State<CareerScreen> {
   @override
   void initState() {
     super.initState();
+     _imagePath = '';
+    _loadImage();
     jobsController = getIt<JobsController>();
     if (jobsController.jobs.value == null) {
       jobsController.getJobsRecomendation();
@@ -115,26 +123,179 @@ class _CareerScreenState extends State<CareerScreen> {
   GlobalKey _two = GlobalKey();
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
+ late String _imagePath =
+      'package:hrmsapp/core/ImagePath/ImageAssets.dart'; // Initialize with an empty string
+
+  
+  Future<void> _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('imagePath', pickedFile.path);
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+    }
+  }
+
+  Future<void> _loadImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath = prefs.getString('imagePath');
+    if (imagePath != null) {
+      setState(() {
+        _imagePath = imagePath;
+      });
+    }
+  }
+
+   Widget buildProfileImage() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        GestureDetector(
+          onTap: _pickImage, // Pick image when tapped
+          child: CircleAvatar(
+            radius: 40, // Set the radius of the outer CircleAvatar
+            backgroundColor:
+                Colors.grey.shade300, // Background color of the CircleAvatar
+            child: _imagePath.isNotEmpty && File(_imagePath).existsSync()
+                ? ClipOval(
+                    child: Image.file(
+                      File(_imagePath),
+                      width: 30, // Set the width of the image
+                      height: 30, // Set the height of the image
+                      fit: BoxFit.cover, // Ensure the image fits properly
+                    ),
+                  )
+                : const Icon(
+                    Icons.person, // Default icon if no image is set
+                    size: 20,
+                    color: Colors.grey,
+                  ),
+          ),
+        ),
+
+        
+        Positioned(
+          bottom: 5,
+          right: 5,
+          child: GestureDetector(
+            onTap: _pickImage,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.grey,
+                size: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            SvgPicture.asset(
-              'assets/svg/icons/career_screen_icon.svg',
-              width: 30,
-              fit: BoxFit.fitWidth,
+        title: Container(
+          color: Colors.white,
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                backgroundImage:
+                    _imagePath.isNotEmpty && File(_imagePath).existsSync()
+                        ? FileImage(File(_imagePath)) as ImageProvider<Object>?
+                        : AssetImage(ImageAssets.dp),
+                // _imagePath.isNotEmpty
+                //     ? FileImage(File(_imagePath)) as ImageProvider<Object>?
+                //     : AssetImage('assets/images/banking/robi.png'),
+                radius: 24,
+                backgroundColor: Color.fromARGB(255, 255, 254, 254),
+                foregroundColor: AppColors.background,
+              ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              'Career',
-              style: getCTATextStyle(context, 24, color: Colors.black),
-            ),
-          ],
+              // Profile Image
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(40),
+              //   child: Image.asset(
+              //     ImageAssets.dp,
+              //     width: 50,
+              //     height: 50,
+              //     fit: BoxFit.cover,
+              //     errorBuilder: (context, error, stackTrace) {
+              //       return Container(
+              //         width: 50,
+              //         height: 50,
+              //         color: Colors.grey[300],
+              //         child: const Icon(Icons.person, color: Colors.white),
+              //       );
+              //     },
+              //   ),
+              // ),
+              const SizedBox(width: 12),
+
+              // Text Column
+              Expanded(
+                child: SizedBox(
+                  height: 50, // Match image height
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Center vertically
+                    children: [
+                      const Text(
+                        "Hi! Welcome,",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        userProfileController.userProfile.value?.name ?? '',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+
+        // Row(
+        //   children: [
+        //     SvgPicture.asset(
+        //       'assets/svg/icons/career_screen_icon.svg',
+        //       width: 30,
+        //       fit: BoxFit.fitWidth,
+        //     ),
+        //     const SizedBox(width: 8),
+        //     Text(
+        //       'Career',
+        //       style: getCTATextStyle(context, 24, color: Colors.black),
+        //     ),
+        //   ],
+        // ),
         backgroundColor: scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -163,19 +324,244 @@ class _CareerScreenState extends State<CareerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "Personality Assesment",
-                      style: getCTATextStyle(context, 16, color: Colors.black),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          AnalyticsItem(
+                              title: "Day Stacks",
+                              value: "11",
+                              subtitle: "Analytics"),
+                          AnalyticsItem(
+                              title: "Courses",
+                              value: "7",
+                              subtitle: "This Week"),
+                          AnalyticsItem(
+                              title: "Goal Competed", value: "2", subtitle: ""),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 8),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: getPersonalityTest(context),
+                    child: userProfileController
+                                .userProfile.value?.personalityType ==
+                            null
+                        ? Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.primaryColor),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: const [
+                                          Text("Start Assessment to know",
+                                              style: TextStyle(fontSize: 16)),
+                                          Text("better yourself",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                    Image.asset(
+                                      ImageAssets.assess,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primaryColor,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(8),
+                                          bottomRight: Radius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context,
+                                          PersonalityTestScreen.routeName);
+                                    },
+                                    child: const Text(
+                                      "Start Assessment",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.primaryColor),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Your type: ${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.name ?? ""} "
+                                            "(${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.category ?? ""})",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Image.asset(
+                                      ImageAssets.dp,
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColors.primaryColor,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EntjDetailsScreen()
+                                                // PersonalityDetails(
+                                                //   personalityTestResult: userProfileController
+                                                //       .userProfile.value!.personalityTestResult!,
+                                                //   personalityType: personalityType!,
+                                                //   categoryColors: categoryColors,
+                                                //   type: userProfileController
+                                                //           .userProfile.value!.personalityType ??
+                                                //       "",
+                                                // ),
+                                                ),
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Details",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColors.primaryColor,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          //                                         WidgetsBinding.instance.addPostFrameCallback((_) {
+                                          //   Navigator.pushNamed(context, PersonalityTestScreen.routeName);
+                                          // });
+                                          Navigator.pushNamed(context,
+                                              PersonalityTestScreen.routeName);
+                                        },
+                                        child: const Text(
+                                          "Reassessment",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                   ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  //   child: Text(
+                  //     "Personality Assesment",
+                  //     style: getCTATextStyle(context, 16, color: Colors.black),
+                  //   ),
+                  // ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  //   child: getPersonalityTest(context),
+                  // ),
                   SizedBox(height: 20),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: const [
+                  //     Text("Goal",
+                  //         style: TextStyle(
+                  //             fontSize: 16, fontWeight: FontWeight.bold)),
+                  //     Text("Add New Goal",
+                  //         style: TextStyle(color: Colors.blue)),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 12),
+
+                  // Wrap(
+                  //   spacing: 8,
+                  //   runSpacing: 8,
+                  //   children: goals
+                  //       .map(
+                  //         (goal) => Chip(
+                  //           label: Text(goal),
+                  //           backgroundColor: Colors.blue[50],
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(8),
+                  //             side: const BorderSide(color: Colors.blue),
+                  //           ),
+                  //           labelStyle: const TextStyle(color: Colors.blue),
+                  //         ),
+                  //       )
+                  //       .toList(),
+                  // ),
                   Showcase(
                     key: _two,
                     title: "Your Goals",
@@ -193,12 +579,11 @@ class _CareerScreenState extends State<CareerScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Goals",
-                                style: getCTATextStyle(context, 16,
-                                    color: Colors.black),
-                              ),
-                              ElevatedButton(
+                              Text("Goal",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                              TextButton(
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -218,23 +603,57 @@ class _CareerScreenState extends State<CareerScreen> {
                                     ),
                                   );
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24.0),
-                                  ),
-                                ),
-                                child: Text(
-                                  "Add New Goal",
-                                  style: getCTATextStyle(
-                                    context,
-                                    14,
-                                    color: primaryBlue,
-                                  ),
-                                ),
-                              )
+                                child: Text("Add New Goal",
+                                    style: TextStyle(
+                                        color: AppColors.primaryColor)),
+                              ),
                             ],
                           ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text(
+                          //       "Goals",
+                          //       style: getCTATextStyle(context, 16,
+                          //           color: Colors.black),
+                          //     ),
+                          //     ElevatedButton(
+                          //       onPressed: () {
+                          //         showDialog(
+                          //           context: context,
+                          //           barrierDismissible: false,
+                          //           builder: (context) => AlertDialog.adaptive(
+                          //             scrollable: true,
+                          //             content: AddGoals(
+                          //               existingGoals: userProfileController
+                          //                   .userProfile.value?.goals,
+                          //               onSubmit: (List<String> goals) async {
+                          //                 await userProfileController
+                          //                     .updateGoals(goals);
+                          //                 await userProfileController
+                          //                     .getUserProfile();
+                          //               },
+                          //             ),
+                          //           ),
+                          //         );
+                          //       },
+                          //       style: ElevatedButton.styleFrom(
+                          //         backgroundColor: Colors.white,
+                          //         shape: RoundedRectangleBorder(
+                          //           borderRadius: BorderRadius.circular(24.0),
+                          //         ),
+                          //       ),
+                          //       child: Text(
+                          //         "Add New Goal",
+                          //         style: getCTATextStyle(
+                          //           context,
+                          //           14,
+                          //           color: primaryBlue,
+                          //         ),
+                          //       ),
+                          //     )
+                          //   ],
+                          // ),
                           (userProfileController
                                       .userProfile.value?.goals.isNotEmpty ??
                                   false)
@@ -262,7 +681,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      "Current Career Trends",
+                      "Current career trends",
                       style: getCTATextStyle(
                         context,
                         16,
@@ -468,7 +887,7 @@ class _CareerScreenState extends State<CareerScreen> {
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
-                          PersonalityTestScreen1.routeName,
+                          PersonalityTestScreen.routeName,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -653,17 +1072,17 @@ class _CareerScreenState extends State<CareerScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PersonalityDetails(
-                      personalityTestResult: userProfileController
-                          .userProfile.value!.personalityTestResult!,
-                      personalityType: personalityType!,
-                      categoryColors: categoryColors,
-                      type: userProfileController
-                              .userProfile.value!.personalityType ??
-                          "",
-                    ),
-                  ),
+                  MaterialPageRoute(builder: (context) => EntjDetailsScreen()
+                      // PersonalityDetails(
+                      //   personalityTestResult: userProfileController
+                      //       .userProfile.value!.personalityTestResult!,
+                      //   personalityType: personalityType!,
+                      //   categoryColors: categoryColors,
+                      //   type: userProfileController
+                      //           .userProfile.value!.personalityType ??
+                      //       "",
+                      // ),
+                      ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -686,7 +1105,7 @@ class _CareerScreenState extends State<CareerScreen> {
               onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  PersonalityTestScreen1.routeName,
+                  PersonalityTestScreen.routeName,
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -819,22 +1238,50 @@ class _CareerScreenState extends State<CareerScreen> {
     );
   }
 
+  // Widget getGoalItem(String goal) {
+  //   return Chip(
+  //     backgroundColor: AppColors.primaryColor,
+  //     elevation: 3,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(8),
+  //       side: const BorderSide(color: AppColors.primaryColor),
+  //     ),
+  //     // shape: RoundedRectangleBorder(
+  //     //   borderRadius: BorderRadius.circular(10),
+  //     // ),
+  //     label: Container(
+  //       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+  //       child: Column(
+  //         children: [
+  //           Text(
+  //             goal,
+  //             style: getCTATextStyle(
+  //               context,
+  //               14,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //           SizedBox(width: 5,height: 5,)
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget getGoalItem(String goal) {
-    return Card(
-      color: Colors.white,
-      elevation: 3,
+    return Chip(
+      backgroundColor: AppColors.primaryColor,
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: AppColors.primaryColor),
       ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: Text(
-          goal,
-          style: getCTATextStyle(
-            context,
-            14,
-            color: Colors.black,
-          ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      label: Text(
+        goal,
+        style: getCTATextStyle(
+          context,
+          14,
+          color: Colors.white,
         ),
       ),
     );

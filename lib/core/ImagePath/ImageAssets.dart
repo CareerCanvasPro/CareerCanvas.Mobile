@@ -6,6 +6,8 @@ class ImageAssets {
 
  
   static const dp = "assets/images/Banking_ic_user1.jpeg";
+  static const success = "assets/images/success.png";
+  static const assess = "assets/images/assess.png";
 
 
   

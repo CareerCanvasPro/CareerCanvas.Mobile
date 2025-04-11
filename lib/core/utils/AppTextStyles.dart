@@ -2,6 +2,34 @@ import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class AppTextStyles {
+  static const TextStyle dmSans38 = TextStyle(
+    fontFamily: 'DM Sans',
+    fontWeight: FontWeight.w400,
+    fontSize: 38,
+    height: 28 / 38,
+    letterSpacing: 0,
+  );
+  static const TextStyle numberBold105 = TextStyle(
+    fontFamily: 'DM Sans',
+    fontWeight: FontWeight.w700,
+    fontSize: 105,
+    height: 28 / 105,
+    letterSpacing: 0,
+  );
+   static const TextStyle roboto14 = TextStyle(
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    height: 20 / 14,
+    letterSpacing: 0,
+  );
+   static const TextStyle roboto18Medium = TextStyle(
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w500,
+    fontSize: 18,
+    height: 1.4,
+    letterSpacing: -0.4,
+  );
   static const TextStyle headlineSmall = TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w600,

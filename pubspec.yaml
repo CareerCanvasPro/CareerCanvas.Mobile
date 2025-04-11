@@ -88,3 +88,11 @@ flutter:
     - family: Open Sans
       fonts:
         - asset: assets/fonts/OpenSans.ttf
+    - family: DM Sans
+      fonts:
+         - asset: assets/fonts/DM_Sans/static/DMSans-Regular.ttf
+           weight: 400
+         - asset: assets/fonts/DM_Sans/static/DMSans-Medium.ttf
+           weight: 500
+         - asset: assets/fonts/DM_Sans/static/DMSans-Bold.ttf
+           weight: 700

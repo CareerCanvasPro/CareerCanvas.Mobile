@@ -59,7 +59,7 @@ class CustomTextButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         padding:
             padding ?? EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -96,7 +96,7 @@ class CustomOutlinedButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(30.0),
         ),
         side: borderSide ??
             BorderSide(

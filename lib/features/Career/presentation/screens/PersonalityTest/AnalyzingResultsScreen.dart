@@ -87,6 +87,7 @@ for (var answer in selectedAnswers) {
     );
   }
 }
+
 class ScoreScreen extends StatelessWidget {
   final int score;
   final int relevantSkills;
