@@ -22,6 +22,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:math';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -341,7 +342,15 @@ class _UserProfileState extends State<UserProfile> {
                 actions: [
                   IconButton(
                     color: Colors.white,
-                    onPressed: () {},
+                    onPressed: () async {
+                      ShareResult result = await Share.share(
+                          'Check out Career Canvas App. https://careercanvas.pro',
+                          subject: 'Look what I found on Career Canvas');
+
+                      if (result.status == ShareResultStatus.success) {
+                        print('Thank you for sharing my website!');
+                      }
+                    },
                     icon: const Icon(Icons.ios_share),
                   ),
                   IconButton(

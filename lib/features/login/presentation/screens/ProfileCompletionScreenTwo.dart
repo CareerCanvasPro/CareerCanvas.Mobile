@@ -318,7 +318,7 @@ class _ProfileCompletionScreenTwoState
                           'No Education Info Added.',
                           style: getCTATextStyle(
                             context,
-                            16,
+                            14,
                             color: Colors.white,
                           ),
                         ),

@@ -1,11 +1,10 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
-import 'package:career_canvas/core/models/skills.dart';
+import 'package:career_canvas/core/models/interests.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
-import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
@@ -15,20 +14,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class ProfileCompletionScreenFour extends StatefulWidget {
-  static const String routeName = '/profileCompletionFour';
+class ProfileCompletionScreenFive extends StatefulWidget {
+  static const String routeName = '/profileCompletionFive';
 
   @override
-  _ProfileCompletionScreenFourState createState() =>
-      _ProfileCompletionScreenFourState();
+  _ProfileCompletionScreenFiveState createState() =>
+      _ProfileCompletionScreenFiveState();
 }
 
-class _ProfileCompletionScreenFourState
-    extends State<ProfileCompletionScreenFour> {
+class _ProfileCompletionScreenFiveState
+    extends State<ProfileCompletionScreenFive> {
   //final _formKey = GlobalKey<FormState>();
-// List to hold the skills form fields
-  final TextEditingController skillsController = TextEditingController();
-  List<String> _skills = [];
+// List to hold the interests form fields
+  final TextEditingController interestController = TextEditingController();
+  List<String> _interests = [];
 
   bool isUploadingData = false;
 
@@ -37,33 +36,33 @@ class _ProfileCompletionScreenFourState
     super.initState();
   }
 
-  // Method to add a new skills field
-  void _addSkilssField(String skill) {
-    if (_skills.contains(skill)) {
+  // Method to add a new interests field
+  void _addSkilssField(String interest) {
+    if (_interests.contains(interest)) {
       return;
     }
     setState(() {
-      _skills.add(skill);
+      _interests.add(interest);
     });
   }
 
-  // Method to remove the last skills field
+  // Method to remove the last interests field
   void _removeSkilssField(int index) {
-    if (_skills.isNotEmpty && index < _skills.length) {
+    if (_interests.isNotEmpty && index < _interests.length) {
       setState(() {
-        _skills.removeAt(index);
+        _interests.removeAt(index);
       });
     }
   }
 
-  // Skills will be in a chieps style design with a x button to remove the skill
+  // Skills will be in a chieps style design with a x button to remove the interest
   Widget _buildSkilssCard(
     int index, {
     bool isSuggested = false,
   }) {
     return GestureDetector(
       onTap: () => isSuggested
-          ? _addSkilssField(skillsList[index])
+          ? _addSkilssField(interestsList[index])
           : _removeSkilssField(index),
       child: Container(
         constraints: BoxConstraints(
@@ -88,7 +87,7 @@ class _ProfileCompletionScreenFourState
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              isSuggested ? skillsList[index] : _skills[index],
+              isSuggested ? interestsList[index] : _interests[index],
               style: getCTATextStyle(
                 context,
                 12,
@@ -101,8 +100,8 @@ class _ProfileCompletionScreenFourState
     );
   }
 
-  List<String> skillsList = [
-    // Existing skills
+  List<String> interestsList = [
+    // Existing interests
     'Flutter',
     'App Development',
     'Web Development',
@@ -182,7 +181,7 @@ class _ProfileCompletionScreenFourState
     'Innovation',
   ];
   List<String> searchSkills(String input) {
-    return skillsList
+    return interestsList
         .where((element) => element.toLowerCase().contains(input.toLowerCase()))
         .toList();
   }
@@ -230,7 +229,7 @@ class _ProfileCompletionScreenFourState
                       ),
                     ),
                     Text(
-                      "Add your Skills below.",
+                      "Add your Interests below.",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -249,13 +248,14 @@ class _ProfileCompletionScreenFourState
                             height: 40,
                             child: FieldSuggestion<String>(
                               search: (item, input) {
-                                if (skillsController.text.isEmpty) return false;
+                                if (interestController.text.isEmpty)
+                                  return false;
                                 return item
                                     .toLowerCase()
                                     .contains(input.toLowerCase());
                               },
                               inputDecoration: InputDecoration(
-                                hintText: 'Skill (ex: UI/UX Design)',
+                                hintText: 'Interests (ex: Design)',
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 4,
@@ -302,18 +302,18 @@ class _ProfileCompletionScreenFourState
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               inputType: TextInputType.text,
-                              suggestions: skillsList,
-                              textController: skillsController,
+                              suggestions: interestsList,
+                              textController: interestController,
                               // boxController: boxController, // optional
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
                                     setState(
                                       () => _addSkilssField(
-                                        skillsList[index],
+                                        interestsList[index],
                                       ),
                                     );
-                                    skillsController.clear();
+                                    interestController.clear();
                                   },
                                   child: Container(
                                     constraints: BoxConstraints(
@@ -345,7 +345,7 @@ class _ProfileCompletionScreenFourState
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          skillsList[index],
+                                          interestsList[index],
                                           style: getCTATextStyle(
                                             context,
                                             12,
@@ -364,7 +364,7 @@ class _ProfileCompletionScreenFourState
                     ),
 
                     SizedBox(height: 10),
-                    if (_skills.isNotEmpty)
+                    if (_interests.isNotEmpty)
                       Row(
                         children: [
                           Expanded(
@@ -381,7 +381,7 @@ class _ProfileCompletionScreenFourState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Your Skills",
+                                    "Your Interests",
                                     style: getCTATextStyle(
                                       context,
                                       14,
@@ -394,9 +394,9 @@ class _ProfileCompletionScreenFourState
                                   Wrap(
                                     spacing: 8,
                                     runSpacing: 8,
-                                    children: _skills
+                                    children: _interests
                                         .map((e) => _buildSkilssCard(
-                                            _skills.indexOf(e)))
+                                            _interests.indexOf(e)))
                                         .toList(),
                                   ),
                                   SizedBox(
@@ -426,7 +426,7 @@ class _ProfileCompletionScreenFourState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Suggested Skills",
+                                  "Suggested Interests",
                                   style: getCTATextStyle(
                                     context,
                                     14,
@@ -439,32 +439,33 @@ class _ProfileCompletionScreenFourState
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
-                                  children: skillsList
-                                              .where((skill) =>
-                                                  _skills.isEmpty ||
-                                                  !_skills.contains(skill))
+                                  children: interestsList
+                                              .where((interest) =>
+                                                  _interests.isEmpty ||
+                                                  !_interests
+                                                      .contains(interest))
                                               .length >
                                           5
-                                      ? skillsList
-                                          .where((skill) =>
-                                              _skills.isEmpty ||
-                                              !_skills.contains(skill))
+                                      ? interestsList
+                                          .where((interest) =>
+                                              _interests.isEmpty ||
+                                              !_interests.contains(interest))
                                           .take(5)
                                           .toList()
                                           .map(
                                             (e) => _buildSkilssCard(
-                                              skillsList.indexOf(e),
+                                              interestsList.indexOf(e),
                                               isSuggested: true,
                                             ),
                                           )
                                           .toList()
-                                      : skillsList
-                                          .where((skill) =>
-                                              _skills.isEmpty ||
-                                              !_skills.contains(skill))
+                                      : interestsList
+                                          .where((interest) =>
+                                              _interests.isEmpty ||
+                                              !_interests.contains(interest))
                                           .map(
                                             (e) => _buildSkilssCard(
-                                              skillsList.indexOf(e),
+                                              interestsList.indexOf(e),
                                               isSuggested: true,
                                             ),
                                           )
@@ -559,8 +560,7 @@ class _ProfileCompletionScreenFourState
                   : () {
                       // Action for skip button
                       debugPrint("Skip button clicked");
-                      Navigator.pushNamed(
-                          context, ProfileCompletionScreenFive.routeName);
+                      Navigator.pushNamed(context, HomePage.routeName);
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryBlue,
@@ -586,9 +586,9 @@ class _ProfileCompletionScreenFourState
                   ? null
                   : () async {
                       // final allValues = _getAllEducationValues();
-                      // print(_skills);
+                      // print(_interests);
                       // Navigator.pushNamed(context, HomePage.routeName);
-                      if (_skills.isEmpty) {
+                      if (_interests.isEmpty) {
                         return;
                       }
                       try {
@@ -602,12 +602,12 @@ class _ProfileCompletionScreenFourState
                             receiveTimeout: const Duration(seconds: 3000),
                           ),
                         );
-                        UploadSkills uploadSkills =
-                            UploadSkills(skills: _skills);
+                        UploadInterest uploadInterests =
+                            UploadInterest(interests: _interests);
 
                         final response = await dio.put(
                           "${ApiClient.userBase}/user/profile",
-                          data: uploadSkills.toJson(),
+                          data: uploadInterests.toJson(),
                           options: Options(
                             headers: {
                               'Content-Type': "application/json",
@@ -621,7 +621,7 @@ class _ProfileCompletionScreenFourState
                         });
                         getIt<UserProfileController>().getUserProfile();
                         Get.to(
-                          () => ProfileCompletionScreenFive(),
+                          () => HomePage(),
                         );
                       } on DioException catch (e) {
                         setState(() {

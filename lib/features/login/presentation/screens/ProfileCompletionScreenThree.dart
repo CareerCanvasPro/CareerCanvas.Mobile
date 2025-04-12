@@ -63,157 +63,170 @@ class _ProfileCompletionScreenThreeState
   }
 
   Widget _buildExperienceCard(int index) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      color: scaffoldBackgroundColor,
-      elevation: 5,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.white,
+          width: 1,
+          strokeAlign: BorderSide.strokeAlignOutside,
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
-      child: ExpansionTile(
-        initiallyExpanded: index == selectedIndex,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        onExpansionChanged: (value) {
-          setState(() {
-            selectedIndex = value ? index : 0;
-          });
-        },
-        expandedAlignment: Alignment.topLeft,
-        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-        childrenPadding: const EdgeInsets.only(
-          left: 24,
-          bottom: 16,
-          right: 24,
-        ),
-        controlAffinity: ListTileControlAffinity.leading,
-        trailing: IconButton(
-          onPressed: () {
-            _removeExperiance(index);
-          },
-          icon: Icon(
-            Icons.delete_forever_rounded,
-            color: Colors.red,
-          ),
-        ),
-        collapsedBackgroundColor: primaryBlue,
-        collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        collapsedTextColor: Colors.white,
-        collapsedIconColor: Colors.white,
-        iconColor: Colors.black,
-        title: Text(
-          _experiances[index].designation +
-              " of " +
-              _experiances[index].organization,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
+      child: Column(
         children: [
-          Row(
-            children: [
-              Text(
-                "Organization : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                width: 2,
-              ),
-              Expanded(
-                child: Text(
-                  "${_experiances[index].organization}",
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                "Designation : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                width: 2,
-              ),
-              Expanded(
-                child: Text(
-                  "${_experiances[index].designation}",
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                "Start Date : ",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                width: 2,
-              ),
-              Expanded(
-                child: Text(
-                  formatDate(DateTime.fromMillisecondsSinceEpoch(
-                    _experiances[index].from,
-                  )),
-                ),
-              ),
-            ],
-          ),
-          if (_experiances[index].to == null)
-            Row(
+          Container(
+            decoration: BoxDecoration(
+              color: primaryBlue,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Occupation : ",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
                 Expanded(
                   child: Text(
-                    _experiances[index].isCurrent
-                        ? "Current Occupation"
-                        : "Past Occupation",
+                    _experiances[index].designation +
+                        " of " +
+                        _experiances[index].organization,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _removeExperiance(index);
+                  },
+                  icon: Image.asset(
+                    "assets/icons/delete_icon.png",
+                    height: 20,
                   ),
                 ),
               ],
             ),
-          if (_experiances[index].to != null)
-            Row(
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "End Date : ",
+                  "Organization : ",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${_experiances[index].organization}",
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(
-                  width: 2,
+                  width: 8,
                 ),
-                Expanded(
-                  child: Text(formatDate(DateTime.fromMillisecondsSinceEpoch(
-                    _experiances[index].to!,
-                  ))),
+                Text(
+                  "Designation : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${_experiances[index].designation}",
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  "Start Date : ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        formatDate(DateTime.fromMillisecondsSinceEpoch(
+                          _experiances[index].from,
+                        )),
+                      ),
+                    ),
+                  ],
+                ),
+                if (_experiances[index].to == null)
+                  SizedBox(
+                    width: 8,
+                  ),
+                if (_experiances[index].to == null)
+                  Text(
+                    "Occupation : ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                if (_experiances[index].to == null)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _experiances[index].isCurrent
+                              ? "Current Occupation"
+                              : "Past Occupation",
+                        ),
+                      ),
+                    ],
+                  ),
+                if (_experiances[index].to != null)
+                  SizedBox(
+                    width: 8,
+                  ),
+                if (_experiances[index].to != null)
+                  Text(
+                    "End Date : ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                if (_experiances[index].to != null)
+                  Row(
+                    children: [
+                      Expanded(
+                        child:
+                            Text(formatDate(DateTime.fromMillisecondsSinceEpoch(
+                          _experiances[index].to!,
+                        ))),
+                      ),
+                    ],
+                  ),
               ],
             ),
+          ),
         ],
       ),
     );
@@ -222,106 +235,117 @@ class _ProfileCompletionScreenThreeState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBlue,
       appBar: AppBar(
-        //title: Text('Career Canvas'),
-        backgroundColor: scaffoldBackgroundColor,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        elevation: 0,
+        toolbarHeight: 0,
+        backgroundColor: primaryBlue,
+        automaticallyImplyLeading: false,
       ),
-      body: Container(
-        height: context.screenHeight,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Image.asset(
+                "assets/icons/cc_bg.png",
+                width: context.screenWidth,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+          Container(
+            height: context.screenHeight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
                   children: [
-                    Center(
-                      child: SvgPicture.asset(
-                        "assets/svg/Career_Canvas_Logo_black.svg",
-                        height: 50,
-                        fit: BoxFit.fitHeight,
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Welcome to Career Canvas",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(
-                      width: 2,
+                    Text(
+                      "Add your experiance details below.",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                    Text("Career\nCanvas")
+                    const SizedBox(height: 16),
+                    // Progress Bar
+                    buildProgressBar(progress: 0.6),
+                    SizedBox(height: 10),
+                    if (_experiances.isEmpty)
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'No Experiance Info Added.',
+                          style: getCTATextStyle(
+                            context,
+                            14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    // Form fields
+                    // Dynamic list of experience fields
+                    if (_experiances.isNotEmpty)
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _experiances.length,
+                        itemBuilder: (context, index) {
+                          return _buildExperienceCard(index);
+                        },
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _addExperienceField,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: scaffoldBackgroundColor,
+                              side: BorderSide(color: primaryBlue),
+                              fixedSize: Size(double.maxFinite, 35),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: Text(
+                              '+ Add Experience',
+                              style: getCTATextStyle(
+                                context,
+                                14,
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 30),
+
+                    // Action buttons
+                    _buildFooter(context),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              // Progress Bar
-              buildProgressBar(progress: 0.6),
-              SizedBox(height: 10),
-              Text(
-                'Hello! Please add your experience details below.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              SizedBox(height: 20),
-              if (_experiances.isEmpty)
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'No Experiance Info Added.',
-                      style: getCTATextStyle(
-                        context,
-                        16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              // Form fields
-              // Dynamic list of experience fields
-              if (_experiances.isNotEmpty)
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _experiances.length,
-                    itemBuilder: (context, index) {
-                      return _buildExperienceCard(index);
-                    },
-                  ),
-                ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: _addExperienceField,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: scaffoldBackgroundColor,
-                      side: BorderSide(color: primaryBlue),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                    ),
-                    child: Text(
-                      '+ Add Experience',
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: primaryBlue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 30),
-
-              // Action buttons
-              _buildFooter(context),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -330,13 +354,25 @@ class _ProfileCompletionScreenThreeState
     return Row(
       children: [
         Expanded(
-          child: LinearPercentIndicator(
-            lineHeight: 10,
-            animation: true,
-            percent: progress,
-            backgroundColor: Colors.grey.shade300,
-            progressColor: primaryBlue,
-            barRadius: Radius.circular(10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+            ),
+            child: LinearPercentIndicator(
+              lineHeight: 10,
+              animation: true,
+              percent: progress,
+              animateFromLastPercent: true,
+              backgroundColor: Colors.white,
+              progressColor: primaryBlue,
+              barRadius: Radius.circular(10),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ),
       ],
@@ -353,6 +389,28 @@ class _ProfileCompletionScreenThreeState
         Row(
           children: [
             ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                disabledBackgroundColor: Colors.white,
+                disabledForegroundColor: Colors.grey,
+                side: BorderSide(color: primaryBlue),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                minimumSize: const Size(80, 35),
+              ),
+              child: Text(
+                'Back',
+                style: getCTATextStyle(
+                  context,
+                  14,
+                  color: primaryBlue,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
               onPressed: isUploadingData
                   ? null
                   : () {
@@ -364,19 +422,20 @@ class _ProfileCompletionScreenThreeState
                       );
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: scaffoldBackgroundColor,
-                side: BorderSide(color: primaryBlue),
+                backgroundColor: primaryBlue,
+                disabledBackgroundColor: primaryBlue,
+                disabledForegroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.white),
                 ),
-                minimumSize: const Size(80, 48),
+                minimumSize: const Size(80, 35),
               ),
               child: Text(
                 'Skip',
                 style: getCTATextStyle(
                   context,
-                  16,
-                  color: primaryBlue,
+                  14,
                 ),
               ),
             ),
@@ -462,15 +521,22 @@ class _ProfileCompletionScreenThreeState
                       // );
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryBlue,
+                backgroundColor: Colors.white,
+                disabledBackgroundColor: Colors.white,
+                disabledForegroundColor: Colors.grey,
+                side: BorderSide(color: primaryBlue),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                minimumSize: const Size(80, 48),
+                minimumSize: const Size(80, 35),
               ),
               child: Text(
                 'Next',
-                style: getCTATextStyle(context, 16),
+                style: getCTATextStyle(
+                  context,
+                  14,
+                  color: primaryBlue,
+                ),
               ),
             ),
           ],

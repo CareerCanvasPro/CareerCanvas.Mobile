@@ -6,6 +6,7 @@ import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -173,7 +174,8 @@ class _MyAppState extends State<MyApp> {
           darkTheme: ThemeData.dark(),
           themeMode: widget.settingsController.themeMode,
 
-          initialRoute: widget.mainRouteData.initialRoute,
+          // initialRoute: widget.mainRouteData.initialRoute,
+          initialRoute: ProfileCompletionScreenTwo.routeName,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -192,6 +194,8 @@ class _MyAppState extends State<MyApp> {
                     return ProfileCompletionScreenThree();
                   case ProfileCompletionScreenFour.routeName:
                     return ProfileCompletionScreenFour();
+                  case ProfileCompletionScreenFive.routeName:
+                    return ProfileCompletionScreenFive();
                   case UserScreen.routeName:
                     return UserScreen();
                   case UserProfile.routeName:

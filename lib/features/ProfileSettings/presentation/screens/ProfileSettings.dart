@@ -313,7 +313,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       onTap: () async {
                         ShareResult result = await Share.share(
-                            'check out Career Canvas App. https://careercanvas.pro',
+                            'Check out Career Canvas App. https://careercanvas.pro',
                             subject: 'Look what I found on Career Canvas');
 
                         if (result.status == ShareResultStatus.success) {
