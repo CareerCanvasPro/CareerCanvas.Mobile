@@ -525,7 +525,7 @@ class _UserProfileState extends State<UserProfile> {
                         overflow: TextOverflow.ellipsis,
                         style: getHeadlineTextStyle(
                           context,
-                          18,
+                          16,
                           color: Colors.white,
                         ),
                       ),
@@ -557,7 +557,7 @@ class _UserProfileState extends State<UserProfile> {
                         ? formatNumber(userProfileData.coins)
                         : "",
                     style:
-                        getBodyTextStyle(context, 16, color: Color(0xFFCC9933)),
+                        getBodyTextStyle(context, 14, color: Color(0xFFCC9933)),
                   ),
                 ),
               ],
@@ -587,7 +587,7 @@ class _UserProfileState extends State<UserProfile> {
                             : "0",
                         style: getCTATextStyle(
                           context,
-                          14,
+                          12,
                           color: Colors.white,
                         ),
                       ),
@@ -614,7 +614,7 @@ class _UserProfileState extends State<UserProfile> {
                             : "0",
                         style: getCTATextStyle(
                           context,
-                          14,
+                          12,
                           color: Colors.white,
                         ),
                       ),
@@ -647,7 +647,7 @@ class _UserProfileState extends State<UserProfile> {
                     "Edit ",
                     style: getBodyTextStyle(
                       context,
-                      14,
+                      12,
                     ),
                   ),
                   icon: SvgPicture.asset(
@@ -724,7 +724,7 @@ class _UserProfileState extends State<UserProfile> {
             userProfileData != null ? userProfileData.aboutMe : "",
             style: getBodyTextStyle(
               context,
-              14,
+              12,
               color: Colors.black,
             ),
           ),
@@ -1288,7 +1288,7 @@ class _UserProfileState extends State<UserProfile> {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                   if (!isUploading)
@@ -1353,7 +1353,7 @@ class _UserProfileState extends State<UserProfile> {
         title,
         style: getBodyTextStyle(
           context,
-          14,
+          12,
           color: Colors.black,
         ),
       ),
@@ -1392,7 +1392,7 @@ class _UserProfileState extends State<UserProfile> {
                 education.field,
                 style: getCTATextStyle(
                   context,
-                  14,
+                  12,
                   color: Colors.black,
                 ),
               ),
@@ -1409,7 +1409,7 @@ class _UserProfileState extends State<UserProfile> {
             education.institute,
             style: getBodyTextStyle(
               context,
-              14,
+              12,
               color: Colors.black,
             ),
           ),
@@ -1421,7 +1421,7 @@ class _UserProfileState extends State<UserProfile> {
                     "${getFormatedDate(DateTime.fromMillisecondsSinceEpoch(education.graduationDate!))}",
                     style: getBodyTextStyle(
                       context,
-                      14,
+                      12,
                       color: Colors.black,
                     ),
                   ),
@@ -1430,7 +1430,7 @@ class _UserProfileState extends State<UserProfile> {
                     " . ",
                     style: getBodyTextStyle(
                       context,
-                      14,
+                      12,
                       color: Colors.black,
                     ),
                   ),
@@ -1439,7 +1439,7 @@ class _UserProfileState extends State<UserProfile> {
                     "Current",
                     style: getBodyTextStyle(
                       context,
-                      14,
+                      12,
                       color: Colors.black,
                     ),
                   ),
@@ -1484,7 +1484,7 @@ class _UserProfileState extends State<UserProfile> {
                 title,
                 style: getCTATextStyle(
                   context,
-                  14,
+                  12,
                   color: Colors.black,
                 ),
               ),
@@ -1501,7 +1501,7 @@ class _UserProfileState extends State<UserProfile> {
             company,
             style: getBodyTextStyle(
               context,
-              14,
+              12,
               color: Colors.black,
             ),
           ),
@@ -1511,7 +1511,7 @@ class _UserProfileState extends State<UserProfile> {
                 "${getFormatedDate(startDate)} ${endDate != null ? "- ${getFormatedDate(endDate)}" : ""}",
                 style: getBodyTextStyle(
                   context,
-                  14,
+                  12,
                   color: Colors.black,
                 ),
               ),
@@ -1519,7 +1519,7 @@ class _UserProfileState extends State<UserProfile> {
                 " . ",
                 style: getBodyTextStyle(
                   context,
-                  14,
+                  12,
                   color: Colors.black,
                 ),
               ),
@@ -1527,7 +1527,7 @@ class _UserProfileState extends State<UserProfile> {
                 getDuration(startDate, endDate ?? DateTime.now()),
                 style: getBodyTextStyle(
                   context,
-                  14,
+                  12,
                   color: Colors.black,
                 ),
               ),

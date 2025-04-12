@@ -419,38 +419,29 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Completed / Total text
-                        Text(
-                          'Page $completedPages / $totalPages', // Completed / Total pages
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87, // A more neutral color
-                          ),
-                        ),
-                        const SizedBox(
-                            height: 8), // Spacing between text and progress bar
-
                         // Linear progress indicator with completed/total info
-                        LinearPercentIndicator(
-                          // trailing: Text(
-                          //   'Page $completedPages / $totalPages', // Keep showing completed / total on trailing
-                          //   style: TextStyle(
-                          //     fontSize:
-                          //         14, // Slightly smaller text for trailing
-                          //     fontWeight: FontWeight.w500,
-                          //     color: Colors
-                          //         .black54, // A subtler color for trailing text
-                          //   ),
-                          // ),
-                          lineHeight: 10,
-                          animation: true,
-                          percent: completedPages /
-                              totalPages, 
-                          backgroundColor: Colors.grey.shade300,
-                          progressColor: primaryBlue,
-                          barRadius: Radius.circular(10),
-                          animateFromLastPercent: true,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: LinearPercentIndicator(
+                                lineHeight: 10,
+                                animation: true,
+                                percent: completedPages / totalPages,
+                                backgroundColor: Colors.grey.shade300,
+                                progressColor: primaryBlue,
+                                barRadius: Radius.circular(10),
+                                animateFromLastPercent: true,
+                              ),
+                            ),
+                            Text(
+                              '$completedPages of ${totalPages.toInt()}', // Completed / Total pages
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87, // A more neutral color
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -550,7 +541,6 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                                                   });
                                                 });
                                               },
-
                                             ),
                                           ),
                                         ),
@@ -570,52 +560,30 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
             ),
             Row(
               children: [
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                    child: OutlinedButton(
-                      onPressed: onCancel,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: Colors.grey.shade400),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text("Back",
-                          style: TextStyle(color: Colors.black)),
-                    ),
+                  child: CustomOutlinedButton(
+                    onPressed: onCancel,
+                    title: "Back",
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 15, 10),
-                    child: ElevatedButton(
-                      onPressed: onNextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                          currentPage <=
-                                  (controller.personalityTest.value!.data!
-                                                  .questions!.length /
-                                              questionsPerPage)
-                                          .floor() -
-                                      1
-                              ? "Next"
-                              : "Submit",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16)),
-                    ),
+                  child: CustomTextButton(
+                    onPressed: onNextPage,
+                    backgroundColor: primaryBlue,
+                    textStyle: getCTATextStyle(context, 12),
+                    title: currentPage <=
+                            (controller.personalityTest.value!.data!.questions!
+                                            .length /
+                                        questionsPerPage)
+                                    .floor() -
+                                1
+                        ? "Next"
+                        : "Submit",
                   ),
                 ),
+                const SizedBox(width: 8),
               ],
             ),
           ],
