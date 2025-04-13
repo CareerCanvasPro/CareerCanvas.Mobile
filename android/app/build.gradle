@@ -29,8 +29,8 @@ android {
         applicationId = "pro.careercanvas.app"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 23
-        versionName = "1.2.4"
+        versionCode = 25
+        versionName = "1.2.6"
     }
 
     bundle {
@@ -69,6 +69,9 @@ android {
 
            //signingConfig signingConfigs.release
             signingConfig signingConfigs.release
+            ndk {
+                debugSymbolLevel = 'FULL'
+            }
         }
         debug {
            // Enables code shrinking, obfuscation, and optimization for only
