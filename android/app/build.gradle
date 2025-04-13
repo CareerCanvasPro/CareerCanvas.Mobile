@@ -13,7 +13,7 @@ def keystoreProperties = new Properties()
 
 android {
     namespace = "pro.careercanvas.app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -28,7 +28,7 @@ android {
     defaultConfig {
         applicationId = "pro.careercanvas.app"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 35
         versionCode = 23
         versionName = "1.2.4"
     }

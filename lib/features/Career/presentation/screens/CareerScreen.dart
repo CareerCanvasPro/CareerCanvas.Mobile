@@ -13,6 +13,7 @@ import 'package:career_canvas/features/Career/presentation/getx/controller/JobsC
 import 'package:career_canvas/features/Career/presentation/screens/CareerTrendDetailsScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/personalityDetailsScreen.dart';
+import 'package:career_canvas/features/Career/presentation/screens/ProfileDetailsScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/widgets/goals_dialog.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
@@ -228,86 +229,75 @@ class _CareerScreenState extends State<CareerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 12,
-                    ),
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                            userProfileController
-                                    .userProfile.value?.profilePicture ??
-                                "",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProfileDetailsScreen(
+                            userProfile:
+                                userProfileController.userProfile.value!,
                           ),
-                          radius: 25,
                         ),
-                        const SizedBox(width: 12),
-
-                        // Text Column
-                        Expanded(
-                          child: SizedBox(
-                            height: 50, // Match image height
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment:
-                                  MainAxisAlignment.center, // Center vertically
-                              children: [
-                                const Text(
-                                  "Hi! Welcome,",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  userProfileController
-                                          .userProfile.value?.name ??
-                                      '',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryColor,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12,
+                      ),
+                      width: double.infinity,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Hero(
+                            tag: "profileImage",
+                            child: CircleAvatar(
+                              backgroundImage: CachedNetworkImageProvider(
+                                userProfileController
+                                        .userProfile.value?.profilePicture ??
+                                    "",
+                              ),
+                              radius: 25,
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+
+                          // Text Column
+                          Expanded(
+                            child: SizedBox(
+                              height: 50, // Match image height
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .center, // Center vertically
+                                children: [
+                                  const Text(
+                                    "Hi! Welcome,",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    userProfileController
+                                            .userProfile.value?.name ??
+                                        '',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       color: AppColors.primaryColor,
-                  //       borderRadius: BorderRadius.circular(6),
-                  //     ),
-                  //     padding: const EdgeInsets.all(20),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //       children: const [
-                  //         AnalyticsItem(
-                  //             title: "Day Stacks",
-                  //             value: "11",
-                  //             subtitle: "Analytics"),
-                  //         AnalyticsItem(
-                  //             title: "Courses",
-                  //             value: "7",
-                  //             subtitle: "This Week"),
-                  //         AnalyticsItem(
-                  //             title: "Goal Competed", value: "2", subtitle: ""),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   SizedBox(height: 8),
 
                   Padding(

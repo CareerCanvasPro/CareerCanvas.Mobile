@@ -80,6 +80,8 @@ class CustomOutlinedButton extends StatelessWidget {
   final EdgeInsets? padding;
   final BorderSide? borderSide;
   final Color? color;
+  final bool isLoading;
+  final Widget? loadingWidget;
 
   CustomOutlinedButton({
     required this.title,
@@ -88,12 +90,14 @@ class CustomOutlinedButton extends StatelessWidget {
     this.padding,
     this.borderSide,
     this.color,
+    this.isLoading = false,
+    this.loadingWidget,
   });
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: onPressed,
+      onPressed: !isLoading ? onPressed : null,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -109,13 +113,15 @@ class CustomOutlinedButton extends StatelessWidget {
               horizontal: 16.0,
             ),
       ),
-      child: Text(
-        title,
-        style: textStyle ??
-            TextStyle(
-              color: color ?? Theme.of(context).primaryColor,
+      child: isLoading
+          ? loadingWidget ?? const Center(child: CircularProgressIndicator())
+          : Text(
+              title,
+              style: textStyle ??
+                  TextStyle(
+                    color: color ?? Theme.of(context).primaryColor,
+                  ),
             ),
-      ),
     );
   }
 }

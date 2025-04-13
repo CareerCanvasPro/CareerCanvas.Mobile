@@ -45,17 +45,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- Permissions for Location, Camera, and Media -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need access to your location for providing location-based features.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to capture photos and videos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to select images and videos.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to your microphone to record audio for videos.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>We need access to your media library to play music in the app.</string>
+	<string>We need access to your photo library to set your profile image.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need access to your photo library to save your profile cover.</string>
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
