@@ -11,7 +11,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PersonalityTestScreen extends StatefulWidget {
@@ -493,58 +492,63 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
               );
             }),
           ),
-          if (controller.personalityTest.value != null)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: Container(
-                width: MediaQuery.of(context).size.width - 32,
-                decoration: BoxDecoration(
-                  color: primaryBlue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: CustomTextButton(
-                        onPressed: onCancel,
-                        backgroundColor: Colors.white,
-                        textStyle: getCTATextStyle(
-                          context,
-                          12,
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Obx(() {
+              if (controller.personalityTest.value != null)
+                return Container(
+                  width: MediaQuery.of(context).size.width - 32,
+                  decoration: BoxDecoration(
+                    color: primaryBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: CustomTextButton(
+                          onPressed: onCancel,
+                          backgroundColor: Colors.white,
+                          textStyle: getCTATextStyle(
+                            context,
+                            12,
+                            color: primaryBlue,
+                          ),
+                          title: "Back",
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          onPressed: onNextPage,
                           color: primaryBlue,
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 1,
+                          ),
+                          textStyle: getCTATextStyle(context, 12),
+                          title: currentPage <=
+                                  (controller.personalityTest.value!.data!
+                                                  .questions!.length /
+                                              questionsPerPage)
+                                          .floor() -
+                                      1
+                              ? "Next"
+                              : "Submit",
                         ),
-                        title: "Back",
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: CustomOutlinedButton(
-                        onPressed: onNextPage,
-                        color: primaryBlue,
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                        textStyle: getCTATextStyle(context, 12),
-                        title: currentPage <=
-                                (controller.personalityTest.value!.data!
-                                                .questions!.length /
-                                            questionsPerPage)
-                                        .floor() -
-                                    1
-                            ? "Next"
-                            : "Submit",
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ),
-            )
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                );
+              else
+                return Container();
+            }),
+          )
         ],
       ),
     );
