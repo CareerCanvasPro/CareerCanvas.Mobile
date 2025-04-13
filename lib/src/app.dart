@@ -19,7 +19,6 @@ import 'package:get/get.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
-import '../features/Career/presentation/screens/PersonalityTest/JobRecommendationScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import '../features/DashBoard/presentation/screens/HomePage.dart';
 import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
@@ -212,8 +211,6 @@ class _MyAppState extends State<MyApp> {
                     return PersonalityTestScreen();
                   case AnalyzingResultsScreen.routeName:
                     return AnalyzingResultsScreen();
-                  case JobRecommendationScreen.routeName:
-                    return JobRecommendationScreen();
                   case ProfileSettings.routeName:
                     return ProfileSettings();
                   default:

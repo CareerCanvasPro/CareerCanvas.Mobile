@@ -1,8 +1,8 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
-import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/personalitytest/data/models/personalityTestModel.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PersonalityTestScreen extends StatefulWidget {
@@ -30,17 +31,6 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
   int questionsPerPage = 10; // Display 10 questions per page
   List<Map<String, dynamic>> selectedAnswers = []; // Store answers here
 
-  // @override
-  // void initState()  {
-  //   super.initState();
-  //   token = getIt<AuthService>().token ?? '';
-  //   // print(token);
-  //   controller =  getIt<PersonalityTestController>();
-
-  //   if (token.isNotEmpty) {
-  //      controller.loadPersonalityTest(TokenInfo.token);
-  //   }
-  // }
   @override
   void initState() {
     super.initState();
@@ -48,15 +38,12 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
   }
 
   void initData() async {
-    token = getIt<AuthService>().token ?? '';
     controller = getIt<PersonalityTestController>();
 
-    if (token.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // Safe to update state here
-        await controller.loadPersonalityTest(TokenInfo.token);
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Safe to update state here
+      await controller.loadPersonalityTest(TokenInfo.token);
+    });
   }
 
   void sendPersonalityTestResults() async {
@@ -67,9 +54,6 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
       final Map<String, dynamic> requestBody = {
         "result": selectedAnswers,
       };
-
-      print(requestBody);
-
       final response = await Dio().post(
         apiUrl,
         data: requestBody,
@@ -85,11 +69,10 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
 
       // Delay state updates until after the frame is built
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (response.statusCode == 200 &&
-            response.data["message"] == "Result updated successfully") {
+        if (response.statusCode == 200) {
           CustomDialog.showCustomDialog(
             context,
-            title: "Successfully Submitted",
+            title: response.data["message"] ?? "Successfully Submitted",
             content:
                 "Your response has been submitted successfully. The result will be added to your profile.",
             buttonText: "OK",
@@ -254,223 +237,316 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: primaryBlue,
       appBar: AppBar(
-        title: const Text('Personality Test'),
-        backgroundColor: scaffoldBackgroundColor,
+        title: const Text(
+          'Personality Test',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: primaryBlue,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
           onPressed: onCancel,
         ),
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(
-              child: Text(controller.errorMessage.value,
-                  style: TextStyle(color: Colors.red)));
-        }
-        if (controller.personalityTest.value == null ||
-            controller.personalityTest.value!.data == null) {
-          return const Center(child: Text('No questions available'));
-        }
+      body: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Image.asset(
+                "assets/icons/cc_bg.png",
+                width: context.screenWidth,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height,
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(
+                      Colors.white,
+                    ),
+                  ),
+                );
+              }
+              if (controller.errorMessage.isNotEmpty) {
+                return Center(
+                  child: Text(
+                    controller.errorMessage.value,
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+              if (controller.personalityTest.value == null ||
+                  controller.personalityTest.value!.data == null) {
+                return const Center(
+                  child: Text(
+                    'No questions available',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }
 
-        final questions = controller.personalityTest.value!.data!.questions!;
-        print(questions);
-        final startIndex = currentPage * questionsPerPage;
-        final endIndex = (startIndex + questionsPerPage) > questions.length
-            ? questions.length
-            : startIndex + questionsPerPage;
-        final questionsToDisplay = questions.sublist(startIndex, endIndex);
-// Update the completed page count
-        int completedPages =
-            currentPage + 1; // This will show current page as completed
-        double totalPages = questions.length / 10; // Total number of pages
+              final questions =
+                  controller.personalityTest.value!.data!.questions!;
+              print(questions);
+              final startIndex = currentPage * questionsPerPage;
+              final endIndex =
+                  (startIndex + questionsPerPage) > questions.length
+                      ? questions.length
+                      : startIndex + questionsPerPage;
+              final questionsToDisplay =
+                  questions.sublist(startIndex, endIndex);
+              // Update the completed page count
+              int completedPages =
+                  currentPage + 1; // This will show current page as completed
+              double totalPages =
+                  questions.length / 10; // Total number of pages
 
-        return Column(
-          children: [
-            const SizedBox(height: 16),
-            Container(
-              margin: const EdgeInsets.only(top: 6.0),
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              child: Row(
+              return Column(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  Container(
+                    margin: const EdgeInsets.only(top: 6.0, bottom: 6),
+                    padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    child: Row(
                       children: [
-                        // Linear progress indicator with completed/total info
-                        Row(
-                          children: [
-                            Expanded(
-                              child: LinearPercentIndicator(
-                                lineHeight: 10,
-                                animation: true,
-                                percent: completedPages / totalPages,
-                                backgroundColor: Colors.grey.shade300,
-                                progressColor: primaryBlue,
-                                barRadius: Radius.circular(10),
-                                animateFromLastPercent: true,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Linear progress indicator with completed/total info
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: LinearPercentIndicator(
+                                        lineHeight: 10,
+                                        animation: true,
+                                        percent: completedPages / totalPages,
+                                        animateFromLastPercent: true,
+                                        backgroundColor: Colors.white,
+                                        progressColor: primaryBlue,
+                                        barRadius: Radius.circular(10),
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '$completedPages of ${totalPages.toInt()}', // Completed / Total pages
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Colors.white, // A more neutral color
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              '$completedPages of ${totalPages.toInt()}', // Completed / Total pages
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87, // A more neutral color
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: questionsToDisplay.length,
-                controller: scrollController,
-                itemBuilder: (context, index) {
-                  // Calculate the global question number based on the start index
-                  final globalQuestionNumber =
-                      startIndex + index + 1; // +1 because index is 0-based
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: questionsToDisplay.length,
+                      controller: scrollController,
+                      itemBuilder: (context, index) {
+                        // Calculate the global question number based on the start index
+                        final globalQuestionNumber = startIndex + index + 1;
 
-                  final question = questionsToDisplay[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
-                    ),
-                    color: scaffoldBackgroundColor,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 18,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "$globalQuestionNumber. ${question.question ?? ''}", // Show the global question number
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                        final question = questionsToDisplay[index];
+                        return Container(
+                          margin: EdgeInsets.only(
+                            top: 6,
+                            bottom:
+                                questionsToDisplay.length == index + 1 ? 65 : 6,
+                            left: 12,
+                            right: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: scaffoldBackgroundColor,
+                            border: Border.all(
+                              color: primaryBlue,
+                              width: 1,
+                              strokeAlign: BorderSide.strokeAlignOutside,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              final screenWidth =
-                                  constraints.maxWidth - (2 * 18);
-                              const totalRadioButtons = 7;
-                              final availableWidthPerButton =
-                                  screenWidth / totalRadioButtons;
-                              const maxScale = 1.3;
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 18,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "$globalQuestionNumber. ${question.question ?? ''}", // Show the global question number
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final screenWidth =
+                                        constraints.maxWidth - (2 * 18);
+                                    const totalRadioButtons = 7;
+                                    final availableWidthPerButton =
+                                        screenWidth / totalRadioButtons;
+                                    const maxScale = 1.3;
 
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Agree",
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      Text(
-                                        "Neutral",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        "Disagree",
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children:
-                                        List.generate(totalRadioButtons, (i) {
-                                      final value = 3 - i;
-                                      final scaleFactor =
-                                          maxScale - ((3 - value.abs()) * 0.2);
-                                      return SizedBox(
-                                        width: availableWidthPerButton,
-                                        child: Center(
-                                          child: Transform.scale(
-                                            scale: scaleFactor,
-                                            child: Radio(
-                                              value: value,
-                                              activeColor: primaryBlue,
-                                              groupValue:
-                                                  question.selectedOption,
-                                              onChanged: (val) {
-                                                WidgetsBinding.instance
-                                                    .addPostFrameCallback((_) {
-                                                  setState(() {
-                                                    onAnswerSelected(
-                                                        question.questionID ??
-                                                            '',
-                                                        value);
-                                                  });
-                                                });
-                                              },
+                                    return Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Agree",
+                                              textAlign: TextAlign.left,
                                             ),
-                                          ),
+                                            Text(
+                                              "Neutral",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              "Disagree",
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              );
-                            },
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: List.generate(
+                                              totalRadioButtons, (i) {
+                                            final value = 3 - i;
+                                            final scaleFactor = maxScale -
+                                                ((3 - value.abs()) * 0.2);
+                                            return SizedBox(
+                                              width: availableWidthPerButton,
+                                              child: Center(
+                                                child: Transform.scale(
+                                                  scale: scaleFactor,
+                                                  child: Radio(
+                                                    value: value,
+                                                    activeColor: primaryBlue,
+                                                    groupValue:
+                                                        question.selectedOption,
+                                                    onChanged: (val) {
+                                                      WidgetsBinding.instance
+                                                          .addPostFrameCallback(
+                                                              (_) {
+                                                        setState(() {
+                                                          onAnswerSelected(
+                                                              question.questionID ??
+                                                                  '',
+                                                              value);
+                                                        });
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+          if (controller.personalityTest.value != null)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width - 32,
+                decoration: BoxDecoration(
+                  color: primaryBlue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: CustomTextButton(
+                        onPressed: onCancel,
+                        backgroundColor: Colors.white,
+                        textStyle: getCTATextStyle(
+                          context,
+                          12,
+                          color: primaryBlue,
+                        ),
+                        title: "Back",
                       ),
                     ),
-                  );
-                },
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        onPressed: onNextPage,
+                        color: primaryBlue,
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                        textStyle: getCTATextStyle(context, 12),
+                        title: currentPage <=
+                                (controller.personalityTest.value!.data!
+                                                .questions!.length /
+                                            questionsPerPage)
+                                        .floor() -
+                                    1
+                            ? "Next"
+                            : "Submit",
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
               ),
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CustomOutlinedButton(
-                    onPressed: onCancel,
-                    title: "Back",
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CustomTextButton(
-                    onPressed: onNextPage,
-                    backgroundColor: primaryBlue,
-                    textStyle: getCTATextStyle(context, 12),
-                    title: currentPage <=
-                            (controller.personalityTest.value!.data!.questions!
-                                            .length /
-                                        questionsPerPage)
-                                    .floor() -
-                                1
-                        ? "Next"
-                        : "Submit",
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          ],
-        );
-      }),
+            )
+        ],
+      ),
     );
   }
 }

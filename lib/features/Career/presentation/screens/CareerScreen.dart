@@ -357,24 +357,18 @@ class _CareerScreenState extends State<CareerScreen> {
                                 const SizedBox(height: 12),
                                 SizedBox(
                                   width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryColor,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(8),
-                                          bottomRight: Radius.circular(8),
-                                        ),
-                                      ),
+                                  child: CustomTextButton(
+                                    backgroundColor: primaryBlue,
+                                    textStyle: getCTATextStyle(
+                                      context,
+                                      12,
+                                      color: Colors.white,
                                     ),
                                     onPressed: () {
                                       Navigator.pushNamed(context,
                                           PersonalityTestScreen.routeName);
                                     },
-                                    child: const Text(
-                                      "Start Assessment",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    title: "Start Assessment",
                                   ),
                                 ),
                               ],
@@ -1065,15 +1059,15 @@ class _CareerScreenState extends State<CareerScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) =>
-                      PersonalityDetails(
-                        personalityTestResult: userProfileController
-                            .userProfile.value!.personalityTestResult!,
-                        personalityType: personalityType!,
-                        type: userProfileController
-                                .userProfile.value!.personalityType ??
-                            "",
-                      ),
+                  MaterialPageRoute(
+                    builder: (context) => PersonalityDetails(
+                      personalityTestResult: userProfileController
+                          .userProfile.value!.personalityTestResult!,
+                      personalityType: personalityType!,
+                      type: userProfileController
+                              .userProfile.value!.personalityType ??
+                          "",
+                    ),
                   ),
                 );
               },
