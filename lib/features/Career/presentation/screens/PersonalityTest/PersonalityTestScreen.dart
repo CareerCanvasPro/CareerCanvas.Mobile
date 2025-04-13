@@ -64,7 +64,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
         ),
       );
 
-      print("Response: ${response.data}");
+      // print("Response: ${response.data}");
 
       // Delay state updates until after the frame is built
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -300,7 +300,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
 
               final questions =
                   controller.personalityTest.value!.data!.questions!;
-              print(questions);
+              // print(questions);
               final startIndex = currentPage * questionsPerPage;
               final endIndex =
                   (startIndex + questionsPerPage) > questions.length
@@ -382,18 +382,13 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                           margin: EdgeInsets.only(
                             top: 6,
                             bottom:
-                                questionsToDisplay.length == index + 1 ? 65 : 6,
+                                questionsToDisplay.length == index + 1 ? 70 : 6,
                             left: 12,
                             right: 12,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: scaffoldBackgroundColor,
-                            border: Border.all(
-                              color: primaryBlue,
-                              width: 1,
-                              strokeAlign: BorderSide.strokeAlignOutside,
-                            ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -501,14 +496,18 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                   width: MediaQuery.of(context).size.width - 32,
                   decoration: BoxDecoration(
                     color: primaryBlue,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 8,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(width: 8),
+                      // const SizedBox(width: 8),
                       Expanded(
                         child: CustomTextButton(
                           onPressed: onCancel,
@@ -541,7 +540,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                               : "Submit",
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      // const SizedBox(width: 8),
                     ],
                   ),
                 );
