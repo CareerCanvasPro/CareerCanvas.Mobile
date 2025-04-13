@@ -1014,8 +1014,11 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                           }
                         },
                         backgroundColor: primaryBlue,
-                        textStyle:
-                            getCTATextStyle(context, 14, color: Colors.white),
+                        textStyle: getCTATextStyle(
+                          context,
+                          14,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

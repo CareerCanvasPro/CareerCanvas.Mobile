@@ -284,7 +284,22 @@ class _ProfileCompletionScreenThreeState
                     ),
                     const SizedBox(height: 16),
                     // Progress Bar
-                    buildProgressBar(progress: 0.6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: buildProgressBar(progress: 0.6),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "5 of 5",
+                          style: getCTATextStyle(
+                            context,
+                            12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 10),
                     if (_experiances.isEmpty)
                       Container(

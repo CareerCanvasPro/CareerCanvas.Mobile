@@ -61,6 +61,7 @@ class UserProfileData {
   int points;
   String profilePicture;
   List<String> skills;
+  List<String> interests;
   String phone;
   List<Resume> resumes;
   String personalityTestStatus;
@@ -80,6 +81,7 @@ class UserProfileData {
     required this.points,
     required this.profilePicture,
     required this.skills,
+    required this.interests,
     required this.phone,
     required this.resumes,
     this.personalityTestStatus = 'pending',
@@ -126,6 +128,9 @@ class UserProfileData {
       profilePicture: (map['profilePicture'] as String?) ?? "",
       skills: List<String>.from(
         (map['skills'] as List<dynamic>? ?? []).map((x) => x as String),
+      ),
+      interests: List<String>.from(
+        (map['interests'] as List<dynamic>? ?? []).map((x) => x as String),
       ),
       phone: (map['phone'] as String?) ?? "",
       resumes: List<Resume>.from(

@@ -62,9 +62,12 @@ class _ProfileCompletionScreenFourState
     bool isSuggested = false,
   }) {
     return GestureDetector(
-      onTap: () => isSuggested
-          ? _addSkilssField(skillsList[index])
-          : _removeSkilssField(index),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        isSuggested
+            ? _addSkilssField(skillsList[index])
+            : _removeSkilssField(index);
+      },
       child: Container(
         constraints: BoxConstraints(
           minWidth: 50,
@@ -239,7 +242,22 @@ class _ProfileCompletionScreenFourState
                     ),
                     const SizedBox(height: 16),
                     // Progress Bar
-                    buildProgressBar(progress: 0.8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: buildProgressBar(progress: 0.8),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "4 of 5",
+                          style: getCTATextStyle(
+                            context,
+                            12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
 
                     SizedBox(height: 12),
                     Row(

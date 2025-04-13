@@ -572,7 +572,18 @@ class _CareerScreenState extends State<CareerScreen> {
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (context) => AlertDialog.adaptive(
+                                      backgroundColor: Colors.white,
                                       scrollable: true,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      contentPadding: const EdgeInsets.all(0),
+                                      titlePadding: const EdgeInsets.all(0),
+                                      insetPadding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
                                       content: AddGoals(
                                         existingGoals: userProfileController
                                             .userProfile.value?.goals,

@@ -11,6 +11,7 @@ import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
+import 'package:career_canvas/src/profile/presentation/screens/widgets/interests_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/language_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/skills_dialog.dart';
 import 'package:career_canvas/src/profile/presentation/screens/widgets/text_field_dialog.dart';
@@ -120,9 +121,20 @@ class _UserProfileState extends State<UserProfile> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
         scrollable: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        contentPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
         content: TextFieldDialog(
           title: "About Me",
+          subTitle: "Update your about me",
           existingText: userProfileController.userProfile.value?.aboutMe,
           validator: (String? text) {
             if (text == null || text.isEmpty) {
@@ -144,7 +156,17 @@ class _UserProfileState extends State<UserProfile> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
         scrollable: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        contentPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
         content: SkillAddDialog(
           existingSkills: userProfileController.userProfile.value?.skills,
           onSubmit: (List<String> skills) async {
@@ -161,11 +183,48 @@ class _UserProfileState extends State<UserProfile> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
         scrollable: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        contentPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
         content: LanguageAddDialog(
           existingLanguages: userProfileController.userProfile.value?.languages,
           onSubmit: (List<String> languages) async {
             await userProfileController.updateLanguage(languages);
+            await userProfileController.getUserProfile();
+          },
+        ),
+      ),
+    );
+  }
+
+  void _updateInterest() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
+        scrollable: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        contentPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
+        content: InterestAddDialog(
+          existingInterests: userProfileController.userProfile.value?.interests,
+          onSubmit: (List<String> interests) async {
+            await userProfileController.updateInterest(interests);
             await userProfileController.getUserProfile();
           },
         ),
@@ -414,6 +473,11 @@ class _UserProfileState extends State<UserProfile> {
                     _languageSection(
                         context,
                         userProfileController.userProfile.value?.languages ??
+                            []),
+
+                    _interestsSection(
+                        context,
+                        userProfileController.userProfile.value?.interests ??
                             []),
 
                     // Appreciation Section
@@ -1075,6 +1139,76 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Container _interestsSection(BuildContext context, List<String> data) {
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: 100,
+      ),
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 20,
+        bottom: 20,
+      ),
+      margin: const EdgeInsets.only(
+        top: 20,
+        left: 12,
+        right: 12,
+      ),
+      decoration: BoxDecoration(
+        color: scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 0,
+            offset: const Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                "assets/svg/icons/Icon_Appreciation.svg",
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                "Interests",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: _updateInterest,
+                child: SvgPicture.asset(
+                  "assets/svg/icons/Edit.svg",
+                ),
+              ),
+            ],
+          ),
+          Divider(
+            color: Colors.black.withOpacity(0.15),
+            height: 24,
+            thickness: 1,
+          ),
+          if (data.isNotEmpty)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  data.map((e) => getChipItem(context, title: e)).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
   Container _appreciationSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(
@@ -1176,7 +1310,7 @@ class _UserProfileState extends State<UserProfile> {
           Row(
             children: [
               SvgPicture.asset(
-                "assets/svg/icons/Icon_Appreciation.svg",
+                "assets/svg/icons/Icon_resume.svg",
               ),
               const SizedBox(width: 8),
               const Text(

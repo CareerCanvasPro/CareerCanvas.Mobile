@@ -61,9 +61,12 @@ class _ProfileCompletionScreenFiveState
     bool isSuggested = false,
   }) {
     return GestureDetector(
-      onTap: () => isSuggested
-          ? _addSkilssField(interestsList[index])
-          : _removeSkilssField(index),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        isSuggested
+            ? _addSkilssField(interestsList[index])
+            : _removeSkilssField(index);
+      },
       child: Container(
         constraints: BoxConstraints(
           minWidth: 50,
@@ -81,104 +84,92 @@ class _ProfileCompletionScreenFiveState
           horizontal: 8,
           vertical: 4,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              isSuggested ? interestsList[index] : _interests[index],
-              style: getCTATextStyle(
-                context,
-                12,
-                color: isSuggested ? Colors.black : primaryBlue,
-              ),
-            ),
-          ],
+        child: Text(
+          isSuggested ? interestsList[index] : _interests[index],
+          overflow: TextOverflow.ellipsis,
+          style: getCTATextStyle(
+            context,
+            12,
+            color: isSuggested ? Colors.black : primaryBlue,
+          ),
         ),
       ),
     );
   }
 
   List<String> interestsList = [
-    // Existing interests
-    'Flutter',
-    'App Development',
-    'Web Development',
-    'UI/UX',
-    'AI',
+    // Core Technical Roles
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "Mobile Developer",
+    "Android Developer",
+    "iOS Developer",
+    "Web Developer",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "Artificial Intelligence Engineer",
+    "DevOps Engineer",
+    "Site Reliability Engineer",
+    "Cloud Engineer",
+    "Cloud Architect",
+    "Data Engineer",
+    "Security Engineer",
+    "Cybersecurity Analyst",
+    "Blockchain Developer",
+    "Game Developer",
+    "Embedded Systems Engineer",
+    "IoT Engineer",
+    "AR Developer",
+    "VR Developer",
+    "Software Architect",
+    "Test Engineer",
+    "QA Engineer",
+    "Automation Engineer",
+    "System Administrator",
+    "Database Administrator",
 
-    // Technical Skills
-    // Frontend Development
-    'React/React Native',
-    'JavaScript/TypeScript',
-    'HTML5/CSS3',
-    'Redux/State Management',
-    'Mobile UI/UX',
+    // Specialized & Hybrid Roles
+    "AI Engineer",
+    "NLP Engineer",
+    "Computer Vision Engineer",
+    "Infrastructure Engineer",
+    "Platform Engineer",
+    "Product Engineer",
+    "Tools Engineer",
+    "Performance Engineer",
+    "Firmware Engineer",
+    "Solutions Architect",
+    "Technical Program Manager",
 
-    // Backend Development
-    'Node.js/Express',
-    'RESTful APIs',
-    'GraphQL',
-    'Microservices',
-    'AWS Services',
+    // Leadership and Strategy Roles
+    "Engineering Manager",
+    "Technical Lead",
+    "Tech Lead",
+    "Team Lead",
+    "CTO",
+    "VP of Engineering",
+    "Chief Architect",
 
-    // Database
-    'MongoDB',
-    'PostgreSQL',
-    'Redis',
-    'Database Design',
-    'Query Optimization',
+    // Adjacent Technical Roles
+    "Product Manager",
+    "Technical Product Manager",
+    "UX Engineer",
+    "UI Engineer",
+    "Technical Writer",
+    "Developer Advocate",
+    "Developer Evangelist",
+    "Security Analyst",
+    "Penetration Tester",
+    "Ethical Hacker",
 
-    // DevOps
-    'Docker',
-    'Kubernetes',
-    'CI/CD',
-    'AWS Infrastructure',
-    'Linux Systems',
-
-    // Testing
-    'Jest',
-    'React Testing Library',
-    'Integration Testing',
-    'E2E Testing',
-    'Performance Testing',
-
-    // Soft Skills
-    // Leadership
-    'Team Management',
-    'Decision Making',
-    'Strategic Planning',
-    'Mentoring',
-    'Conflict Resolution',
-
-    // Communication
-    'Technical Writing',
-    'Presentation Skills',
-    'Client Communication',
-    'Team Collaboration',
-    'Documentation',
-
-    // Project Management
-    'Agile Methodologies',
-    'Sprint Planning',
-    'Risk Management',
-    'Resource Allocation',
-    'Stakeholder Management',
-
-    // Problem Solving
-    'Analytical Thinking',
-    'Debugging',
-    'System Design',
-    'Performance Optimization',
-    'Root Cause Analysis',
-
-    // Personal Development
-    'Continuous Learning',
-    'Time Management',
-    'Adaptability',
-    'Work Ethics',
-    'Innovation',
+    // Career/Work Modes
+    "Remote Developer",
+    "Freelance Developer",
+    "Open Source Contributor",
+    "Startup Engineer",
+    "Technical Consultant"
   ];
   List<String> searchSkills(String input) {
     return interestsList
@@ -238,7 +229,22 @@ class _ProfileCompletionScreenFiveState
                     ),
                     const SizedBox(height: 16),
                     // Progress Bar
-                    buildProgressBar(progress: 0.8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: buildProgressBar(progress: 1),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "5 of 5",
+                          style: getCTATextStyle(
+                            context,
+                            12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
 
                     SizedBox(height: 12),
                     Row(
@@ -337,22 +343,14 @@ class _ProfileCompletionScreenFiveState
                                       horizontal: 8,
                                       vertical: 4,
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          interestsList[index],
-                                          style: getCTATextStyle(
-                                            context,
-                                            12,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
+                                    child: Text(
+                                      interestsList[index],
+                                      overflow: TextOverflow.ellipsis,
+                                      style: getCTATextStyle(
+                                        context,
+                                        12,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
                                 );

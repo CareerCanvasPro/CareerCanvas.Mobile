@@ -9,6 +9,7 @@ abstract class UserProfileRepository {
   Future<String> addExperiance(UploadExperiance experiance);
   Future<String> updateSkills(List<String> experiance);
   Future<String> updateLanguage(List<String> languages);
+  Future<String> updateInterest(List<String> interests);
   Future<String> updateGoals(List<String> goals);
   Future<String> updateResumes(List<Resume> resumes);
   Future addResume(Resume resume);

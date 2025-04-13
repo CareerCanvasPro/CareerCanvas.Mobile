@@ -484,7 +484,22 @@ class _ProfileCompletionScreenOneState
                     ),
                   ),
                   const SizedBox(height: 16),
-                  buildProgressBar(progress: 0.2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: buildProgressBar(progress: 0.2),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        "1 of 5",
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   _buildEducationCard(),
                   Container(

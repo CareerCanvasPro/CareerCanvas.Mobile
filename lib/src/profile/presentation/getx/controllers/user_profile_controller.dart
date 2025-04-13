@@ -97,6 +97,18 @@ class UserProfileController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> updateInterest(List<String> interests) async {
+    isLoading.value = true;
+    final result = await userProfileRepository.updateInterest(interests);
+    Fluttertoast.showToast(
+      msg: result,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      fontSize: 14.0,
+    );
+    isLoading.value = false;
+  }
+
   Future<void> updateGoals(List<String> goals) async {
     isLoading.value = true;
     final result = await userProfileRepository.updateGoals(goals);
