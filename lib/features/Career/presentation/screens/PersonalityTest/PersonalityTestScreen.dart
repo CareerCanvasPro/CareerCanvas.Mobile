@@ -1,13 +1,8 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
-import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/AuthService.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/ScoreScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/widgets/AnalyticsItem.dart';
 import 'package:career_canvas/features/personalitytest/data/models/personalityTestModel.dart';
 import 'package:career_canvas/features/personalitytest/presentation/getx/controller/PersonalityTestController.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -16,81 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-
-class ScoreScreen extends StatelessWidget {
-  final int score;
-  final int relevantSkills;
-  final int totalSkills;
-
-  const ScoreScreen({
-    Key? key,
-    required this.score,
-    required this.relevantSkills,
-    required this.totalSkills,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              "Great Work!",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Image.asset(ImageAssets.success),
-            const SizedBox(height: 24),
-            const Text(
-              "Your Personalized Career Match",
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "$relevantSkills/$totalSkills Relevant Skills Aligned",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            Text(
-              "$score% Match Recommended Careers",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blue,
-                minimumSize: const Size(200, 50),
-              ),
-              onPressed: () {
-                // Handle career recommendations logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Redirecting to recommendations...')),
-                );
-                Navigator.pushNamed(context, '/JobRecommendationScreen');
-              },
-              child: const Text(
-                "Career Recommendation",
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class PersonalityTestScreen extends StatefulWidget {
   static const String routeName = "/PersonalityTestScreen";
@@ -244,45 +165,6 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
     double progress = (completedQuestions / totalQuestions)
         .clamp(0.0, 1.0); // Ensure it's within 0-1 range
     currentProgress = progress;
-  }
-
-  Future<void> onNextPages() async {
-    await Future.delayed(const Duration(seconds: 3));
-
-    final selectedAnswers = ModalRoute.of(context)!.settings.arguments
-        as List<Map<String, dynamic>>;
-
-    // Calculate score based on selectedAnswers
-    int totalScore = 0;
-    int relevantSkills = 0;
-
-    for (var answer in selectedAnswers) {
-      // Handle null by using ?? 0 to default to 0 if null
-      int selectedOption = (answer['selectedOption'] as int?) ?? 0;
-
-      totalScore += selectedOption;
-
-      // Ensure logic correctly handles positive, negative, and zero values
-      if (selectedOption > 0) {
-        relevantSkills++; // Count only positive responses
-      }
-    }
-
-    // Calculate percentage score (clamping between 0.0 and 100.0)
-    double scorePercentage = (totalScore / (selectedAnswers.length * 7)) * 100;
-    scorePercentage = scorePercentage.clamp(
-        0.0, 100.0); // Ensure it stays between 0.0 and 100.0
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScoreScreen(
-          score: scorePercentage.toInt(),
-          relevantSkills: relevantSkills,
-          totalSkills: selectedAnswers.length,
-        ),
-      ),
-    );
   }
 
   Future<void> onNextPage() async {

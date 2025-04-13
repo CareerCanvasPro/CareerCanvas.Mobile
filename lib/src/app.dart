@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
@@ -21,7 +20,6 @@ import 'package:get/get.dart';
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/JobRecommendationScreen.dart';
-import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestField.dart';
 import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import '../features/DashBoard/presentation/screens/HomePage.dart';
 import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
@@ -212,8 +210,6 @@ class _MyAppState extends State<MyApp> {
                     return ChatScreen();
                   case PersonalityTestScreen.routeName:
                     return PersonalityTestScreen();
-                  case PersonalityTestScreen1.routeName:
-                    return PersonalityTestScreen1();
                   case AnalyzingResultsScreen.routeName:
                     return AnalyzingResultsScreen();
                   case JobRecommendationScreen.routeName:

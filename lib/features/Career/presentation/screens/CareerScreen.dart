@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/models/personalityInfo.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
@@ -12,16 +11,13 @@ import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/CareerTrendDetailsScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/EntjDetailsScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/personalityDetailsScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/widgets/AnalyticsItem.dart';
 import 'package:career_canvas/features/Career/presentation/screens/widgets/goals_dialog.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -1069,17 +1065,16 @@ class _CareerScreenState extends State<CareerScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => EntjDetailsScreen()
-                      // PersonalityDetails(
-                      //   personalityTestResult: userProfileController
-                      //       .userProfile.value!.personalityTestResult!,
-                      //   personalityType: personalityType!,
-                      //   categoryColors: categoryColors,
-                      //   type: userProfileController
-                      //           .userProfile.value!.personalityType ??
-                      //       "",
-                      // ),
+                  MaterialPageRoute(builder: (context) =>
+                      PersonalityDetails(
+                        personalityTestResult: userProfileController
+                            .userProfile.value!.personalityTestResult!,
+                        personalityType: personalityType!,
+                        type: userProfileController
+                                .userProfile.value!.personalityType ??
+                            "",
                       ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
