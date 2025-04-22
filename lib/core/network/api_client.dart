@@ -64,7 +64,6 @@ static String authBase ="https://6gael81mn5.execute-api.ap-southeast-1.amazonaws
   }) async {
     Map<String, dynamic> headers = {
       'Content-Type': "application/json",
-      'Accept': 'application/json', // 🔥 Add this line
 
     };
     if (useToken) {
