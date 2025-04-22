@@ -89,7 +89,8 @@ class LoginScreen extends StatelessWidget {
                           await CustomDialog.showCustomOTPDialog(
                             context,
                             to: emailController.emailController.text,
-                            onPressedSubmit:
+                            username: emailController.emailController.text ,
+                            onPressedSubmit: 
                                 (Otpverificationresponse response) async {
                               emailController.emailController.clear();
                               // final prefs = await SharedPreferences.getInstance();
@@ -361,6 +362,7 @@ class LoginScreen extends StatelessWidget {
                   await CustomDialog.showCustomOTPDialog(
                     context,
                     to: emailController.emailController.text,
+                    username:  emailController.emailController.text,
                     onPressedSubmit: (Otpverificationresponse response) async {
                       emailController.emailController.clear();
                       // final prefs = await SharedPreferences.getInstance();

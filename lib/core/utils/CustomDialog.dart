@@ -87,6 +87,7 @@ class CustomDialog {
   static Future showCustomOTPDialog(
     BuildContext context, {
     required String to,
+    required String username,
     required Function(Otpverificationresponse) onPressedSubmit,
   }) {
     return showAdaptiveDialog(
@@ -98,6 +99,7 @@ class CustomDialog {
           scrollable: true,
           content: getOTPVerificationDialog(
             to: to,
+            username:username,
             onPressedSubmit: onPressedSubmit,
           ),
         );
@@ -925,11 +927,13 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
 
 class getOTPVerificationDialog extends StatefulWidget {
   final String to;
+  final String username;
   final Function(Otpverificationresponse) onPressedSubmit;
   getOTPVerificationDialog({
     super.key,
     required this.to,
-    required this.onPressedSubmit,
+    required this.onPressedSubmit, 
+    required this.username,
   });
 
   @override
@@ -965,7 +969,7 @@ class _getOTPVerificationDialogState extends State<getOTPVerificationDialog> {
       );
 
       final response = await apiClient.get(
-        ApiClient.authBase + "/otp/verify?otp=${pin}",
+        ApiClient.authBase + "/otp/verify?otp=${pin}&username=${widget.to}", //
       );
       print(response.data);
       setState(() {

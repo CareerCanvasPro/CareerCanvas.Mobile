@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
+import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
@@ -10,6 +11,7 @@ import 'package:career_canvas/features/login/presentation/screens/ProfileComplet
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/profile_view.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -65,6 +67,93 @@ class _MyAppState extends State<MyApp> {
 
     super.dispose();
   }
+
+// Future<void> initDeepLinks(BuildContext context) async {
+//   _appLinks = AppLinks();
+
+//   _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
+//     debugPrint('onAppLink: $uri');
+
+//     if (uri.path == '/auth/callback') {
+//       try {
+//         String token = uri.queryParameters['token'] ?? '';
+//         bool isNewUser = uri.queryParameters['isNewUser'].toString() == 'true';
+//         String email = uri.queryParameters['username'] ?? '';
+//         DateTime expiry = DateTime.fromMillisecondsSinceEpoch(
+//           int.tryParse(uri.queryParameters["expiresAt"].toString()) ?? 0,
+//         );
+
+//         // ✅ Step 1: Verify token with backend
+//         ApiClient apiClient = ApiClient(
+//         Dio(
+//           BaseOptions(
+//             baseUrl: ApiClient.authBase,
+//             connectTimeout: const Duration(seconds: 5),
+//             receiveTimeout: const Duration(seconds: 5),
+//           ),
+          
+//         ),
+        
+//       );
+        
+//         //dio.options.headers["Authorization"] = "Bearer $token";
+//         final response = await apiClient.get(
+//           "${ApiClient.authBase}/magic-link/verify",
+//           queryParameters: {
+//             'token': token,
+//           },
+      
+//         );
+
+//         // ✅ Step 2: Proceed only if verification succeeds/ && (response.data['success'] == true || response.data['status'] == 'success')
+//         if (response.statusCode == 200 ) {
+//           await TokenInfo.setToken(
+//             token,
+//             email,
+//             "Email",
+//             expiry,
+//           );
+
+//           print('Is new user: $isNewUser');
+
+//           if (isNewUser) {
+//             openAppLink(
+//               ProfileCompletionScreenOne.routeName,
+//               arguments: {
+//                 'type': 'Email',
+//                 'username': email,
+//                 'token': token,
+//               },
+//             );
+//           } else {
+//             openAppLink(HomePage.routeName);
+//           }
+//         } else {
+//           Fluttertoast.showToast(
+//             msg: 'Invalid or expired magic link.',
+//             toastLength: Toast.LENGTH_LONG,
+//             gravity: ToastGravity.BOTTOM,
+//             fontSize: 14.0,
+//           );
+//         }
+//       } catch (e) {
+//         Fluttertoast.showToast(
+//           msg: 'Error verifying link: ${e.toString()}',
+//           toastLength: Toast.LENGTH_LONG,
+//           gravity: ToastGravity.BOTTOM,
+//           fontSize: 14.0,
+//         );
+//       }
+//     } else {
+//       Fluttertoast.showToast(
+//         msg: 'Deep link received but not handled: ${uri.toString()}',
+//         toastLength: Toast.LENGTH_LONG,
+//         gravity: ToastGravity.BOTTOM,
+//         fontSize: 14.0,
+//       );
+//     }
+//   });
+// }
 
   Future<void> initDeepLinks(BuildContext context) async {
     _appLinks = AppLinks();
