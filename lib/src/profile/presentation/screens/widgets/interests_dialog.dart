@@ -5,75 +5,127 @@ import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LanguageAddDialog extends StatefulWidget {
-  final List<String>? existingLanguages;
+class InterestAddDialog extends StatefulWidget {
+  final List<String>? existingInterests;
   final Function(List<String>) onSubmit;
-  const LanguageAddDialog({
+  const InterestAddDialog({
     super.key,
-    this.existingLanguages,
+    this.existingInterests,
     required this.onSubmit,
   });
 
   @override
-  State<LanguageAddDialog> createState() => _LanguageAddDialogState();
+  State<InterestAddDialog> createState() => _InterestAddDialogState();
 }
 
-class _LanguageAddDialogState extends State<LanguageAddDialog> {
-  List<String> _languages = [];
-  final TextEditingController languageController = TextEditingController();
+class _InterestAddDialogState extends State<InterestAddDialog> {
+  List<String> _interests = [];
+  final TextEditingController interestController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    if (widget.existingLanguages != null &&
-        widget.existingLanguages!.isNotEmpty) {
-      _languages.addAll(widget.existingLanguages!);
+    if (widget.existingInterests != null &&
+        widget.existingInterests!.isNotEmpty) {
+      _interests.addAll(widget.existingInterests!);
     }
   }
 
   // Method to add a new skills field
-  void _addLanguageField(String languge) {
-    if (_languages.contains(languge)) {
+  void _addLanguageField(String interest) {
+    if (_interests.contains(interest)) {
       return;
     }
     setState(() {
-      _languages.add(languge);
+      _interests.add(interest);
     });
   }
 
   // Method to remove the last skills field
   void _removeSkilssField(int index) {
-    if (_languages.isNotEmpty && index < _languages.length) {
+    if (_interests.isNotEmpty && index < _interests.length) {
       setState(() {
-        _languages.removeAt(index);
+        _interests.removeAt(index);
       });
     }
   }
 
-  List<String> languageList = [
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Chinese",
-    "Japanese",
-    "Korean",
-    "Hindi",
-    "Bengali",
-    "Portuguese",
-    "Russian",
-    "Arabic",
-    "Italian",
-    "Turkish",
-    "Dutch",
-    "Swedish",
-    "Greek",
-    "Hebrew",
-    "Thai",
-    "Vietnamese",
+  List<String> interestList = [
+    // Core Technical Roles
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "Mobile Developer",
+    "Android Developer",
+    "iOS Developer",
+    "Web Developer",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "Artificial Intelligence Engineer",
+    "DevOps Engineer",
+    "Site Reliability Engineer",
+    "Cloud Engineer",
+    "Cloud Architect",
+    "Data Engineer",
+    "Security Engineer",
+    "Cybersecurity Analyst",
+    "Blockchain Developer",
+    "Game Developer",
+    "Embedded Systems Engineer",
+    "IoT Engineer",
+    "AR Developer",
+    "VR Developer",
+    "Software Architect",
+    "Test Engineer",
+    "QA Engineer",
+    "Automation Engineer",
+    "System Administrator",
+    "Database Administrator",
+
+    // Specialized & Hybrid Roles
+    "AI Engineer",
+    "NLP Engineer",
+    "Computer Vision Engineer",
+    "Infrastructure Engineer",
+    "Platform Engineer",
+    "Product Engineer",
+    "Tools Engineer",
+    "Performance Engineer",
+    "Firmware Engineer",
+    "Solutions Architect",
+    "Technical Program Manager",
+
+    // Leadership and Strategy Roles
+    "Engineering Manager",
+    "Technical Lead",
+    "Tech Lead",
+    "Team Lead",
+    "CTO",
+    "VP of Engineering",
+    "Chief Architect",
+
+    // Adjacent Technical Roles
+    "Product Manager",
+    "Technical Product Manager",
+    "UX Engineer",
+    "UI Engineer",
+    "Technical Writer",
+    "Developer Advocate",
+    "Developer Evangelist",
+    "Security Analyst",
+    "Penetration Tester",
+    "Ethical Hacker",
+
+    // Career/Work Modes
+    "Remote Developer",
+    "Freelance Developer",
+    "Open Source Contributor",
+    "Startup Engineer",
+    "Technical Consultant"
   ];
   List<String> searchLanguage(String input) {
-    return languageList
+    return interestList
         .where((element) => element.toLowerCase().contains(input.toLowerCase()))
         .toList();
   }
@@ -87,7 +139,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
       onTap: () {
         FocusScope.of(context).unfocus();
         isSuggested
-            ? _addLanguageField(languageList[index])
+            ? _addLanguageField(interestList[index])
             : _removeSkilssField(index);
       },
       child: Container(
@@ -113,7 +165,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              isSuggested ? languageList[index] : _languages[index],
+              isSuggested ? interestList[index] : _interests[index],
               style: getCTATextStyle(
                 context,
                 12,
@@ -153,7 +205,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Languages",
+                        "Interests",
                         style: getCTATextStyle(
                           context,
                           16,
@@ -164,7 +216,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                   ],
                 ),
                 Text(
-                  "Update your languages",
+                  "Update your interests",
                   textAlign: TextAlign.left,
                   style: getCTATextStyle(
                     context,
@@ -176,64 +228,6 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
             ),
           ),
           const SizedBox(height: 20),
-          // if (_languages.isNotEmpty)
-          //   Wrap(
-          //     children: _languages
-          //         .map((e) => _buildSkilssCard(_languages.indexOf(e)))
-          //         .toList(),
-          //   ),
-          // if (_languages.isNotEmpty) SizedBox(height: 30),
-          // FieldSuggestion<String>(
-          //   search: (item, input) {
-          //     if (languageController.text.isEmpty) return false;
-          //     return item.toLowerCase().contains(input.toLowerCase());
-          //   },
-          //   inputDecoration: InputDecoration(
-          //     hintText: 'Search Language',
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(32.0),
-          //       borderSide: BorderSide(color: Colors.grey.shade300),
-          //     ),
-          //     focusedBorder: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(32.0),
-          //       borderSide: BorderSide(color: Colors.grey.shade500),
-          //     ),
-          //     contentPadding: const EdgeInsets.symmetric(
-          //       horizontal: 24,
-          //       vertical: 12,
-          //     ),
-          //   ),
-          //   boxStyle: BoxStyle(
-          //     backgroundColor: scaffoldBackgroundColor,
-          //     borderRadius: BorderRadius.circular(10.0),
-          //   ),
-          //   inputType: TextInputType.text,
-          //   suggestions: languageList,
-          //   textController: languageController,
-          //   // boxController: boxController, // optional
-          //   itemBuilder: (context, index) {
-          //     return GestureDetector(
-          //       onTap: () {
-          //         setState(
-          //           () => _addLanguageField(
-          //             languageList[index],
-          //           ),
-          //         );
-          //         languageController.clear();
-          //       },
-          //       child: Card(
-          //         color: scaffoldBackgroundColor,
-          //         elevation: 2,
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(16.0),
-          //           child: Text(
-          //             languageList[index],
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -245,13 +239,13 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                         height: 40,
                         child: FieldSuggestion<String>(
                           search: (item, input) {
-                            if (languageController.text.isEmpty) return false;
+                            if (interestController.text.isEmpty) return false;
                             return item
                                 .toLowerCase()
                                 .contains(input.toLowerCase());
                           },
                           inputDecoration: InputDecoration(
-                            hintText: 'Language (ex: English)',
+                            hintText: 'Interese (ex: Startup)',
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 4,
@@ -298,18 +292,18 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           inputType: TextInputType.text,
-                          suggestions: languageList,
-                          textController: languageController,
+                          suggestions: interestList,
+                          textController: interestController,
                           // boxController: boxController, // optional
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
                                 setState(
                                   () => _addLanguageField(
-                                    languageList[index],
+                                    interestList[index],
                                   ),
                                 );
-                                languageController.clear();
+                                interestController.clear();
                               },
                               child: Container(
                                 constraints: BoxConstraints(
@@ -338,7 +332,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      languageList[index],
+                                      interestList[index],
                                       style: getCTATextStyle(
                                         context,
                                         12,
@@ -356,7 +350,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                   ],
                 ),
                 SizedBox(height: 10),
-                if (_languages.isNotEmpty)
+                if (_interests.isNotEmpty)
                   Row(
                     children: [
                       Expanded(
@@ -373,7 +367,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Your Languages",
+                                "Your Interests",
                                 style: getCTATextStyle(
                                   context,
                                   14,
@@ -386,9 +380,9 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                               Wrap(
                                 spacing: 8,
                                 runSpacing: 8,
-                                children: _languages
+                                children: _interests
                                     .map((e) =>
-                                        _buildSkilssCard(_languages.indexOf(e)))
+                                        _buildSkilssCard(_interests.indexOf(e)))
                                     .toList(),
                               ),
                               SizedBox(
@@ -417,7 +411,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Suggested Languages",
+                              "Suggested Interests",
                               style: getCTATextStyle(
                                 context,
                                 14,
@@ -430,32 +424,32 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
-                              children: languageList
+                              children: interestList
                                           .where((skill) =>
-                                              _languages.isEmpty ||
-                                              !_languages.contains(skill))
+                                              _interests.isEmpty ||
+                                              !_interests.contains(skill))
                                           .length >
                                       5
-                                  ? languageList
+                                  ? interestList
                                       .where((skill) =>
-                                          _languages.isEmpty ||
-                                          !_languages.contains(skill))
+                                          _interests.isEmpty ||
+                                          !_interests.contains(skill))
                                       .take(5)
                                       .toList()
                                       .map(
                                         (e) => _buildSkilssCard(
-                                          languageList.indexOf(e),
+                                          interestList.indexOf(e),
                                           isSuggested: true,
                                         ),
                                       )
                                       .toList()
-                                  : languageList
+                                  : interestList
                                       .where((skill) =>
-                                          _languages.isEmpty ||
-                                          !_languages.contains(skill))
+                                          _interests.isEmpty ||
+                                          !_interests.contains(skill))
                                       .map(
                                         (e) => _buildSkilssCard(
-                                          languageList.indexOf(e),
+                                          interestList.indexOf(e),
                                           isSuggested: true,
                                         ),
                                       )
@@ -485,7 +479,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
                         title: "Submit",
                         onPressed: () async {
                           Get.back();
-                          widget.onSubmit(_languages);
+                          widget.onSubmit(_interests);
                         },
                         backgroundColor: primaryBlue,
                         textStyle: getCTATextStyle(
@@ -517,7 +511,6 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
         ],
       ),

@@ -146,6 +146,15 @@ class CustomDialog {
         return AlertDialog(
           backgroundColor: Colors.white,
           scrollable: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          contentPadding: const EdgeInsets.all(0),
+          titlePadding: const EdgeInsets.all(0),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
           content: AddExperianceDialog(
             onPressedSubmit: onPressedSubmit,
           ),
@@ -180,211 +189,326 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Experiance Details",
-                style: getCTATextStyle(
-                  context,
-                  18,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                "Enter your experiance details below.",
-                style: getCTATextStyle(
-                  context,
-                  12,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: organizationNameController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Organization name is required';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Organization Name",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+    return Container(
+      width: context.screenWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: primaryBlue,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8,
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: designationController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Designation is required';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Designation",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("From"),
-                      if (startDate != null)
-                        Text(
-                          formatDate(startDate!),
-                          style: TextStyle(color: Colors.grey),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Experiance Details",
+                              style: getCTATextStyle(
+                                context,
+                                16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "Enter your experiance details below.",
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: organizationNameController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Organization name is required';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Organization Name",
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFfb0102),
+                            ),
+                          ),
+                          errorMaxLines: 1,
+                          // errorText: '',
+                          errorStyle: TextStyle(
+                            fontSize: 0,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        controller: designationController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Designation is required';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Designation",
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFfb0102),
+                            ),
+                          ),
+                          errorMaxLines: 1,
+                          // errorText: '',
+                          errorStyle: TextStyle(
+                            fontSize: 0,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                              color: primaryBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("From"),
+                              if (startDate != null)
+                                Text(
+                                  formatDate(startDate!),
+                                  style: getCTATextStyle(
+                                    context,
+                                    12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              startDate = await showDatePicker(
+                                context: context,
+                                initialDate: startDate,
+                                firstDate: DateTime(1971),
+                                lastDate: DateTime.now(),
+                                barrierDismissible: false,
+                              );
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.calendar_month_rounded,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            value: isCurrentExperiance,
+                            activeColor: primaryBlue,
+                            onChanged: (value) {
+                              isCurrentExperiance = value ?? false;
+                              setState(() {});
+                            },
+                          ),
+                          // const SizedBox(width: 4),
+                          Text("Current Occupation"),
+                        ],
+                      ),
+                      if (!isCurrentExperiance)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Till Date"),
+                                if (endDate != null)
+                                  Text(
+                                    formatDate(endDate!),
+                                    style: getCTATextStyle(
+                                      context,
+                                      12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                endDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: endDate,
+                                  firstDate: DateTime(1971),
+                                  lastDate: DateTime.now(),
+                                  barrierDismissible: false,
+                                );
+                                setState(() {});
+                              },
+                              icon: Icon(
+                                Icons.calendar_month_rounded,
+                              ),
+                            )
+                          ],
                         ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () async {
-                      startDate = await showDatePicker(
-                        context: context,
-                        initialDate: startDate,
-                        firstDate: DateTime(1971),
-                        lastDate: DateTime.now(),
-                        barrierDismissible: false,
-                      );
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      Icons.calendar_month_rounded,
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Checkbox(
-                    value: isCurrentExperiance,
-                    activeColor: primaryBlue,
-                    onChanged: (value) {
-                      isCurrentExperiance = value ?? false;
-                      setState(() {});
-                    },
-                  ),
-                  // const SizedBox(width: 4),
-                  Text("Current Occupation"),
-                ],
-              ),
-              if (!isCurrentExperiance)
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Till Date"),
-                        if (endDate != null)
-                          Text(
-                            formatDate(endDate!),
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        endDate = await showDatePicker(
-                          context: context,
-                          initialDate: endDate,
-                          firstDate: DateTime(1971),
-                          lastDate: DateTime.now(),
-                          barrierDismissible: false,
-                        );
-                        setState(() {});
-                      },
-                      icon: Icon(
-                        Icons.calendar_month_rounded,
+                    Expanded(
+                      child: CustomTextButton(
+                        title: "Add Experiance",
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          if (formKey.currentState!.validate()) {
+                            Experiance experiance = Experiance(
+                              designation: designationController.text,
+                              from: startDate!.millisecondsSinceEpoch,
+                              isCurrent: isCurrentExperiance,
+                              organization: organizationNameController.text,
+                              to: endDate != null
+                                  ? endDate!.millisecondsSinceEpoch
+                                  : null,
+                            );
+                            widget.onPressedSubmit(experiance);
+                          }
+                        },
+                        backgroundColor: primaryBlue,
+                        textStyle:
+                            getCTATextStyle(context, 14, color: Colors.white),
                       ),
-                    )
+                    ),
                   ],
                 ),
-            ],
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        title: "Cancel",
+                        onPressed: () => Get.back(),
+                        color: primaryBlue,
+                        textStyle: getCTATextStyle(
+                          context,
+                          14,
+                          color: primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextButton(
-                title: "Add Experiance",
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  if (formKey.currentState!.validate()) {
-                    Experiance experiance = Experiance(
-                      designation: designationController.text,
-                      from: startDate!.millisecondsSinceEpoch,
-                      isCurrent: isCurrentExperiance,
-                      organization: organizationNameController.text,
-                      to: endDate != null
-                          ? endDate!.millisecondsSinceEpoch
-                          : null,
-                    );
-                    widget.onPressedSubmit(experiance);
-                  }
-                },
-                backgroundColor: primaryBlue,
-                textStyle: getCTATextStyle(context, 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 4),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextButton(
-                title: "Cancel",
-                onPressed: () => Get.back(),
-                backgroundColor: primaryBlue.withOpacity(0.8),
-                textStyle: getCTATextStyle(context, 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -892,8 +1016,11 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                           }
                         },
                         backgroundColor: primaryBlue,
-                        textStyle:
-                            getCTATextStyle(context, 14, color: Colors.white),
+                        textStyle: getCTATextStyle(
+                          context,
+                          14,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

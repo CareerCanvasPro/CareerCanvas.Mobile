@@ -1,5 +1,6 @@
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
+import 'package:career_canvas/core/models/interests.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/core/models/skills.dart';
@@ -156,6 +157,28 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
       }
     } catch (e) {
       return "Failed to update language: $e";
+    }
+  }
+
+  @override
+  Future<String> updateInterest(List<String> interests) async {
+    try {
+      await apiClient.put(
+        ApiClient.userBase + '/user/profile',
+        data: UploadInterest(interests: interests).toJson(),
+        useToken: true,
+      );
+      return "Updated your interests.";
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        return e.response!.data["message"];
+      } else {
+        return e.message ?? e.toString();
+      }
+    } catch (e) {
+      return "Failed to update interests: $e";
     }
   }
 

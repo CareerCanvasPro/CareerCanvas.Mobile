@@ -308,7 +308,22 @@ class _ProfileCompletionScreenTwoState
                     ),
                     const SizedBox(height: 16),
                     // Progress Bar
-                    buildProgressBar(progress: 0.4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: buildProgressBar(progress: 0.4),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "2 of 5",
+                          style: getCTATextStyle(
+                            context,
+                            12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 16),
 
                     if (_educationList.isEmpty)
@@ -318,7 +333,7 @@ class _ProfileCompletionScreenTwoState
                           'No Education Info Added.',
                           style: getCTATextStyle(
                             context,
-                            16,
+                            14,
                             color: Colors.white,
                           ),
                         ),

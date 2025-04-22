@@ -239,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
                       maxLines: 2,
                       style: getCTATextStyle(
                         context,
-                        16,
+                        14,
                         color: Colors.black,
                       ),
                     ),

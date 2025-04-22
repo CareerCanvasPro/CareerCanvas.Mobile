@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
-import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:career_canvas/core/models/personalityInfo.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
@@ -12,15 +11,14 @@ import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/JobsController.dart';
 import 'package:career_canvas/features/Career/presentation/screens/CareerTrendDetailsScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/EntjDetailsScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
-import 'package:career_canvas/features/Career/presentation/screens/widgets/AnalyticsItem.dart';
+import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/personalityDetailsScreen.dart';
+import 'package:career_canvas/features/Career/presentation/screens/ProfileDetailsScreen.dart';
 import 'package:career_canvas/features/Career/presentation/screens/widgets/goals_dialog.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +42,7 @@ class _CareerScreenState extends State<CareerScreen> {
   @override
   void initState() {
     super.initState();
-     _imagePath = '';
+    _imagePath = '';
     _loadImage();
     jobsController = getIt<JobsController>();
     if (jobsController.jobs.value == null) {
@@ -123,10 +121,9 @@ class _CareerScreenState extends State<CareerScreen> {
   GlobalKey _two = GlobalKey();
   GlobalKey _three = GlobalKey();
   GlobalKey _four = GlobalKey();
- late String _imagePath =
+  late String _imagePath =
       'package:hrmsapp/core/ImagePath/ImageAssets.dart'; // Initialize with an empty string
 
-  
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -149,7 +146,7 @@ class _CareerScreenState extends State<CareerScreen> {
     }
   }
 
-   Widget buildProfileImage() {
+  Widget buildProfileImage() {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -175,8 +172,6 @@ class _CareerScreenState extends State<CareerScreen> {
                   ),
           ),
         ),
-
-        
         Positioned(
           bottom: 5,
           right: 5,
@@ -200,102 +195,12 @@ class _CareerScreenState extends State<CareerScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Container(
-          color: Colors.white,
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-              onTap: _pickImage,
-              child: CircleAvatar(
-                backgroundImage:
-                    _imagePath.isNotEmpty && File(_imagePath).existsSync()
-                        ? FileImage(File(_imagePath)) as ImageProvider<Object>?
-                        : AssetImage(ImageAssets.dp),
-                // _imagePath.isNotEmpty
-                //     ? FileImage(File(_imagePath)) as ImageProvider<Object>?
-                //     : AssetImage('assets/images/banking/robi.png'),
-                radius: 24,
-                backgroundColor: Color.fromARGB(255, 255, 254, 254),
-                foregroundColor: AppColors.background,
-              ),
-            ),
-              // Profile Image
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(40),
-              //   child: Image.asset(
-              //     ImageAssets.dp,
-              //     width: 50,
-              //     height: 50,
-              //     fit: BoxFit.cover,
-              //     errorBuilder: (context, error, stackTrace) {
-              //       return Container(
-              //         width: 50,
-              //         height: 50,
-              //         color: Colors.grey[300],
-              //         child: const Icon(Icons.person, color: Colors.white),
-              //       );
-              //     },
-              //   ),
-              // ),
-              const SizedBox(width: 12),
-
-              // Text Column
-              Expanded(
-                child: SizedBox(
-                  height: 50, // Match image height
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment:
-                        MainAxisAlignment.center, // Center vertically
-                    children: [
-                      const Text(
-                        "Hi! Welcome,",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      Text(
-                        userProfileController.userProfile.value?.name ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Row(
-        //   children: [
-        //     SvgPicture.asset(
-        //       'assets/svg/icons/career_screen_icon.svg',
-        //       width: 30,
-        //       fit: BoxFit.fitWidth,
-        //     ),
-        //     const SizedBox(width: 8),
-        //     Text(
-        //       'Career',
-        //       style: getCTATextStyle(context, 24, color: Colors.black),
-        //     ),
-        //   ],
-        // ),
+        toolbarHeight: 0,
         backgroundColor: scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -324,28 +229,71 @@ class _CareerScreenState extends State<CareerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProfileDetailsScreen(
+                            userProfile:
+                                userProfileController.userProfile.value!,
+                          ),
+                        ),
+                      );
+                    },
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12,
                       ),
-                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          AnalyticsItem(
-                              title: "Day Stacks",
-                              value: "11",
-                              subtitle: "Analytics"),
-                          AnalyticsItem(
-                              title: "Courses",
-                              value: "7",
-                              subtitle: "This Week"),
-                          AnalyticsItem(
-                              title: "Goal Competed", value: "2", subtitle: ""),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Hero(
+                            tag: "profileImage",
+                            child: CircleAvatar(
+                              backgroundImage: CachedNetworkImageProvider(
+                                userProfileController
+                                        .userProfile.value?.profilePicture ??
+                                    "",
+                              ),
+                              radius: 25,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+
+                          // Text Column
+                          Expanded(
+                            child: SizedBox(
+                              height: 50, // Match image height
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .center, // Center vertically
+                                children: [
+                                  const Text(
+                                    "Hi! Welcome,",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    userProfileController
+                                            .userProfile.value?.name ??
+                                        '',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -373,45 +321,44 @@ class _CareerScreenState extends State<CareerScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: const [
-                                          Text("Start Assessment to know",
-                                              style: TextStyle(fontSize: 16)),
-                                          Text("better yourself",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              )),
+                                          Text(
+                                            "Start Assessment to know",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          Text(
+                                            "better yourself",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                     Image.asset(
-                                      ImageAssets.assess,
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.contain,
+                                      "assets/icons/assesment-hand.png",
+                                      height: 100,
+                                      fit: BoxFit.fitHeight,
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 12),
                                 SizedBox(
                                   width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryColor,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(8),
-                                          bottomRight: Radius.circular(8),
-                                        ),
-                                      ),
+                                  child: CustomTextButton(
+                                    backgroundColor: primaryBlue,
+                                    textStyle: getCTATextStyle(
+                                      context,
+                                      12,
+                                      color: Colors.white,
                                     ),
                                     onPressed: () {
                                       Navigator.pushNamed(context,
                                           PersonalityTestScreen.routeName);
                                     },
-                                    child: const Text(
-                                      "Start Assessment",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    title: "Start Assessment",
                                   ),
                                 ),
                               ],
@@ -426,28 +373,46 @@ class _CareerScreenState extends State<CareerScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Your type: ${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.name ?? ""} "
+                                    Text(
+                                      "Your Type",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryBlue,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.name ?? ""} "
                                             "(${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.category ?? ""})",
                                             style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                    Image.asset(
-                                      ImageAssets.dp,
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.contain,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.description ?? ""} ",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -455,50 +420,48 @@ class _CareerScreenState extends State<CareerScreen> {
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.primaryColor,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(8),
-                                            ),
-                                          ),
-                                        ),
+                                      child: CustomTextButton(
                                         onPressed: () {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EntjDetailsScreen()
-                                                // PersonalityDetails(
-                                                //   personalityTestResult: userProfileController
-                                                //       .userProfile.value!.personalityTestResult!,
-                                                //   personalityType: personalityType!,
-                                                //   categoryColors: categoryColors,
-                                                //   type: userProfileController
-                                                //           .userProfile.value!.personalityType ??
-                                                //       "",
-                                                // ),
-                                                ),
+                                              builder: (context) =>
+                                                  // EntjDetailsScreen()
+                                                  PersonalityDetails(
+                                                personalityTestResult:
+                                                    userProfileController
+                                                        .userProfile
+                                                        .value!
+                                                        .personalityTestResult!,
+                                                personalityType: PersonalityType
+                                                    .getType(userProfileController
+                                                            .userProfile
+                                                            .value
+                                                            ?.personalityType ??
+                                                        "")!,
+                                                type: userProfileController
+                                                        .userProfile
+                                                        .value!
+                                                        .personalityType ??
+                                                    "",
+                                              ),
+                                            ),
                                           );
                                         },
-                                        child: const Text(
-                                          "Details",
-                                          style: TextStyle(color: Colors.white),
+                                        title: "Details",
+                                        backgroundColor: primaryBlue,
+                                        textStyle: getCTATextStyle(
+                                          context,
+                                          12,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.primaryColor,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              bottomRight: Radius.circular(8),
-                                            ),
-                                          ),
+                                      child: CustomOutlinedButton(
+                                        borderSide: BorderSide(
+                                          color: primaryBlue,
+                                          width: 1,
                                         ),
                                         onPressed: () {
                                           //                                         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -507,10 +470,7 @@ class _CareerScreenState extends State<CareerScreen> {
                                           Navigator.pushNamed(context,
                                               PersonalityTestScreen.routeName);
                                         },
-                                        child: const Text(
-                                          "Reassessment",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                        title: "Re-Assess",
                                       ),
                                     ),
                                   ],
@@ -579,17 +539,31 @@ class _CareerScreenState extends State<CareerScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Goal",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
+                              Text(
+                                "Goal",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               TextButton(
                                 onPressed: () {
                                   showDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (context) => AlertDialog.adaptive(
+                                      backgroundColor: Colors.white,
                                       scrollable: true,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      contentPadding: const EdgeInsets.all(0),
+                                      titlePadding: const EdgeInsets.all(0),
+                                      insetPadding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
                                       content: AddGoals(
                                         existingGoals: userProfileController
                                             .userProfile.value?.goals,
@@ -603,9 +577,12 @@ class _CareerScreenState extends State<CareerScreen> {
                                     ),
                                   );
                                 },
-                                child: Text("Add New Goal",
-                                    style: TextStyle(
-                                        color: AppColors.primaryColor)),
+                                child: Text(
+                                  "Add New Goal",
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -666,7 +643,7 @@ class _CareerScreenState extends State<CareerScreen> {
                                       "No Goals Yet",
                                       style: getCTATextStyle(
                                         context,
-                                        16,
+                                        14,
                                         color: Colors.grey,
                                       ),
                                     ),
@@ -684,7 +661,7 @@ class _CareerScreenState extends State<CareerScreen> {
                       "Current career trends",
                       style: getCTATextStyle(
                         context,
-                        16,
+                        14,
                         color: Colors.black,
                       ),
                     ),
@@ -762,7 +739,7 @@ class _CareerScreenState extends State<CareerScreen> {
                       "Jobs for you",
                       style: getCTATextStyle(
                         context,
-                        16,
+                        14,
                         color: Colors.black,
                       ),
                     ),
@@ -1072,17 +1049,16 @@ class _CareerScreenState extends State<CareerScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => EntjDetailsScreen()
-                      // PersonalityDetails(
-                      //   personalityTestResult: userProfileController
-                      //       .userProfile.value!.personalityTestResult!,
-                      //   personalityType: personalityType!,
-                      //   categoryColors: categoryColors,
-                      //   type: userProfileController
-                      //           .userProfile.value!.personalityType ??
-                      //       "",
-                      // ),
-                      ),
+                  MaterialPageRoute(
+                    builder: (context) => PersonalityDetails(
+                      personalityTestResult: userProfileController
+                          .userProfile.value!.personalityTestResult!,
+                      personalityType: personalityType!,
+                      type: userProfileController
+                              .userProfile.value!.personalityType ??
+                          "",
+                    ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -1186,7 +1162,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   maxLines: 2,
                   style: getCTATextStyle(
                     context,
-                    16,
+                    14,
                     color: Colors.black,
                   ),
                 ),
@@ -1278,9 +1254,8 @@ class _CareerScreenState extends State<CareerScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       label: Text(
         goal,
-        style: getCTATextStyle(
-          context,
-          14,
+        style: TextStyle(
+          fontSize: 14,
           color: Colors.white,
         ),
       ),
@@ -1343,7 +1318,7 @@ class _CareerScreenState extends State<CareerScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: getCTATextStyle(
                       context,
-                      16,
+                      14,
                       color: Colors.black,
                     ),
                   ),
@@ -1374,7 +1349,7 @@ class _CareerScreenState extends State<CareerScreen> {
                           ),
                         );
                       },
-                      textStyle: getCTATextStyle(context, 16),
+                      textStyle: getCTATextStyle(context, 12),
                       title: "Read More",
                     ),
                   ),

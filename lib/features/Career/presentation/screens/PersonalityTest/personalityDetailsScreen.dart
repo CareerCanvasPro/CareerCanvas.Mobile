@@ -5,16 +5,15 @@ import 'package:career_canvas/core/models/personalityInfo.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PersonalityDetails extends StatefulWidget {
-  final CategoryColors categoryColors;
   final PersonalityType personalityType;
   final PersonalityTestResult personalityTestResult;
   final String type;
 
   const PersonalityDetails({
     Key? key,
-    required this.categoryColors,
     required this.personalityType,
     required this.personalityTestResult,
     required this.type,
@@ -29,9 +28,9 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.categoryColors.background,
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: widget.categoryColors.background,
+        backgroundColor: scaffoldBackgroundColor,
         title: Text(
           "${widget.type}'s Details",
           style: getCTATextStyle(
@@ -66,8 +65,8 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       textAlign: TextAlign.left,
                       style: getCTATextStyle(
                         context,
-                        24,
-                        color: widget.categoryColors.foreground,
+                        16,
+                        color: primaryBlue,
                       ),
                     ),
                   ),
@@ -84,8 +83,8 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                       textAlign: TextAlign.left,
                       style: getCTATextStyle(
                         context,
-                        16,
-                        color: greyColor,
+                        12,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -98,20 +97,12 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     child: LinearPercentIndicator(
                       leading: SizedBox(width: 68, child: Text("Introvert")),
                       trailing: SizedBox(width: 60, child: Text("Extrovert")),
-                      lineHeight: 16,
+                      lineHeight: 14,
                       animation: true,
                       percent: widget.personalityTestResult.EI,
-                      backgroundColor: Colors.white,
-                      progressColor: widget.categoryColors.foreground,
+                      backgroundColor: Color(0xFFE2E8F0),
+                      progressColor: primaryBlue,
                       barRadius: Radius.circular(10),
-                      // center: Text(
-                      //   "${(widget.personalityTestResult.EI * 100).ceil()}%",
-                      //   style: getCTATextStyle(
-                      //     context,
-                      //     12,
-                      //     color: greyColor,
-                      //   ),
-                      // ),
                     ),
                   ),
                 ],
@@ -123,11 +114,11 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     child: LinearPercentIndicator(
                       leading: SizedBox(width: 68, child: Text("Perceiving")),
                       trailing: SizedBox(width: 60, child: Text("Judging")),
-                      lineHeight: 16,
+                      lineHeight: 14,
                       animation: true,
                       percent: widget.personalityTestResult.JP,
-                      backgroundColor: Colors.white,
-                      progressColor: widget.categoryColors.foreground,
+                      backgroundColor: Color(0xFFE2E8F0),
+                      progressColor: primaryBlue,
                       barRadius: Radius.circular(10),
                       // center: Text(
                       //   "·",
@@ -148,11 +139,11 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     child: LinearPercentIndicator(
                       leading: SizedBox(width: 68, child: Text("Intuition")),
                       trailing: SizedBox(width: 60, child: Text("Sensing")),
-                      lineHeight: 16,
+                      lineHeight: 14,
                       animation: true,
                       percent: widget.personalityTestResult.SN,
-                      backgroundColor: Colors.white,
-                      progressColor: widget.categoryColors.foreground,
+                      backgroundColor: Color(0xFFE2E8F0),
+                      progressColor: primaryBlue,
                       barRadius: Radius.circular(10),
                       // center: Text(
                       //   "·",
@@ -173,11 +164,11 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     child: LinearPercentIndicator(
                       leading: SizedBox(width: 68, child: Text("Feeling")),
                       trailing: SizedBox(width: 60, child: Text("Thinking")),
-                      lineHeight: 16,
+                      lineHeight: 14,
                       animation: true,
                       percent: widget.personalityTestResult.TF,
-                      backgroundColor: Colors.white,
-                      progressColor: widget.categoryColors.foreground,
+                      backgroundColor: Color(0xFFE2E8F0),
+                      progressColor: primaryBlue,
                       barRadius: Radius.circular(10),
                       // center: Text(
                       //   "·",
@@ -200,7 +191,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 style: getCTATextStyle(
                   context,
                   16,
-                  color: Colors.black,
+                  color: primaryBlue,
                 ),
               ),
               SizedBox(
@@ -210,21 +201,27 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 spacing: 8,
                 runSpacing: 8,
                 children: widget.personalityType.idealCareers.map((e) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    child: Text(
-                      e,
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: Colors.black,
+                  return GestureDetector(
+                    onTap: () async {
+                      launchUrl(Uri.parse(
+                          "https://www.google.com/search?q=${e.replaceAll(" ", "+")}"));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        e,
+                        style: getCTATextStyle(
+                          context,
+                          12,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   );
@@ -239,7 +236,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 style: getCTATextStyle(
                   context,
                   16,
-                  color: Colors.black,
+                  color: primaryBlue,
                 ),
               ),
               SizedBox(
@@ -252,7 +249,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     e,
                     style: getCTATextStyle(
                       context,
-                      14,
+                      12,
                       color: greyColor,
                     ),
                   );
@@ -267,7 +264,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 style: getCTATextStyle(
                   context,
                   16,
-                  color: Colors.black,
+                  color: primaryBlue,
                 ),
               ),
               SizedBox(
@@ -280,7 +277,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                     e,
                     style: getCTATextStyle(
                       context,
-                      14,
+                      12,
                       color: greyColor,
                     ),
                   );
@@ -295,7 +292,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 style: getCTATextStyle(
                   context,
                   16,
-                  color: Colors.black,
+                  color: primaryBlue,
                 ),
               ),
               SizedBox(
@@ -306,11 +303,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 runSpacing: 8,
                 children: widget.personalityType.recommendedRoles.map((e) {
                   return GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      launchUrl(Uri.parse(
+                          "https://www.google.com/search?q=${e.replaceAll(" ", "+")}"));
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
                       ),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
@@ -320,7 +320,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                         e,
                         style: getCTATextStyle(
                           context,
-                          14,
+                          12,
                           color: Colors.black,
                         ),
                       ),
@@ -337,7 +337,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 style: getCTATextStyle(
                   context,
                   16,
-                  color: Colors.black,
+                  color: primaryBlue,
                 ),
               ),
               SizedBox(
@@ -348,11 +348,14 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                 runSpacing: 8,
                 children: widget.personalityType.knownPersons.map((e) {
                   return GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      launchUrl(Uri.parse(
+                          "https://www.google.com/search?q=${e.replaceAll(" ", "+")}"));
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
                       ),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
@@ -362,7 +365,7 @@ class _PersonalityDetailsState extends State<PersonalityDetails> {
                         e,
                         style: getCTATextStyle(
                           context,
-                          14,
+                          12,
                           color: Colors.black,
                         ),
                       ),

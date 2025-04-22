@@ -9,6 +9,8 @@ import 'package:career_canvas/src/profile/presentation/getx/controllers/user_pro
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileSettings extends StatefulWidget {
   static const String routeName = "/profileSettings";
@@ -147,7 +149,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   overflow: TextOverflow.ellipsis,
                   style: getCTATextStyle(
                     context,
-                    20,
+                    16,
                     color: Colors.white,
                   ),
                 ),
@@ -181,11 +183,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         "Edit Profile",
                         style: TextStyle(
                           color: primaryBlue,
+                          fontSize: 14,
                         ),
                       ),
                       onTap: () {},
                       leading: SvgPicture.asset(
                         "assets/svg/icons/user_icon.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           primaryBlue,
                           BlendMode.srcIn,
@@ -193,59 +198,76 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
+                        size: 20,
                         color: primaryBlue,
                       ),
                     ),
-                    ListTile(
-                      title: Text(
-                        "Notification",
-                        style: TextStyle(
-                          color: primaryBlue,
-                        ),
-                      ),
-                      onTap: () {},
-                      leading: SvgPicture.asset(
-                        "assets/svg/icons/notification_icon.svg",
-                        colorFilter: ColorFilter.mode(
-                          primaryBlue,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: primaryBlue,
-                      ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        "Paymment",
-                        style: TextStyle(
-                          color: primaryBlue,
-                        ),
-                      ),
-                      onTap: () {},
-                      leading: SvgPicture.asset(
-                        "assets/svg/icons/payment_icon.svg",
-                        colorFilter: ColorFilter.mode(
-                          primaryBlue,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: primaryBlue,
-                      ),
-                    ),
+                    // ListTile(
+                    //   title: Text(
+                    //     "Notification",
+                    //     style: TextStyle(
+                    //       color: primaryBlue,
+                    //       fontSize: 14,
+                    //     ),
+                    //   ),
+                    //   onTap: () {},
+                    //   leading: SvgPicture.asset(
+                    //     "assets/svg/icons/notification_icon.svg",
+                    //     height: 20,
+                    //     width: 20,
+                    //     colorFilter: ColorFilter.mode(
+                    //       primaryBlue,
+                    //       BlendMode.srcIn,
+                    //     ),
+                    //   ),
+                    //   trailing: const Icon(
+                    //     Icons.arrow_forward_ios_rounded,
+                    //     size: 20,
+                    //     color: primaryBlue,
+                    //   ),
+                    // ),
+                    // ListTile(
+                    //   title: Text(
+                    //     "Paymment",
+                    //     style: TextStyle(
+                    //       color: primaryBlue,
+                    //       fontSize: 14,
+                    //     ),
+                    //   ),
+                    //   onTap: () {},
+                    //   leading: SvgPicture.asset(
+                    //     "assets/svg/icons/payment_icon.svg",
+                    //     height: 20,
+                    //     width: 20,
+                    //     colorFilter: ColorFilter.mode(
+                    //       primaryBlue,
+                    //       BlendMode.srcIn,
+                    //     ),
+                    //   ),
+                    //   trailing: const Icon(
+                    //     Icons.arrow_forward_ios_rounded,
+                    //     size: 20,
+                    //     color: primaryBlue,
+                    //   ),
+                    // ),
                     ListTile(
                       title: Text(
                         "Privacy Policy",
                         style: TextStyle(
                           color: primaryBlue,
+                          fontSize: 14,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () async {
+                        launchUrl(
+                          Uri.parse("https://careercanvas.pro/pp.html"),
+                          mode: LaunchMode.inAppWebView,
+                        );
+                      },
                       leading: SvgPicture.asset(
                         "assets/svg/icons/privacy_policy.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           primaryBlue,
                           BlendMode.srcIn,
@@ -253,6 +275,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
+                        size: 20,
                         color: primaryBlue,
                       ),
                     ),
@@ -261,11 +284,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         "Help Center",
                         style: TextStyle(
                           color: primaryBlue,
+                          fontSize: 14,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: launchEmailApp,
                       leading: SvgPicture.asset(
                         "assets/svg/icons/help_center_icon.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           primaryBlue,
                           BlendMode.srcIn,
@@ -273,6 +299,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
+                        size: 20,
                         color: primaryBlue,
                       ),
                     ),
@@ -281,11 +308,22 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         "Invite Friends",
                         style: TextStyle(
                           color: primaryBlue,
+                          fontSize: 14,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () async {
+                        ShareResult result = await Share.share(
+                            'Check out Career Canvas App. https://careercanvas.pro',
+                            subject: 'Look what I found on Career Canvas');
+
+                        if (result.status == ShareResultStatus.success) {
+                          print('Thank you for sharing my website!');
+                        }
+                      },
                       leading: SvgPicture.asset(
                         "assets/svg/icons/invite_icon.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           primaryBlue,
                           BlendMode.srcIn,
@@ -293,6 +331,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
+                        size: 20,
                         color: primaryBlue,
                       ),
                     ),
@@ -301,6 +340,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         "Logout",
                         style: TextStyle(
                           color: primaryBlue,
+                          fontSize: 14,
                         ),
                       ),
                       onTap: () {
@@ -319,6 +359,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       },
                       leading: SvgPicture.asset(
                         "assets/svg/icons/logout_icon.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           primaryBlue,
                           BlendMode.srcIn,
@@ -330,6 +372,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         "Delete Account",
                         style: TextStyle(
                           color: Colors.red,
+                          fontSize: 14,
                         ),
                       ),
                       onTap: () {
@@ -347,6 +390,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       },
                       leading: SvgPicture.asset(
                         "assets/svg/icons/delete_icon.svg",
+                        height: 20,
+                        width: 20,
                         colorFilter: ColorFilter.mode(
                           Colors.red,
                           BlendMode.srcIn,
@@ -364,5 +409,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         ],
       ),
     );
+  }
+
+  void launchEmailApp() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'support@careercanvas.pro',
+      queryParameters: {
+        'subject': 'Help needed',
+      },
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch email client';
+    }
   }
 }

@@ -4,9 +4,10 @@ import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
-import 'package:career_canvas/features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen1.dart';
+import 'package:career_canvas/features/Career/presentation/screens/ProfileDetailsScreen.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
+import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -21,8 +22,6 @@ import 'package:get/get.dart';
 
 import '../features/Career/presentation/screens/CareerScreen.dart';
 import '../features/Career/presentation/screens/PersonalityTest/AnalyzingResultsScreen.dart';
-import '../features/Career/presentation/screens/PersonalityTest/JobRecommendationScreen.dart';
-import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestField.dart';
 import '../features/Career/presentation/screens/PersonalityTest/PersonalityTestScreen.dart';
 import '../features/DashBoard/presentation/screens/HomePage.dart';
 import '../features/Networking/presentation/screens/Mentors/ChatScreen.dart';
@@ -263,6 +262,7 @@ class _MyAppState extends State<MyApp> {
           themeMode: widget.settingsController.themeMode,
 
           initialRoute: widget.mainRouteData.initialRoute,
+          // initialRoute: ProfileCompletionScreenTwo.routeName,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -281,6 +281,8 @@ class _MyAppState extends State<MyApp> {
                     return ProfileCompletionScreenThree();
                   case ProfileCompletionScreenFour.routeName:
                     return ProfileCompletionScreenFour();
+                  case ProfileCompletionScreenFive.routeName:
+                    return ProfileCompletionScreenFive();
                   case UserScreen.routeName:
                     return UserScreen();
                   case UserProfile.routeName:
@@ -297,12 +299,8 @@ class _MyAppState extends State<MyApp> {
                     return ChatScreen();
                   case PersonalityTestScreen.routeName:
                     return PersonalityTestScreen();
-                  case PersonalityTestScreen1.routeName:
-                    return PersonalityTestScreen1();
                   case AnalyzingResultsScreen.routeName:
                     return AnalyzingResultsScreen();
-                  case JobRecommendationScreen.routeName:
-                    return JobRecommendationScreen();
                   case ProfileSettings.routeName:
                     return ProfileSettings();
                   default:
