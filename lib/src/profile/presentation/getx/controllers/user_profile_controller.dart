@@ -49,6 +49,32 @@ class UserProfileController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> deleteEducation(Education education) async {
+    isLoading.value = true;
+    final result = await userProfileRepository.deleteEducation(education);
+    print(result);
+    Fluttertoast.showToast(
+      msg: result,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      fontSize: 14.0,
+    );
+    isLoading.value = false;
+  }
+
+  Future<void> deleteExperiance(Experiance experiance) async {
+    isLoading.value = true;
+    final result = await userProfileRepository.deleteExperiance(experiance);
+    print(result);
+    Fluttertoast.showToast(
+      msg: result,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      fontSize: 14.0,
+    );
+    isLoading.value = false;
+  }
+
   Future<void> updateAboutMe(String aboutMe) async {
     isLoading.value = true;
     final result = await userProfileRepository.updateAboutMe(aboutMe);
@@ -121,9 +147,9 @@ class UserProfileController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> updateResume(List<Resume> resumes) async {
+  Future<void> deleteResume(Resume resume) async {
     isLoading.value = true;
-    final result = await userProfileRepository.updateResumes(resumes);
+    final result = await userProfileRepository.deleteResume(resume);
     Fluttertoast.showToast(
       msg: result,
       toastLength: Toast.LENGTH_LONG,
@@ -160,7 +186,7 @@ class UserProfileController extends GetxController {
 
       isUploadingResume.value = true;
       final response = await dioA.post(
-        "${ApiClient.mediaBase}/media/resume?index=$index",
+        "${ApiClient.userBase}/resumes",
         data: formData,
         cancelToken: cancelToken,
         options: dio.Options(
@@ -178,9 +204,13 @@ class UserProfileController extends GetxController {
       progress.value = 0;
 
       if (response.statusCode == 200) {
-        Resume uploadedResume = Resume.fromMap(response.data["data"]["file"]);
-        resumes.add(uploadedResume.copyWith(name: basename(file.path)));
-        updateResume(resumes);
+        // Resume uploadedResume = Resume.fromMap(response.data["data"]["resume"]);
+        Fluttertoast.showToast(
+          msg: "Successfully uploaded resume.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
       } else {
         Fluttertoast.showToast(
           msg: "Failed to upload resume.",

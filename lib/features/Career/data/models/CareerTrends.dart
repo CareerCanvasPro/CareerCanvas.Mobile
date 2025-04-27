@@ -24,17 +24,17 @@ class CareerTrendResponse {
 }
 
 class CareerTrend {
-  List<Career> careers;
+  List<Career> careerTrends;
 
   CareerTrend({
-    required this.careers,
+    required this.careerTrends,
   });
 
   factory CareerTrend.fromMap(Map<String, dynamic> map) {
     return CareerTrend(
-      careers: map['careers'] != null
+      careerTrends: map['careerTrends'] != null
           ? List<Career>.from(
-              (map['careers'] as List).map<Career?>(
+              (map['careerTrends'] as List).map<Career?>(
                 (x) => Career.fromMap(x as Map<String, dynamic>),
               ),
             )
@@ -50,13 +50,13 @@ class Career {
   String description;
   String name;
   String image;
-  String careerId;
+  String id;
 
   Career({
     required this.description,
     required this.name,
     required this.image,
-    required this.careerId,
+    required this.id,
   });
 
   Map<String, dynamic> toMap() {
@@ -64,7 +64,7 @@ class Career {
       'description': description,
       'name': name,
       'image': image,
-      'careerId': careerId,
+      'id': id,
     };
   }
 
@@ -73,7 +73,7 @@ class Career {
       description: map['description'] as String? ?? '',
       name: map['name'] as String? ?? '',
       image: map['image'] as String? ?? '',
-      careerId: map['careerId'] as String? ?? '',
+      id: map['id'] as String? ?? '',
     );
   }
 

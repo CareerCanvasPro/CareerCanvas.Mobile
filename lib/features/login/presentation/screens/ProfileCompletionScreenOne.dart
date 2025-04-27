@@ -102,8 +102,8 @@ class _ProfileCompletionScreenOneState
           final prefs = await SharedPreferences.getInstance();
           String token = prefs.getString('token') ?? '';
 
-          final response = await dio.post(
-            "${ApiClient.mediaBase}/media/profile-picture",
+          final response = await dio.put(
+            "${ApiClient.userBase}/profile-picture/upload",
             data: formData,
             options: Options(
               headers: {
@@ -380,7 +380,7 @@ class _ProfileCompletionScreenOneState
         ),
       );
       await dio.post(
-        "${ApiClient.userBase}/user/profile",
+        "${ApiClient.userBase}",
         data: onboardingone.toJson(),
         options: Options(
           headers: {

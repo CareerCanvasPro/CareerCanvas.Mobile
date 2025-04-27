@@ -55,12 +55,12 @@ class _UserProfileState extends State<UserProfile> {
       context,
       onPressedSubmit: (education) async {
         Get.back();
-        List<Education> educations =
-            userProfileController.userProfile.value?.education ?? [];
-        educations.add(education);
+        // List<Education> educations =
+        //     userProfileController.userProfile.value?.education ?? [];
+        // educations.add(education);
         await userProfileController.uploadEducation(
           UploadEducation(
-            education: educations,
+            educations: [education],
           ),
         );
         await userProfileController.getUserProfile();
@@ -68,16 +68,23 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  void _removeEducation(int index) async {
+  Future<void> _removeEducation(int index) async {
     if (userProfileController.userProfile.value?.education != null) {
       List<Education> educations =
           userProfileController.userProfile.value!.education;
       if (educations.isNotEmpty && index < educations.length) {
-        await userProfileController.uploadEducation(
-          UploadEducation(
-            education: educations,
-          ),
-        );
+        await userProfileController.deleteEducation(educations[index]);
+        await userProfileController.getUserProfile();
+      }
+    }
+  }
+
+  Future<void> _removeExperiance(int index) async {
+    if (userProfileController.userProfile.value?.occupation != null) {
+      List<Experiance> experiances =
+          userProfileController.userProfile.value!.occupation;
+      if (experiances.isNotEmpty && index < experiances.length) {
+        await userProfileController.deleteExperiance(experiances[index]);
         await userProfileController.getUserProfile();
       }
     }
@@ -88,32 +95,17 @@ class _UserProfileState extends State<UserProfile> {
       context,
       onPressedSubmit: (experiance) async {
         Get.back();
-        List<Experiance> experiances =
-            userProfileController.userProfile.value?.occupation ?? [];
-        experiances.add(experiance);
+        // List<Experiance> experiances =
+        //     userProfileController.userProfile.value?.occupation ?? [];
+        // experiances.add(experiance);
         await userProfileController.uploadExperiance(
           UploadExperiance(
-            occupation: experiances,
+            occupations: [experiance],
           ),
         );
         await userProfileController.getUserProfile();
       },
     );
-  }
-
-  void _removeExperiance(int index) async {
-    if (userProfileController.userProfile.value?.occupation != null) {
-      List<Experiance> experiances =
-          userProfileController.userProfile.value!.occupation;
-      if (experiances.isNotEmpty && index < experiances.length) {
-        await userProfileController.uploadExperiance(
-          UploadExperiance(
-            occupation: experiances,
-          ),
-        );
-        await userProfileController.getUserProfile();
-      }
-    }
   }
 
   void _updateAboutMe() async {
@@ -876,10 +868,12 @@ class _UserProfileState extends State<UserProfile> {
                   context,
                   title: data[index].designation,
                   company: data[index].organization,
-                  startDate:
-                      DateTime.fromMillisecondsSinceEpoch(data[index].from),
-                  endDate: data[index].to != null
-                      ? DateTime.fromMillisecondsSinceEpoch(data[index].to!)
+                  startDate: DateTime.fromMillisecondsSinceEpoch(
+                      data[index].startDate),
+                  endDate: data[index].endDate != null
+                      ? DateTime.fromMillisecondsSinceEpoch(
+                          data[index].endDate!,
+                        )
                       : null,
                   onRemove: () async {
                     CustomDialog.showCustomDialog(
@@ -891,11 +885,7 @@ class _UserProfileState extends State<UserProfile> {
                       button2Text: "Cancel",
                       onPressed: () async {
                         Get.back();
-                        data.removeAt(index);
-                        await userProfileController.uploadExperiance(
-                          UploadExperiance(occupation: data),
-                        );
-                        await userProfileController.getUserProfile();
+                        await _removeExperiance(index);
                       },
                     );
                   },
@@ -983,11 +973,8 @@ class _UserProfileState extends State<UserProfile> {
                       button2Text: "Cancel",
                       onPressed: () async {
                         Get.back();
-                        data.removeAt(index);
-                        await userProfileController.uploadEducation(
-                          UploadEducation(education: data),
-                        );
-                        await userProfileController.getUserProfile();
+                        await _removeEducation(index);
+                        // await userProfileController.getUserProfile();
                       },
                     );
                   },
@@ -1356,8 +1343,8 @@ class _UserProfileState extends State<UserProfile> {
                       button2Text: "Cancel",
                       onPressed: () async {
                         Get.back();
-                        data.removeAt(index);
-                        await userProfileController.updateResume(data);
+                        // data.removeAt(index);
+                        await userProfileController.deleteResume(data[index]);
                         await userProfileController.getUserProfile();
                       },
                     );
@@ -1370,12 +1357,12 @@ class _UserProfileState extends State<UserProfile> {
             getResumeItem(
               context,
               resume: Resume(
+                id: UniqueKey().toString(),
+                key: UniqueKey().toString(),
                 name:
                     "Uploading Resume ${userProfileController.progress.toStringAsFixed(2)}%",
-                uploadedAt: DateTime.now(),
                 size: 0,
                 type: "",
-                url: "",
               ),
               isUploading: userProfileController.isUploadingResume.value,
               onRemove: () async {},
@@ -1404,11 +1391,11 @@ class _UserProfileState extends State<UserProfile> {
   }) {
     return GestureDetector(
       onTap: () {
-        launchUrl(
-          Uri.parse(resume.url),
-          webOnlyWindowName: 'Resume',
-          mode: LaunchMode.inAppBrowserView,
-        );
+        // launchUrl(
+        //   Uri.parse(resume.url),
+        //   webOnlyWindowName: 'Resume',
+        //   mode: LaunchMode.inAppBrowserView,
+        // );
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
@@ -1444,16 +1431,17 @@ class _UserProfileState extends State<UserProfile> {
                         color: Colors.black,
                       ),
                     ),
-                  if (!isUploading)
-                    Text(
-                      "${getFormatedDateForResume(resume.uploadedAt)}",
-                      overflow: TextOverflow.ellipsis,
-                      style: getBodyTextStyle(
-                        context,
-                        12,
-                        color: Colors.black,
-                      ),
-                    ),
+                  //TODO: Add upload date
+                  // if (!isUploading)
+                  //   Text(
+                  //     "${getFormatedDateForResume(resume.uploadedAt)}",
+                  //     overflow: TextOverflow.ellipsis,
+                  //     style: getBodyTextStyle(
+                  //       context,
+                  //       12,
+                  //       color: Colors.black,
+                  //     ),
+                  //   ),
                 ],
               ),
             ),

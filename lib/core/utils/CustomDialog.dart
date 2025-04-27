@@ -99,7 +99,7 @@ class CustomDialog {
           scrollable: true,
           content: getOTPVerificationDialog(
             to: to,
-            username:username,
+            username: username,
             onPressedSubmit: onPressedSubmit,
           ),
         );
@@ -468,11 +468,12 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                           FocusScope.of(context).unfocus();
                           if (formKey.currentState!.validate()) {
                             Experiance experiance = Experiance(
+                              id: UniqueKey().toString(),
                               designation: designationController.text,
-                              from: startDate!.millisecondsSinceEpoch,
+                              startDate: startDate!.millisecondsSinceEpoch,
                               isCurrent: isCurrentExperiance,
                               organization: organizationNameController.text,
-                              to: endDate != null
+                              endDate: endDate != null
                                   ? endDate!.millisecondsSinceEpoch
                                   : null,
                             );
@@ -567,7 +568,7 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
       String token = prefs.getString('token') ?? '';
 
       final response = await dio.post(
-        "${ApiClient.mediaBase}/media/certificate",
+        "${ApiClient.userBase}/certificate",
         data: formData,
         options: http.Options(
           headers: {
@@ -1002,6 +1003,7 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                           FocusScope.of(context).unfocus();
                           if (formKey.currentState!.validate()) {
                             Education education = Education(
+                              id: UniqueKey().toString(),
                               achievements: academicAchievementsController.text,
                               field: fieldOfEducationController.text,
                               institute: instituteNameController.text,
@@ -1059,7 +1061,7 @@ class getOTPVerificationDialog extends StatefulWidget {
   getOTPVerificationDialog({
     super.key,
     required this.to,
-    required this.onPressedSubmit, 
+    required this.onPressedSubmit,
     required this.username,
   });
 

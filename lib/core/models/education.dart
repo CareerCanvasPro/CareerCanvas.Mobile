@@ -6,29 +6,29 @@ import 'package:flutter/foundation.dart';
 import 'package:career_canvas/core/models/certificateFile.dart';
 
 class UploadEducation {
-  List<Education> education;
+  List<Education> educations;
   UploadEducation({
-    required this.education,
+    required this.educations,
   });
 
   UploadEducation copyWith({
-    List<Education>? education,
+    List<Education>? educations,
   }) {
     return UploadEducation(
-      education: education ?? this.education,
+      educations: educations ?? this.educations,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'education': education.map((x) => x.toMap()).toList(),
+      'educations': educations.map((x) => x.toMap()).toList(),
     };
   }
 
   factory UploadEducation.fromMap(Map<String, dynamic> map) {
     return UploadEducation(
-      education: List<Education>.from(
-        (map['education'] as List<int>).map<Education>(
+      educations: List<Education>.from(
+        (map['educations'] as List<int>).map<Education>(
           (x) => Education.fromMap(x as Map<String, dynamic>),
         ),
       ),
@@ -41,17 +41,17 @@ class UploadEducation {
       UploadEducation.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'UploadEducation(education: $education)';
+  String toString() => 'UploadEducation(educations: $educations)';
 
   @override
   bool operator ==(covariant UploadEducation other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.education, education);
+    return listEquals(other.educations, educations);
   }
 
   @override
-  int get hashCode => education.hashCode;
+  int get hashCode => educations.hashCode;
 }
 
 ///
@@ -68,6 +68,7 @@ class UploadEducation {
 /// bool isCurrent;
 ///
 class Education {
+  String id;
   String achievements;
   UploadedFile? certificate;
   String field;
@@ -75,6 +76,7 @@ class Education {
   String institute;
   bool isCurrent;
   Education({
+    required this.id,
     required this.achievements,
     this.certificate,
     required this.field,
@@ -84,6 +86,7 @@ class Education {
   });
 
   Education copyWith({
+    String? id,
     String? achievements,
     UploadedFile? certificate,
     String? field,
@@ -92,6 +95,7 @@ class Education {
     bool? isCurrent,
   }) {
     return Education(
+      id: id ?? this.id,
       achievements: achievements ?? this.achievements,
       certificate: certificate ?? this.certificate,
       field: field ?? this.field,
@@ -114,6 +118,7 @@ class Education {
 
   factory Education.fromMap(Map<String, dynamic> map) {
     return Education(
+      id: map['id'] as String,
       achievements: map['achievements'] as String,
       certificate: map['certificate'] != null
           ? UploadedFile.fromMap(map['certificate'] as Map<String, dynamic>)

@@ -2,82 +2,34 @@
 import 'dart:convert';
 
 class UploadedFile {
-  String name;
-  int size;
-  String url;
-  String type;
-  int uploadedAt;
   UploadedFile({
     required this.name,
     required this.size,
-    required this.url,
+    required this.key,
     required this.type,
-    required this.uploadedAt,
   });
 
-  UploadedFile copyWith({
-    String? name,
-    int? size,
-    String? url,
-    String? type,
-    int? uploadedAt,
-  }) {
-    return UploadedFile(
-      name: name ?? this.name,
-      size: size ?? this.size,
-      url: url ?? this.url,
-      type: type ?? this.type,
-      uploadedAt: uploadedAt ?? this.uploadedAt,
-    );
-  }
+  String name;
+  int size;
+  String key;
+  String type;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'size': size,
-      'url': url,
-      'type': type,
-      'uploadedAt': uploadedAt,
-    };
-  }
-
-  factory UploadedFile.fromMap(Map<String, dynamic> map) {
-    return UploadedFile(
-      name: map['name'] as String,
-      size: map['size'] as int,
-      url: map['url'] as String,
-      type: map['type'] as String,
-      uploadedAt: map['uploadedAt'] as int,
-    );
-  }
+  factory UploadedFile.fromJson(String str) =>
+      UploadedFile.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory UploadedFile.fromJson(String source) =>
-      UploadedFile.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UploadedFile.fromMap(Map<String, dynamic> json) => UploadedFile(
+        key: json["key"],
+        name: json["name"],
+        size: json["size"],
+        type: json["type"],
+      );
 
-  @override
-  String toString() {
-    return 'UploadedFile(name: $name, size: $size, url: $url, type: $type, uploadedAt: $uploadedAt)';
-  }
-
-  @override
-  bool operator ==(covariant UploadedFile other) {
-    if (identical(this, other)) return true;
-
-    return other.name == name &&
-        other.size == size &&
-        other.url == url &&
-        other.type == type &&
-        other.uploadedAt == uploadedAt;
-  }
-
-  @override
-  int get hashCode {
-    return name.hashCode ^
-        size.hashCode ^
-        url.hashCode ^
-        type.hashCode ^
-        uploadedAt.hashCode;
-  }
+  Map<String, dynamic> toMap() => {
+        "key": key,
+        "name": name,
+        "size": size,
+        "type": type,
+      };
 }

@@ -4,7 +4,6 @@ import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
-import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
@@ -624,7 +623,7 @@ class _ProfileCompletionScreenFourState
                             UploadSkills(skills: _skills);
 
                         final response = await dio.put(
-                          "${ApiClient.userBase}/user/profile",
+                          "${ApiClient.userBase}/skills",
                           data: uploadSkills.toJson(),
                           options: Options(
                             headers: {

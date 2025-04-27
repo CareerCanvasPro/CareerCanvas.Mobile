@@ -604,7 +604,7 @@ class _ProfileCompletionScreenFiveState
                             UploadInterest(interests: _interests);
 
                         final response = await dio.put(
-                          "${ApiClient.userBase}/user/profile",
+                          "${ApiClient.userBase}/interests",
                           data: uploadInterests.toJson(),
                           options: Options(
                             headers: {

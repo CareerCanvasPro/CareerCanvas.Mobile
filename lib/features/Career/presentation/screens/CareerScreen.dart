@@ -703,10 +703,11 @@ class _CareerScreenState extends State<CareerScreen> {
                             ),
                           );
                         }
-                        if (jobsController.careerTrends.value?.data?.careers ==
+                        if (jobsController
+                                    .careerTrends.value?.data?.careerTrends ==
                                 null ||
-                            jobsController
-                                .careerTrends.value!.data!.careers.isEmpty) {
+                            jobsController.careerTrends.value!.data!
+                                .careerTrends.isEmpty) {
                           return const Center(
                             child: Text(
                               'No career trends available for you at the moment.\nPlease check back later.',
@@ -721,12 +722,12 @@ class _CareerScreenState extends State<CareerScreen> {
                           itemBuilder: (context, index) {
                             return getCareerTrendItem(
                               context,
-                              jobsController
-                                  .careerTrends.value!.data!.careers[index],
+                              jobsController.careerTrends.value!.data!
+                                  .careerTrends[index],
                             );
                           },
                           itemCount: jobsController
-                              .careerTrends.value!.data!.careers.length,
+                              .careerTrends.value!.data!.careerTrends.length,
                         );
                       }),
                     ),

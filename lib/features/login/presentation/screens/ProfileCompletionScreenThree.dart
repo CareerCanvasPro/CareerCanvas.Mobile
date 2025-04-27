@@ -23,7 +23,7 @@ class ProfileCompletionScreenThree extends StatefulWidget {
 class _ProfileCompletionScreenThreeState
     extends State<ProfileCompletionScreenThree> {
   //final _formKey = GlobalKey<FormState>();
-// List to hold the experience form fields
+// List endDate hold the experience form fields
 
   List<Experiance> _experiances = [];
   int selectedIndex = 0;
@@ -38,7 +38,7 @@ class _ProfileCompletionScreenThreeState
     });
   }
 
-  // Method to add a new experience field
+  // Method endDate add a new experience field
   void _addExperienceField() async {
     CustomDialog.showAddExperianceDialog(
       context,
@@ -171,17 +171,17 @@ class _ProfileCompletionScreenThreeState
                     Expanded(
                       child: Text(
                         formatDate(DateTime.fromMillisecondsSinceEpoch(
-                          _experiances[index].from,
+                          _experiances[index].startDate,
                         )),
                       ),
                     ),
                   ],
                 ),
-                if (_experiances[index].to == null)
+                if (_experiances[index].endDate == null)
                   SizedBox(
                     width: 8,
                   ),
-                if (_experiances[index].to == null)
+                if (_experiances[index].endDate == null)
                   Text(
                     "Occupation : ",
                     style: TextStyle(
@@ -189,7 +189,7 @@ class _ProfileCompletionScreenThreeState
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                if (_experiances[index].to == null)
+                if (_experiances[index].endDate == null)
                   Row(
                     children: [
                       Expanded(
@@ -201,11 +201,11 @@ class _ProfileCompletionScreenThreeState
                       ),
                     ],
                   ),
-                if (_experiances[index].to != null)
+                if (_experiances[index].endDate != null)
                   SizedBox(
                     width: 8,
                   ),
-                if (_experiances[index].to != null)
+                if (_experiances[index].endDate != null)
                   Text(
                     "End Date : ",
                     style: TextStyle(
@@ -213,13 +213,13 @@ class _ProfileCompletionScreenThreeState
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                if (_experiances[index].to != null)
+                if (_experiances[index].endDate != null)
                   Row(
                     children: [
                       Expanded(
                         child:
                             Text(formatDate(DateTime.fromMillisecondsSinceEpoch(
-                          _experiances[index].to!,
+                          _experiances[index].endDate!,
                         ))),
                       ),
                     ],
@@ -267,7 +267,7 @@ class _ProfileCompletionScreenThreeState
                       height: 16,
                     ),
                     Text(
-                      "Welcome to Career Canvas",
+                      "Welcome endDate Career Canvas",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -474,11 +474,11 @@ class _ProfileCompletionScreenThreeState
                           ),
                         );
                         UploadExperiance exp = UploadExperiance(
-                          occupation: _experiances,
+                          occupations: _experiances,
                         );
 
-                        final response = await dio.put(
-                          "${ApiClient.userBase}/user/profile",
+                        final response = await dio.post(
+                          "${ApiClient.userBase}/occupations",
                           data: exp.toJson(),
                           options: Options(
                             headers: {

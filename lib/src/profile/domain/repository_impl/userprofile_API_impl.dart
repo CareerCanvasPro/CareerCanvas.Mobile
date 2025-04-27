@@ -17,7 +17,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<UserProfileData?> getUserProfile() async {
     try {
       final response = await apiClient.get(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase,
         useToken: true,
       );
       return UserProfileData.fromMap(response.data['data']);
@@ -39,9 +39,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> addEducation(UploadEducation education) async {
     try {
       print(education.toMap());
-      await apiClient.put(
-        ApiClient.userBase + '/user/profile',
-        data: education.toJson(),
+      await apiClient.post(
+        ApiClient.userBase + '/educations',
+        data: education.toMap(),
         useToken: true,
       );
       return "Uploaded Education";
@@ -70,9 +70,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   @override
   Future<String> addExperiance(UploadExperiance experiance) async {
     try {
-      await apiClient.put(
-        ApiClient.userBase + '/user/profile',
-        data: experiance.toJson(),
+      await apiClient.post(
+        ApiClient.userBase + '/occupations',
+        data: experiance.toMap(),
         useToken: true,
       );
       return "Uploaded Experiance";
@@ -96,7 +96,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> updateAboutMe(String aboutMe) async {
     try {
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/about-me',
         data: {
           "aboutMe": aboutMe,
         },
@@ -120,7 +120,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> updateSkills(List<String> skills) async {
     try {
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/skills',
         data: UploadSkills(skills: skills).toJson(),
         useToken: true,
       );
@@ -142,7 +142,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> updateLanguage(List<String> languages) async {
     try {
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/languages',
         data: UploadLanguage(languages: languages).toJson(),
         useToken: true,
       );
@@ -164,7 +164,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> updateInterest(List<String> interests) async {
     try {
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/interests',
         data: UploadInterest(interests: interests).toJson(),
         useToken: true,
       );
@@ -186,7 +186,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   Future<String> updateGoals(List<String> goals) async {
     try {
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/goals',
         data: {
           "goals": goals,
         },
@@ -208,27 +208,73 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   }
 
   @override
-  Future<String> updateResumes(List<Resume> resumes) async {
+  Future<String> deleteResume(Resume resume) async {
     try {
-      await apiClient.put(
-        ApiClient.userBase + '/user/profile',
-        data: {
-          "resumes": resumes.map((e) => e.toMap()).toList(),
-        },
+      await apiClient.delete(
+        ApiClient.userBase + '/resumes/${resume.id}?key=${resume.key}',
         useToken: true,
       );
-      return "Updated your resumes.";
+      return "Deleted resume.";
     } on DioException catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
         return e.response!.data?["message"].toString() ??
-            'Failed to update resumes';
+            'Failed to delete resumes';
       } else {
         return e.message ?? e.toString();
       }
     } catch (e) {
-      return "Failed to update resumes: $e";
+      return "Failed to delete resumes: $e";
+    }
+  }
+
+  @override
+  Future<String> deleteEducation(Education education) async {
+    try {
+      String url = "ApiClient.userBase + '/educations/${education.id}";
+      if (education.certificate != null) {
+        url += "?key=${education.certificate?.key}";
+      }
+      await apiClient.delete(
+        url,
+        useToken: true,
+      );
+      return "Deleted education.";
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        return e.response!.data?["message"].toString() ??
+            'Failed to delete education';
+      } else {
+        return e.message ?? e.toString();
+      }
+    } catch (e) {
+      return "Failed to delete education: $e";
+    }
+  }
+
+  @override
+  Future<String> deleteExperiance(Experiance experiance) async {
+    try {
+      String url = "ApiClient.userBase + '/occupations/${experiance.id}";
+      await apiClient.delete(
+        url,
+        useToken: true,
+      );
+      return "Deleted Experiance.";
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        return e.response!.data?["message"].toString() ??
+            'Failed to delete experiance';
+      } else {
+        return e.message ?? e.toString();
+      }
+    } catch (e) {
+      return "Failed to delete experiance: $e";
     }
   }
 }

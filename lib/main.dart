@@ -75,7 +75,7 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
         ),
       );
       final response = await dio.get(
-        "${ApiClient.userBase}/user/profile",
+        "${ApiClient.userBase}",
         options: Options(
           headers: {
             'Content-Type': "application/json",

@@ -1,7 +1,5 @@
-
 import 'package:career_canvas/core/ImagePath/ImageAssets.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class ScoreScreen extends StatelessWidget {
   final int score;
@@ -69,11 +67,13 @@ class ScoreScreen extends StatelessWidget {
               onPressed: () {
                 // Handle career recommendations logic
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Redirecting to recommendations...')),
+                  const SnackBar(
+                      content: Text('Redirecting to recommendations...')),
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: const Text(
                 "Career Recommendation",

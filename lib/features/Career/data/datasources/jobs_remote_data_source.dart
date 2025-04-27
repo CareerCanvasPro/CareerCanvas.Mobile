@@ -7,7 +7,7 @@ class JobsRemoteDataSource {
 
   Future<Response<dynamic>> getJobs() async {
     final response = await apiClient.get(
-      '${ApiClient.jobsBase}/jobs/recommendation',
+      '${ApiClient.jobsBase}/recommendation',
       useToken: true,
     );
     return response;
@@ -15,7 +15,7 @@ class JobsRemoteDataSource {
 
   Future<Response<dynamic>> getCareerTrends() async {
     final response = await apiClient.get(
-      '${ApiClient.jobsBase}/jobs/career-trends',
+      '${ApiClient.jobsBase}/career-trends',
       useToken: true,
     );
     return response;

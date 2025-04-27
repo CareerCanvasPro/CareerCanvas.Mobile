@@ -11,7 +11,9 @@ abstract class UserProfileRepository {
   Future<String> updateLanguage(List<String> languages);
   Future<String> updateInterest(List<String> interests);
   Future<String> updateGoals(List<String> goals);
-  Future<String> updateResumes(List<Resume> resumes);
+  Future<String> deleteResume(Resume resume);
+  Future<String> deleteEducation(Education education);
+  Future<String> deleteExperiance(Experiance experiance);
   Future addResume(Resume resume);
   Future<String> updateAboutMe(String aboutMe);
 }

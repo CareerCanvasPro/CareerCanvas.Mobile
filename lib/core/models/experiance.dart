@@ -4,29 +4,29 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class UploadExperiance {
-  List<Experiance> occupation;
+  List<Experiance> occupations;
   UploadExperiance({
-    required this.occupation,
+    required this.occupations,
   });
 
   UploadExperiance copyWith({
-    List<Experiance>? occupation,
+    List<Experiance>? occupations,
   }) {
     return UploadExperiance(
-      occupation: occupation ?? this.occupation,
+      occupations: occupations ?? this.occupations,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'occupation': occupation.map((x) => x.toMap()).toList(),
+      'occupations': occupations.map((x) => x.toMap()).toList(),
     };
   }
 
   factory UploadExperiance.fromMap(Map<String, dynamic> map) {
     return UploadExperiance(
-      occupation: List<Experiance>.from(
-        (map['occupation'] as List<int>).map<Experiance>(
+      occupations: List<Experiance>.from(
+        (map['occupations'] as List<int>).map<Experiance>(
           (x) => Experiance.fromMap(x as Map<String, dynamic>),
         ),
       ),
@@ -39,69 +39,74 @@ class UploadExperiance {
       UploadExperiance.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'UploadExperiance(occupation: $occupation)';
+  String toString() => 'UploadExperiance(occupations: $occupations)';
 
   @override
   bool operator ==(covariant UploadExperiance other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.occupation, occupation);
+    return listEquals(other.occupations, occupations);
   }
 
   @override
-  int get hashCode => occupation.hashCode;
+  int get hashCode => occupations.hashCode;
 }
 
 class Experiance {
+  String id;
   String designation;
-  int from;
+  int startDate;
   bool isCurrent;
   String organization;
-  int? to;
+  int? endDate;
   Experiance({
+    required this.id,
     required this.designation,
-    required this.from,
+    required this.startDate,
     required this.isCurrent,
     required this.organization,
-    this.to,
+    this.endDate,
   });
 
   Experiance copyWith({
+    String? id,
     String? designation,
-    int? from,
+    int? startDate,
     bool? isCurrent,
     String? organization,
-    int? to,
+    int? endDate,
   }) {
     return Experiance(
+      id: id ?? this.id,
       designation: designation ?? this.designation,
-      from: from ?? this.from,
+      startDate: startDate ?? this.startDate,
       isCurrent: isCurrent ?? this.isCurrent,
       organization: organization ?? this.organization,
-      to: to ?? this.to,
+      endDate: endDate ?? this.endDate,
     );
   }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{
       'designation': designation,
-      'from': from,
+      'startDate': startDate,
       'isCurrent': isCurrent,
       'organization': organization,
     };
-    if (to != null) {
-      data['to'] = to;
+    if (endDate != null) {
+      data['endDate'] = endDate;
     }
     return data;
   }
 
   factory Experiance.fromMap(Map<String, dynamic> map) {
     return Experiance(
+      id: map['id'] as String,
       designation: map['designation'] as String,
-      from: map['from'] as int,
+      startDate: map['startDate'] as int,
       isCurrent: map['isCurrent'] as bool,
       organization: map['organization'] as String,
-      to: map['to'] != null ? map['to'] as int : null,
+      endDate: map['endDate'] != null ? map['endDate'] as int : null,
     );
   }
 
@@ -112,7 +117,7 @@ class Experiance {
 
   @override
   String toString() {
-    return 'Experiance(designation: $designation, from: $from, isCurrent: $isCurrent, organization: $organization, to: $to)';
+    return 'Experiance(designation: $designation, startDate: $startDate, isCurrent: $isCurrent, organization: $organization, endDate: $endDate)';
   }
 
   @override
@@ -120,18 +125,18 @@ class Experiance {
     if (identical(this, other)) return true;
 
     return other.designation == designation &&
-        other.from == from &&
+        other.startDate == startDate &&
         other.isCurrent == isCurrent &&
         other.organization == organization &&
-        other.to == to;
+        other.endDate == endDate;
   }
 
   @override
   int get hashCode {
     return designation.hashCode ^
-        from.hashCode ^
+        startDate.hashCode ^
         isCurrent.hashCode ^
         organization.hashCode ^
-        to.hashCode;
+        endDate.hashCode;
   }
 }

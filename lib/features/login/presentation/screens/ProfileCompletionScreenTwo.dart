@@ -13,7 +13,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfileCompletionScreenTwo extends StatefulWidget {
   static const String routeName = '/profileCompletiontwo';
@@ -219,31 +218,13 @@ class _ProfileCompletionScreenTwoState
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () async {
-                            print(_educationList[index].certificate!.url);
-                            try {
-                              await launchUrl(
-                                Uri.parse(
-                                  _educationList[index].certificate!.url,
-                                ),
-                                mode: LaunchMode.inAppWebView,
-                              );
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                          },
-                          child: Text(
-                            "Certificate.${extensionFromMime(_educationList[index].certificate!.type)}",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 14,
-                              decoration: TextDecoration.underline,
-                              color: primaryBlue,
-                            ),
-                          ),
+                      Text(
+                        "Certificate.${extensionFromMime(_educationList[index].certificate!.type)}",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          decoration: TextDecoration.underline,
+                          color: primaryBlue,
                         ),
                       ),
                     ],
@@ -479,11 +460,11 @@ class _ProfileCompletionScreenTwoState
                             ),
                           );
                           UploadEducation uploadEducation = UploadEducation(
-                            education: _educationList,
+                            educations: _educationList,
                           );
 
-                          final response = await dio.put(
-                            "${ApiClient.userBase}/user/profile",
+                          final response = await dio.post(
+                            "${ApiClient.userBase}/educations",
                             data: uploadEducation.toJson(),
                             options: Options(
                               headers: {
