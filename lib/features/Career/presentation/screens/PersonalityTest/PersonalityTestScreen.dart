@@ -114,7 +114,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
       question.selectedOption = selectedOption;
 
       // Remove previous selection for this question if it exists
-      selectedAnswers.removeWhere((answer) => answer['questionID'] == id);
+      selectedAnswers.removeWhere((answer) => answer['questionId'] == id);
 
       // Add the newly selected answer
       selectedAnswers.add({
