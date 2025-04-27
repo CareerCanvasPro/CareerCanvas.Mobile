@@ -1,5 +1,3 @@
-
-
 import 'package:career_canvas/features/personalitytest/domain/entities/personalityTestEntity.dart';
 
 class PersonalityTest extends PersonalityTestEntity {
@@ -35,7 +33,6 @@ class PersonalityTest extends PersonalityTestEntity {
     return 'PersonalityTest(data: $data, message: $message)';
   }
 }
-
 
 class Data extends DataEntity {
   @override
@@ -75,7 +72,6 @@ class Data extends DataEntity {
   }
 }
 
-
 class Questions extends QuestionsEntity {
   @override
   final String? category;
@@ -87,24 +83,34 @@ class Questions extends QuestionsEntity {
   final String? questionID;
   int? selectedOption;
 
-  Questions({this.category, this.score, this.question, this.questionID,this.selectedOption});
+  Questions(
+      {this.category,
+      this.score,
+      this.question,
+      this.questionID,
+      this.selectedOption});
 
   Questions.fromJson(Map<String, dynamic> json)
       : category = json['category'],
         score = json['score'],
         question = json['question'],
-        questionID = json['questionID'];
+        questionID = json['id'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     data['category'] = category;
     data['score'] = score;
     data['question'] = question;
-    data['questionID'] = questionID;
+    data['id'] = questionID;
     return data;
   }
 
-  Questions copyWith({String? category, int? score, String? question, String? questionID, int? selectedOption}) {
+  Questions copyWith(
+      {String? category,
+      int? score,
+      String? question,
+      String? questionID,
+      int? selectedOption}) {
     return Questions(
       category: category ?? this.category,
       score: score ?? this.score,

@@ -1,4 +1,5 @@
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
@@ -46,8 +47,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
   }
 
   void sendPersonalityTestResults() async {
-    final String apiUrl =
-        "https://personality.api.careercanvas.pro/personality-test/result";
+    final String apiUrl = "${ApiClient.personalityBase}/answers";
 
     try {
       final Map<String, dynamic> requestBody = {
@@ -118,7 +118,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
 
       // Add the newly selected answer
       selectedAnswers.add({
-        'questionID': question.questionID,
+        'questionId': question.questionID,
         'answer': selectedOption,
       });
     });
@@ -132,7 +132,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
 
       // Store the selected answer
       selectedAnswers.add({
-        'questionID': question.questionID,
+        'questionId': question.questionID,
         'answer': selectedOption,
       });
     });
