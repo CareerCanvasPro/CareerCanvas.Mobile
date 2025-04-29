@@ -9,19 +9,17 @@ abstract class CoursesDataEntity {
 }
 
 abstract class CoursesEntity {
-  String? currency;
-  double? rating;
-  String? topic;
-  String? sourceName;
-  List<String>? goals;
-  int? studentCount;
-  String? name;
-  String? image;
-  String? level;
-  String? courseId;
-  double? price;
-  int? duration;
-  int? ratingCount;
-  String? sourceUrl;
-  List<String>? authors;
+  String? get id;
+  DateTime? get createdAt;
+  String? get description;
+  String? get name;
+  String? get sourceName;
+  String? get sourceUrl;
+  DateTime? get updatedAt;
+  List<TagEntity>? get tags;
+}
+
+abstract class TagEntity {
+  String? get id;
+  String? get name;
 }

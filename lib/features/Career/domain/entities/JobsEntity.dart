@@ -9,19 +9,15 @@ abstract class JobsDataEntity {
 }
 
 abstract class JobsEntity {
-  String? get location;
-  String? get currency;
-  List<String>? get personalityTypes;
-  int? get salary;
-  int? get salaryMax;
+  String? get id;
   String? get companyLogo;
-  String? get jobId;
-  List<String>? get goals;
-  int? get deadline;
-  List<String>? get fields;
-  String? get organization;
+  DateTime? get createdAt;
+  DateTime? get deadline;
+  String? get location;
   String? get locationType;
-  String? get salaryTime;
+  String? get organization;
   String? get position;
   String? get type;
+  DateTime? get updatedAt;
+  String? get url;
 }

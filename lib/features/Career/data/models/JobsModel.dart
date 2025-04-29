@@ -2,183 +2,81 @@
 import 'dart:convert';
 
 import 'package:career_canvas/features/Career/domain/entities/JobsEntity.dart';
-import 'package:flutter/foundation.dart';
 
 class JobsModel extends JobsEntity {
   @override
-  final String location;
+  String? id;
   @override
-  final String currency;
+  String? companyLogo;
   @override
-  final List<String> personalityTypes;
+  DateTime? createdAt;
   @override
-  final int salary;
+  DateTime? deadline;
   @override
-  final int? salaryMax;
+  String? location;
   @override
-  final String companyLogo;
+  String? locationType;
   @override
-  final String jobId;
+  String? organization;
   @override
-  final List<String> goals;
+  String? position;
   @override
-  final int deadline;
+  String? type;
   @override
-  final List<String> fields;
+  DateTime? updatedAt;
   @override
-  final String organization;
-  @override
-  final String locationType;
-  @override
-  final String salaryTime;
-  @override
-  final String position;
-  @override
-  final String type;
+  String? url;
 
   JobsModel({
-    required this.location,
-    required this.currency,
-    required this.personalityTypes,
-    required this.salary,
-    required this.salaryMax,
-    required this.companyLogo,
-    required this.jobId,
-    required this.goals,
-    required this.deadline,
-    required this.fields,
-    required this.organization,
-    required this.locationType,
-    required this.salaryTime,
-    required this.position,
-    required this.type,
+    this.id,
+    this.companyLogo,
+    this.createdAt,
+    this.deadline,
+    this.location,
+    this.locationType,
+    this.organization,
+    this.position,
+    this.type,
+    this.updatedAt,
+    this.url,
   });
 
-  JobsModel copyWith({
-    String? location,
-    String? currency,
-    List<String>? personalityTypes,
-    int? salary,
-    int? salaryMax,
-    String? companyLogo,
-    String? jobId,
-    List<String>? goals,
-    int? deadline,
-    List<String>? fields,
-    String? organization,
-    String? locationType,
-    String? salaryTime,
-    String? position,
-    String? type,
-  }) {
-    return JobsModel(
-      location: location ?? this.location,
-      currency: currency ?? this.currency,
-      personalityTypes: personalityTypes ?? this.personalityTypes,
-      salary: salary ?? this.salary,
-      salaryMax: salaryMax ?? this.salaryMax,
-      companyLogo: companyLogo ?? this.companyLogo,
-      jobId: jobId ?? this.jobId,
-      goals: goals ?? this.goals,
-      deadline: deadline ?? this.deadline,
-      fields: fields ?? this.fields,
-      organization: organization ?? this.organization,
-      locationType: locationType ?? this.locationType,
-      salaryTime: salaryTime ?? this.salaryTime,
-      position: position ?? this.position,
-      type: type ?? this.type,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'location': location,
-      'currency': currency,
-      'personalityTypes': personalityTypes,
-      'salary': salary,
-      'salaryMax': salaryMax,
-      'companyLogo': companyLogo,
-      'jobId': jobId,
-      'goals': goals,
-      'deadline': deadline,
-      'fields': fields,
-      'organization': organization,
-      'locationType': locationType,
-      'salaryTime': salaryTime,
-      'position': position,
-      'type': type,
-    };
-  }
-
-  factory JobsModel.fromMap(Map<String, dynamic> map) {
-    return JobsModel(
-      location: map['location'] as String? ?? '',
-      currency: map['currency'] as String? ?? '',
-      personalityTypes: List<String>.from((map['personalityTypes'] as List)),
-      salary: map['salary'] as int,
-      salaryMax: map['salaryMax'] != null ? map['salaryMax'] as int : null,
-      companyLogo: map['companyLogo'] as String? ?? '',
-      jobId: map['jobId'] as String? ?? '',
-      goals: List<String>.from((map['goals'] as List)),
-      deadline: map['deadline'] as int,
-      fields: List<String>.from((map['fields'] as List)),
-      organization: map['organization'] as String? ?? '',
-      locationType: map['locationType'] as String? ?? '',
-      salaryTime: map['salaryTime'] as String? ?? '',
-      position: map['position'] as String? ?? '',
-      type: map['type'] as String? ?? '',
-    );
-  }
+  factory JobsModel.fromJson(String str) => JobsModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory JobsModel.fromJson(String source) =>
-      JobsModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory JobsModel.fromMap(Map<String, dynamic> json) => JobsModel(
+        id: json["id"],
+        companyLogo: json["companyLogo"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        deadline:
+            json["deadline"] == null ? null : DateTime.parse(json["deadline"]),
+        location: json["location"],
+        locationType: json["locationType"],
+        organization: json["organization"],
+        position: json["position"],
+        type: json["type"],
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        url: json["url"],
+      );
 
-  @override
-  String toString() {
-    return 'JobsModel(location: $location, currency: $currency, personalityTypes: $personalityTypes, salary: $salary, salaryMax: $salaryMax, companyLogo: $companyLogo, jobId: $jobId, goals: $goals, deadline: $deadline, fields: $fields, organization: $organization, locationType: $locationType, salaryTime: $salaryTime, position: $position, type: $type)';
-  }
-
-  @override
-  bool operator ==(covariant JobsModel other) {
-    if (identical(this, other)) return true;
-
-    return other.location == location &&
-        other.currency == currency &&
-        listEquals(other.personalityTypes, personalityTypes) &&
-        other.salary == salary &&
-        other.salaryMax == salaryMax &&
-        other.companyLogo == companyLogo &&
-        other.jobId == jobId &&
-        listEquals(other.goals, goals) &&
-        other.deadline == deadline &&
-        listEquals(other.fields, fields) &&
-        other.organization == organization &&
-        other.locationType == locationType &&
-        other.salaryTime == salaryTime &&
-        other.position == position &&
-        other.type == type;
-  }
-
-  @override
-  int get hashCode {
-    return location.hashCode ^
-        currency.hashCode ^
-        personalityTypes.hashCode ^
-        salary.hashCode ^
-        salaryMax.hashCode ^
-        companyLogo.hashCode ^
-        jobId.hashCode ^
-        goals.hashCode ^
-        deadline.hashCode ^
-        fields.hashCode ^
-        organization.hashCode ^
-        locationType.hashCode ^
-        salaryTime.hashCode ^
-        position.hashCode ^
-        type.hashCode;
-  }
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "companyLogo": companyLogo,
+        "createdAt": createdAt?.toIso8601String(),
+        "deadline": deadline?.toIso8601String(),
+        "location": location,
+        "locationType": locationType,
+        "organization": organization,
+        "position": position,
+        "type": type,
+        "updatedAt": updatedAt?.toIso8601String(),
+        "url": url,
+      };
 }
 
 class JobDataModel extends JobsDataEntity {

@@ -77,9 +77,11 @@ class _CareerScreenState extends State<CareerScreen> {
     return DateFormat().add_MMM().add_y().format(date);
   }
 
-  String getFormatedDateForJobs(int date) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return DateFormat().add_MMM().add_y().format(dateTime);
+  String getFormatedDateForJobs(DateTime? date) {
+    if (date == null) {
+      return "";
+    }
+    return DateFormat().add_MMM().add_y().format(date);
   }
 
   String getStyledSalaryRange(
@@ -1131,7 +1133,7 @@ class _CareerScreenState extends State<CareerScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: CachedNetworkImage(
-                      imageUrl: job.companyLogo,
+                      imageUrl: job.companyLogo ?? "",
                       placeholder: (context, url) => Center(
                           child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -1159,7 +1161,7 @@ class _CareerScreenState extends State<CareerScreen> {
               SizedBox(
                 height: 45,
                 child: Text(
-                  job.position,
+                  job.position ?? "",
                   maxLines: 2,
                   style: getCTATextStyle(
                     context,
@@ -1189,14 +1191,14 @@ class _CareerScreenState extends State<CareerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(getFormatedDateForJobs(job.deadline)),
-                  Text(
-                    getStyledSalaryRange(
-                      job.salary,
-                      job.salaryMax,
-                      job.currency,
-                      job.salaryTime,
-                    ),
-                  ),
+                  // Text(
+                  //   getStyledSalaryRange(
+                  //     job.salary,
+                  //     job.salaryMax,
+                  //     job.currency,
+                  //     job.salaryTime,
+                  //   ),
+                  // ),
                 ],
               ),
             ],

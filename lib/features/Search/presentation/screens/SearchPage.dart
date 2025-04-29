@@ -208,7 +208,7 @@ class _SearchPageState extends State<SearchPage> {
             height: 100,
             clipBehavior: Clip.antiAlias,
             child: CachedNetworkImage(
-              imageUrl: course.image,
+              imageUrl: course.sourceUrl,
               placeholder: (context, url) => Center(
                   child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
@@ -245,24 +245,13 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   Text(
-                    course.authors.first,
+                    course.description,
                     style: getBodyTextStyle(context, 12, color: Colors.grey),
                   ),
                   Row(
                     children: [
                       Text(
-                        "${formatNumber(course.studentCount)} Students",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.star, color: orangeStar, size: 18),
-                      SizedBox(width: 4),
-                      Text(
-                        "${course.rating} (${formatNumber(course.ratingCount ?? 0)})",
+                        "${course.sourceName}",
                         style: getCTATextStyle(
                           context,
                           12,

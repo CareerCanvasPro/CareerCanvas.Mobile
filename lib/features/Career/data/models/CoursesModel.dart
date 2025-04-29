@@ -1,157 +1,81 @@
+import 'dart:convert';
+
 import 'package:career_canvas/features/Career/domain/entities/CoursesEntity.dart';
 
 class CoursesModel extends CoursesEntity {
-  @override
-  final String currency;
-  @override
-  final double rating;
-  @override
-  final String topic;
-  @override
-  final String sourceName;
-  @override
-  final List<String> goals;
-  @override
-  final int studentCount;
-  @override
-  final String name;
-  @override
-  final String image;
-  @override
-  final String level;
-  @override
-  final String courseId;
-  @override
-  final double price;
-  @override
-  final int duration;
-  @override
-  final int? ratingCount;
-  @override
-  final String sourceUrl;
-  @override
-  final List<String> authors;
+  String id;
+  DateTime createdAt;
+  String description;
+  String name;
+  String sourceName;
+  String sourceUrl;
+  DateTime updatedAt;
+  List<TagModel> tags;
 
   CoursesModel({
-    required this.currency,
-    required this.topic,
-    required this.sourceName,
-    required this.goals,
+    required this.id,
+    required this.createdAt,
+    required this.description,
     required this.name,
-    required this.image,
-    required this.level,
+    required this.sourceName,
     required this.sourceUrl,
-    required this.courseId,
-    required this.authors,
-    this.studentCount = 0,
-    this.rating = 0,
-    this.price = 0,
-    this.duration = 0,
-    this.ratingCount = 0,
+    required this.updatedAt,
+    required this.tags,
   });
 
-  CoursesModel.fromJson(Map<String, dynamic> json)
-      : currency = json['currency'] ?? '',
-        rating = double.tryParse(json['rating'].toString()) ?? 0,
-        topic = json['topic'] ?? '',
-        sourceName = json['sourceName'] ?? '',
-        goals = json['goals'] != null
-            ? (json['goals'] as List).map((v) => v.toString()).toList()
-            : [],
-        studentCount = json['studentCount'] as int? ?? 0,
-        name = json['name'] ?? '',
-        image = json['image'] ?? '',
-        level = json['level'] ?? '',
-        courseId = json['courseId'] ?? '',
-        price = double.tryParse(json['price'].toString()) ?? 0,
-        duration = json['duration'] as int? ?? 0,
-        ratingCount = json['ratingCount'] as int? ?? 0,
-        sourceUrl = json['sourceUrl'] ?? '',
-        authors = json['authors'] != null
-            ? (json['authors'] as List).map((v) => v.toString()).toList()
-            : [];
+  factory CoursesModel.fromJson(String str) =>
+      CoursesModel.fromMap(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['currency'] = currency;
-    data['rating'] = rating;
-    data['topic'] = topic;
-    data['sourceName'] = sourceName;
-    data['goals'] = goals.map((v) => v).toList();
+  String toJson() => json.encode(toMap());
 
-    data['studentCount'] = studentCount;
-    data['name'] = name;
-    data['image'] = image;
-    data['level'] = level;
-    data['courseId'] = courseId;
-    data['price'] = price;
-    data['duration'] = duration;
-    data['ratingCount'] = ratingCount;
-    data['sourceUrl'] = sourceUrl;
-    data['authors'] = authors.map((v) => v).toList();
+  factory CoursesModel.fromMap(Map<String, dynamic> json) => CoursesModel(
+        id: json["id"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        description: json["description"] ?? "",
+        name: json["name"] ?? "",
+        sourceName: json["sourceName"] ?? "",
+        sourceUrl: json["sourceUrl"] ?? "",
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        tags: json["tags"] == null
+            ? []
+            : List<TagModel>.from(
+                json["tags"]!.map((x) => TagModel.fromMap(x))),
+      );
 
-    return data;
-  }
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "createdAt": createdAt.toIso8601String(),
+        "description": description,
+        "name": name,
+        "sourceName": sourceName,
+        "sourceUrl": sourceUrl,
+        "updatedAt": updatedAt.toIso8601String(),
+        "tags": List<dynamic>.from(tags.map((x) => x.toMap())),
+      };
+}
 
-  CoursesModel copyWith({
-    String? currency,
-    double? rating,
-    String? topic,
-    String? sourceName,
-    List<String>? goals,
-    int? studentCount,
-    String? name,
-    String? image,
-    String? level,
-    String? courseId,
-    double? price,
-    int? duration,
-    int? ratingCount,
-    String? sourceUrl,
-    List<String>? authors,
-  }) {
-    return CoursesModel(
-      currency: currency ?? this.currency,
-      rating: rating ?? this.rating,
-      topic: topic ?? this.topic,
-      sourceName: sourceName ?? this.sourceName,
-      goals: goals ?? this.goals,
-      studentCount: studentCount ?? this.studentCount,
-      name: name ?? this.name,
-      image: image ?? this.image,
-      level: level ?? this.level,
-      courseId: courseId ?? this.courseId,
-      price: price ?? this.price,
-      duration: duration ?? this.duration,
-      ratingCount: ratingCount ?? this.ratingCount,
-      sourceUrl: sourceUrl ?? this.sourceUrl,
-      authors: authors ?? this.authors,
-    );
-  }
+class TagModel extends TagEntity {
+  String? id;
+  String? name;
 
-  @override
-  String toString() {
-    return 'CoursesModel(currency: $currency, rating: $rating, topic: $topic, sourceName: $sourceName, goals: $goals, studentCount: $studentCount, name: $name, image: $image, level: $level, courseId: $courseId, price: $price, duration: $duration, ratingCount: $ratingCount, sourceUrl: $sourceUrl, authors: $authors)';
-  }
+  TagModel({
+    this.id,
+    this.name,
+  });
 
-  @override
-  int get hashCode {
-    return currency.hashCode ^
-        rating.hashCode ^
-        topic.hashCode ^
-        sourceName.hashCode ^
-        goals.hashCode ^
-        studentCount.hashCode ^
-        name.hashCode ^
-        image.hashCode ^
-        level.hashCode ^
-        courseId.hashCode ^
-        price.hashCode ^
-        duration.hashCode ^
-        ratingCount.hashCode ^
-        sourceUrl.hashCode ^
-        authors.hashCode;
-  }
+  factory TagModel.fromJson(String str) => TagModel.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory TagModel.fromMap(Map<String, dynamic> json) => TagModel(
+        id: json["id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+      };
 }
 
 class CoursesDataModel extends CoursesDataEntity {
