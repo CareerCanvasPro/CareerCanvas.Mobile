@@ -394,12 +394,28 @@ class _UserProfileState extends State<UserProfile> {
                   IconButton(
                     color: Colors.white,
                     onPressed: () async {
+                      String androidLink =
+                          "https://play.google.com/store/apps/details?id=com.careercanvas.app";
+                      //TODO: Add iOS link
+                      String iosLink =
+                          "https://apps.apple.com/us/app/career-canvas/id1601239870";
+                      String webLink = "https://careercanvas.pro";
+                      String appLink = "";
+                      if (Platform.isAndroid) {
+                        appLink = androidLink;
+                      } else if (Platform.isIOS) {
+                        appLink = iosLink;
+                      } else {
+                        appLink = webLink;
+                      }
                       ShareResult result = await Share.share(
-                          'Check out Career Canvas App. https://careercanvas.pro',
-                          subject: 'Look what I found on Career Canvas');
+                        "Check out Career Canvas App. $appLink",
+                        subject: 'Look what I found on Career Canvas',
+                        sharePositionOrigin: Rect.fromLTWH(0, 0, 100, 100),
+                      );
 
                       if (result.status == ShareResultStatus.success) {
-                        print('Thank you for sharing my website!');
+                        debugPrint('Thank you for sharing my website!');
                       }
                     },
                     icon: const Icon(Icons.ios_share),
@@ -868,13 +884,8 @@ class _UserProfileState extends State<UserProfile> {
                   context,
                   title: data[index].designation,
                   company: data[index].organization,
-                  startDate: DateTime.fromMillisecondsSinceEpoch(
-                      data[index].startDate),
-                  endDate: data[index].endDate != null
-                      ? DateTime.fromMillisecondsSinceEpoch(
-                          data[index].endDate!,
-                        )
-                      : null,
+                  startDate: data[index].startDate,
+                  endDate: data[index].endDate,
                   onRemove: () async {
                     CustomDialog.showCustomDialog(
                       context,
@@ -986,7 +997,7 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Container _skillsSection(BuildContext context, List<String> data) {
+  Container _skillsSection(BuildContext context, List<KeyVal> data) {
     return Container(
       constraints: BoxConstraints(
         minHeight: 100,
@@ -1049,14 +1060,14 @@ class _UserProfileState extends State<UserProfile> {
               spacing: 8,
               runSpacing: 8,
               children:
-                  data.map((e) => getChipItem(context, title: e)).toList(),
+                  data.map((e) => getChipItem(context, title: e.name)).toList(),
             ),
         ],
       ),
     );
   }
 
-  Container _languageSection(BuildContext context, List<String> data) {
+  Container _languageSection(BuildContext context, List<KeyVal> data) {
     return Container(
       constraints: BoxConstraints(
         minHeight: 100,
@@ -1119,14 +1130,14 @@ class _UserProfileState extends State<UserProfile> {
               spacing: 8,
               runSpacing: 8,
               children:
-                  data.map((e) => getChipItem(context, title: e)).toList(),
+                  data.map((e) => getChipItem(context, title: e.name)).toList(),
             ),
         ],
       ),
     );
   }
 
-  Container _interestsSection(BuildContext context, List<String> data) {
+  Container _interestsSection(BuildContext context, List<KeyVal> data) {
     return Container(
       constraints: BoxConstraints(
         minHeight: 100,
@@ -1189,7 +1200,7 @@ class _UserProfileState extends State<UserProfile> {
               spacing: 8,
               runSpacing: 8,
               children:
-                  data.map((e) => getChipItem(context, title: e)).toList(),
+                  data.map((e) => getChipItem(context, title: e.name)).toList(),
             ),
         ],
       ),
@@ -1359,6 +1370,9 @@ class _UserProfileState extends State<UserProfile> {
               resume: Resume(
                 id: UniqueKey().toString(),
                 key: UniqueKey().toString(),
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+                url: "",
                 name:
                     "Uploading Resume ${userProfileController.progress.toStringAsFixed(2)}%",
                 size: 0,
@@ -1391,11 +1405,11 @@ class _UserProfileState extends State<UserProfile> {
   }) {
     return GestureDetector(
       onTap: () {
-        // launchUrl(
-        //   Uri.parse(resume.url),
-        //   webOnlyWindowName: 'Resume',
-        //   mode: LaunchMode.inAppBrowserView,
-        // );
+        launchUrl(
+          Uri.parse(resume.url),
+          webOnlyWindowName: 'Resume',
+          mode: LaunchMode.inAppBrowserView,
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
@@ -1431,17 +1445,16 @@ class _UserProfileState extends State<UserProfile> {
                         color: Colors.black,
                       ),
                     ),
-                  //TODO: Add upload date
-                  // if (!isUploading)
-                  //   Text(
-                  //     "${getFormatedDateForResume(resume.uploadedAt)}",
-                  //     overflow: TextOverflow.ellipsis,
-                  //     style: getBodyTextStyle(
-                  //       context,
-                  //       12,
-                  //       color: Colors.black,
-                  //     ),
-                  //   ),
+                  if (!isUploading)
+                    Text(
+                      "${getFormatedDateForResume(resume.createdAt)}",
+                      overflow: TextOverflow.ellipsis,
+                      style: getBodyTextStyle(
+                        context,
+                        12,
+                        color: Colors.black,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -1549,7 +1562,7 @@ class _UserProfileState extends State<UserProfile> {
               children: [
                 if (education.graduationDate != null)
                   Text(
-                    "${getFormatedDate(DateTime.fromMillisecondsSinceEpoch(education.graduationDate!))}",
+                    "${getFormatedDate(education.graduationDate!)}",
                     style: getBodyTextStyle(
                       context,
                       12,

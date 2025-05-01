@@ -170,9 +170,9 @@ class _ProfileCompletionScreenThreeState
                   children: [
                     Expanded(
                       child: Text(
-                        formatDate(DateTime.fromMillisecondsSinceEpoch(
+                        formatDate(
                           _experiances[index].startDate,
-                        )),
+                        ),
                       ),
                     ),
                   ],
@@ -217,10 +217,11 @@ class _ProfileCompletionScreenThreeState
                   Row(
                     children: [
                       Expanded(
-                        child:
-                            Text(formatDate(DateTime.fromMillisecondsSinceEpoch(
-                          _experiances[index].endDate!,
-                        ))),
+                        child: Text(
+                          formatDate(
+                            _experiances[index].endDate!,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -501,9 +502,9 @@ class _ProfileCompletionScreenThreeState
                         // The request was made and the server responded with a status code
                         // that falls out of the range of 2xx and is also not 304.
                         if (e.response != null) {
-                          print(e.response!.data["message"]);
-                          print(e.response!.headers);
-                          print(e.response!.requestOptions);
+                          // print(e.response!.data["message"]);
+                          // print(e.response!.headers);
+                          // print(e.response!.requestOptions);
                           CustomDialog.showCustomDialog(
                             context,
                             title: "Error",
@@ -511,8 +512,8 @@ class _ProfileCompletionScreenThreeState
                           );
                         } else {
                           // Something happened in setting up or sending the request that triggered an Error
-                          print(e.requestOptions);
-                          print(e.message);
+                          // print(e.requestOptions);
+                          // print(e.message);
                           CustomDialog.showCustomDialog(
                             context,
                             title: "Error",

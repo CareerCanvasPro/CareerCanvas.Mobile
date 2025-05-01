@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -40,14 +41,14 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
 
   GlobalKey globalKey = GlobalKey();
 
-  Future<void> _capturePng() async {
-    RenderRepaintBoundary boundary =
-        globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage();
-    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData!.buffer.asUint8List();
-    print(pngBytes);
-  }
+  // Future<void> _capturePng() async {
+  //   RenderRepaintBoundary boundary =
+  //       globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+  //   ui.Image image = await boundary.toImage();
+  //   ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  //   Uint8List pngBytes = byteData!.buffer.asUint8List();
+  //   // print(pngBytes);
+  // }
 
   bool isSavingImage = false;
   void _savePng() async {
@@ -84,6 +85,22 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
       ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      String androidLink =
+          "https://play.google.com/store/apps/details?id=com.careercanvas.app";
+      //TODO: Add iOS link
+      String iosLink =
+          "https://apps.apple.com/us/app/career-canvas/id1601239870";
+      String webLink = "https://careercanvas.pro";
+      String appLink = "";
+      if (Platform.isAndroid) {
+        appLink = androidLink;
+      } else if (Platform.isIOS) {
+        appLink = iosLink;
+      } else {
+        appLink = webLink;
+      }
+
       final result = await Share.shareXFiles(
         [
           XFile.fromData(
@@ -92,16 +109,16 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
             name: 'cc_profile.png',
           ),
         ],
-        subject: "Career Canvas Profile",
-        text: "Check out Career Canvas App. https://careercanvas.pro",
+        text: "Check out Career Canvas App. $appLink",
+        subject: 'Look what I found on Career Canvas',
+        sharePositionOrigin: Rect.fromLTWH(0, 0, 100, 100),
         fileNameOverrides: [
           "cc_profile.png",
         ],
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 100, 100),
       );
-      print(result);
+      debugPrint(result.raw);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -249,10 +266,11 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                             children: [
                               Expanded(
                                 child:
-                                    (widget.userProfile.personalityType != null)
+                                    (widget.userProfile.personalityTestResult !=
+                                            null)
                                         ? Text(
-                                            "${PersonalityType.getType(widget.userProfile.personalityType ?? "")?.name ?? ""} "
-                                            "(${PersonalityType.getType(widget.userProfile.personalityType ?? "")?.category ?? ""})",
+                                            "${PersonalityType.getType(widget.userProfile.personalityTestResult?.type ?? "")?.name ?? ""} "
+                                            "(${PersonalityType.getType(widget.userProfile.personalityTestResult?.type ?? "")?.category ?? ""})",
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -272,7 +290,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                               ),
                             ],
                           ),
-                          if (widget.userProfile.personalityType != null)
+                          if (widget.userProfile.personalityTestResult != null)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -281,7 +299,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      "${PersonalityType.getType(widget.userProfile.personalityType ?? "")?.description ?? ""} ",
+                                      "${PersonalityType.getType(widget.userProfile.personalityTestResult?.type ?? "")?.description ?? ""} ",
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,

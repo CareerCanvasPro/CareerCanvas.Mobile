@@ -49,7 +49,7 @@ class ProfileSettingsController extends GetxController {
     try {
       final apiClient = getIt<ApiClient>();
       await apiClient.put(
-        ApiClient.userBase + '/user/profile',
+        ApiClient.userBase + '/profile-picture',
         data: ProfileUpload(profilePicture: url).toJson(),
         useToken: true,
       );
@@ -140,8 +140,8 @@ class ProfileSettingsController extends GetxController {
             },
           );
 
-          final response = await dioApi.post(
-            "${ApiClient.mediaBase}/media/profile-picture",
+          final response = await dioApi.put(
+            "${ApiClient.userBase}/profile-picture/upload",
             data: formData,
             options: dio.Options(
               headers: {

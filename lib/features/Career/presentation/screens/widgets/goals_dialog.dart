@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -7,7 +8,7 @@ import 'package:get/get.dart';
 
 class AddGoals extends StatefulWidget {
   final Function(List<String>) onSubmit;
-  final List<String>? existingGoals;
+  final List<KeyVal>? existingGoals;
   const AddGoals({
     super.key,
     required this.onSubmit,
@@ -25,7 +26,7 @@ class _AddGoalsState extends State<AddGoals> {
   void initState() {
     super.initState();
     if (widget.existingGoals != null && widget.existingGoals!.isNotEmpty) {
-      _goals.addAll(widget.existingGoals!);
+      _goals.addAll(widget.existingGoals!.map((e) => e.name).toList());
     }
   }
 

@@ -175,7 +175,9 @@ class _SkillsPageState extends State<SkillsPage> {
                     if (coursesController.courses.value == null ||
                         coursesController.courses.value!.data == null ||
                         coursesController.courses.value!.data!.courses ==
-                            null) {
+                            null ||
+                        coursesController
+                            .courses.value!.data!.courses!.isEmpty) {
                       return const Center(child: Text('No Courses Available'));
                     }
                     return ListView.builder(
@@ -213,10 +215,12 @@ class _SkillsPageState extends State<SkillsPage> {
                     if (coursesController.isLoadingGolsBasedCourses.value) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    if (coursesController.courses.value == null ||
-                        coursesController.courses.value!.data == null ||
-                        coursesController.courses.value!.data!.courses ==
-                            null) {
+                    if (coursesController.coursesGoals.value == null ||
+                        coursesController.coursesGoals.value!.data == null ||
+                        coursesController.coursesGoals.value!.data!.courses ==
+                            null ||
+                        coursesController
+                            .coursesGoals.value!.data!.courses!.isEmpty) {
                       return const Center(child: Text('No Courses Available'));
                     }
                     return ListView.builder(

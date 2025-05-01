@@ -7,12 +7,14 @@ class UploadedFile {
     required this.size,
     required this.key,
     required this.type,
+    required this.url,
   });
 
   String name;
   int size;
   String key;
   String type;
+  String url;
 
   factory UploadedFile.fromJson(String str) =>
       UploadedFile.fromMap(json.decode(str));
@@ -24,6 +26,7 @@ class UploadedFile {
         name: json["name"],
         size: json["size"],
         type: json["type"],
+        url: json["url"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {

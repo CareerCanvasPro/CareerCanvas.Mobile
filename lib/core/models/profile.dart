@@ -10,11 +10,13 @@ class PersonalityTestResult {
   double SN;
   double EI;
   double JP;
+  String type;
   PersonalityTestResult({
     required this.TF,
     required this.SN,
     required this.EI,
     required this.JP,
+    required this.type,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,10 +30,11 @@ class PersonalityTestResult {
 
   factory PersonalityTestResult.fromMap(Map<String, dynamic> map) {
     return PersonalityTestResult(
-      TF: double.tryParse(map['TF'].toString()) ?? 0,
-      SN: double.tryParse(map['SN'].toString()) ?? 0,
-      EI: double.tryParse(map['EI'].toString()) ?? 0,
-      JP: double.tryParse(map['JP'].toString()) ?? 0,
+      TF: double.tryParse(map['testResultTF'].toString()) ?? 0,
+      SN: double.tryParse(map['testResultSN'].toString()) ?? 0,
+      EI: double.tryParse(map['testResultEI'].toString()) ?? 0,
+      JP: double.tryParse(map['testResultJP'].toString()) ?? 0,
+      type: map['testResultJP'].toString(),
     );
   }
 
@@ -43,8 +46,36 @@ class PersonalityTestResult {
 
   @override
   String toString() {
-    return 'PersonalityTestResult(TF: $TF, SN: $SN, EI: $EI, JP: $JP)';
+    return 'PersonalityTestResult(TF: $TF, SN: $SN, EI: $EI, JP: $JP, type: $type)';
   }
+}
+
+class KeyVal {
+  String id;
+  String name;
+  KeyVal({
+    required this.id,
+    required this.name,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+    };
+  }
+
+  factory KeyVal.fromMap(Map<String, dynamic> map) {
+    return KeyVal(
+      id: map['id'] as String,
+      name: map['name'] as String,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory KeyVal.fromJson(String source) =>
+      KeyVal.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class UserProfileData {
@@ -57,16 +88,13 @@ class UserProfileData {
   int coins;
   List<Experiance> occupation;
   List<Education> education;
-  List<String> languages;
-  int points;
+  List<KeyVal> languages;
   String profilePicture;
-  List<String> skills;
-  List<String> interests;
+  List<KeyVal> skills;
+  List<KeyVal> interests;
   String phone;
   List<Resume> resumes;
-  String personalityTestStatus;
-  String? personalityType;
-  List<String> goals;
+  List<KeyVal> goals;
   PersonalityTestResult? personalityTestResult;
   UserProfileData({
     required this.following,
@@ -78,14 +106,11 @@ class UserProfileData {
     required this.occupation,
     required this.education,
     required this.languages,
-    required this.points,
     required this.profilePicture,
     required this.skills,
     required this.interests,
     required this.phone,
     required this.resumes,
-    this.personalityTestStatus = 'pending',
-    this.personalityType,
     this.coins = 0,
     required this.goals,
     this.personalityTestResult,
@@ -95,42 +120,45 @@ class UserProfileData {
     return UserProfileData(
       following: (map['following'] as int?) ?? 0,
       followers: (map['followers'] as int?) ?? 0,
-      goals: (map['goals'] as List<dynamic>?)
-              ?.map<String>((e) => e as String)
-              .toList() ??
-          [],
+      goals: List<KeyVal>.from(
+        (map['goals'] as List<dynamic>? ?? []).map<KeyVal>(
+          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
       coins: (map['coins'] as int?) ?? 0,
       address: (map['address'] as String?) ?? "",
       email: (map['email'] as String?) ?? "",
       name: (map['name'] as String?) ?? "",
       aboutMe: (map['aboutMe'] as String?) ?? "",
-      personalityTestResult: map["personalityTestResult"] != null
+      personalityTestResult: map["personality"] != null
           ? PersonalityTestResult.fromMap(
-              map["personalityTestResult"] as Map<String, dynamic>)
-          : PersonalityTestResult(TF: 0, SN: 0, EI: 0, JP: 0),
-      personalityTestStatus:
-          (map['personalityTestStatus'] as String?) ?? "pending",
-      personalityType: map['personalityType'] as String?,
+              map["personality"] as Map<String, dynamic>)
+          : null,
       occupation: List<Experiance>.from(
-        (map['occupation'] as List<dynamic>? ?? []).map<Experiance>(
+        (map['occupations'] as List<dynamic>? ?? []).map<Experiance>(
           (x) => Experiance.fromMap(x as Map<String, dynamic>),
         ),
       ),
       education: List<Education>.from(
-        (map['education'] as List<dynamic>? ?? []).map<Education>(
+        (map['educations'] as List<dynamic>? ?? []).map<Education>(
           (x) => Education.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      languages: List<String>.from(
-        (map['languages'] as List<dynamic>? ?? []).map((x) => x as String),
+      languages: List<KeyVal>.from(
+        (map['languages'] as List<dynamic>? ?? []).map<KeyVal>(
+          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
+        ),
       ),
-      points: (map['points'] as int?) ?? 0,
       profilePicture: (map['profilePicture'] as String?) ?? "",
-      skills: List<String>.from(
-        (map['skills'] as List<dynamic>? ?? []).map((x) => x as String),
+      skills: List<KeyVal>.from(
+        (map['skills'] as List<dynamic>? ?? []).map<KeyVal>(
+          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
+        ),
       ),
-      interests: List<String>.from(
-        (map['interests'] as List<dynamic>? ?? []).map((x) => x as String),
+      interests: List<KeyVal>.from(
+        (map['interests'] as List<dynamic>? ?? []).map<KeyVal>(
+          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
+        ),
       ),
       phone: (map['phone'] as String?) ?? "",
       resumes: List<Resume>.from(
@@ -148,6 +176,6 @@ class UserProfileData {
 
   @override
   String toString() {
-    return 'UserProfileData(following: $following, followers: $followers, address: $address, email: $email, name: $name, aboutMe: $aboutMe, occupation: $occupation, education: $education, languages: $languages, points: $points, profilePicture: $profilePicture, skills: $skills, phone: $phone, resumes: $resumes, personalityTestStatus: $personalityTestStatus, personalityType: $personalityType)';
+    return 'UserProfileData(following: $following, followers: $followers, address: $address, email: $email, name: $name, aboutMe: $aboutMe, occupation: $occupation, education: $education, languages: $languages, profilePicture: $profilePicture, skills: $skills, phone: $phone, resumes: $resumes, goals: $goals, personalityTestResult: $personalityTestResult)';
   }
 }

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/personalityInfo.dart';
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
@@ -305,7 +306,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: userProfileController
-                                .userProfile.value?.personalityType ==
+                                .userProfile.value?.personalityTestResult ==
                             null
                         ? Container(
                             padding: const EdgeInsets.all(16),
@@ -392,8 +393,8 @@ class _CareerScreenState extends State<CareerScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.name ?? ""} "
-                                            "(${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.category ?? ""})",
+                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityTestResult?.type ?? "")?.name ?? ""} "
+                                            "(${PersonalityType.getType(userProfileController.userProfile.value?.personalityTestResult?.type ?? "")?.category ?? ""})",
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -407,7 +408,7 @@ class _CareerScreenState extends State<CareerScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityType ?? "")?.description ?? ""} ",
+                                            "${PersonalityType.getType(userProfileController.userProfile.value?.personalityTestResult?.type ?? "")?.description ?? ""} ",
                                             style: const TextStyle(
                                               fontSize: 12,
                                             ),
@@ -438,12 +439,14 @@ class _CareerScreenState extends State<CareerScreen> {
                                                     .getType(userProfileController
                                                             .userProfile
                                                             .value
-                                                            ?.personalityType ??
+                                                            ?.personalityTestResult
+                                                            ?.type ??
                                                         "")!,
                                                 type: userProfileController
                                                         .userProfile
                                                         .value!
-                                                        .personalityType ??
+                                                        .personalityTestResult
+                                                        ?.type ??
                                                     "",
                                               ),
                                             ),
@@ -815,12 +818,15 @@ class _CareerScreenState extends State<CareerScreen> {
 
   Card getPersonalityTest(BuildContext context) {
     PersonalityType? personalityType = PersonalityType.getType(
-      userProfileController.userProfile.value?.personalityType ?? "",
+      userProfileController.userProfile.value?.personalityTestResult?.type ??
+          "",
     );
     CategoryColors categoryColors =
         PersonalityType.getCategoryColor(personalityType?.category ?? "");
     return Card(
-      color: userProfileController.userProfile.value?.personalityType != null
+      color: userProfileController
+                  .userProfile.value?.personalityTestResult?.type !=
+              null
           ? categoryColors.background
           : primaryBlue,
       elevation: 3,
@@ -842,7 +848,8 @@ class _CareerScreenState extends State<CareerScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (userProfileController.userProfile.value != null &&
-                  userProfileController.userProfile.value!.personalityType ==
+                  userProfileController
+                          .userProfile.value!.personalityTestResult ==
                       null)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -888,14 +895,16 @@ class _CareerScreenState extends State<CareerScreen> {
                   ],
                 ),
               if (userProfileController.userProfile.value != null &&
-                  userProfileController.userProfile.value!.personalityType !=
+                  userProfileController
+                          .userProfile.value!.personalityTestResult !=
                       null &&
                   userProfileController
                           .userProfile.value!.personalityTestResult !=
                       null)
                 getPersonalityTestInfo(
                   context,
-                  userProfileController.userProfile.value?.personalityType ??
+                  userProfileController
+                          .userProfile.value?.personalityTestResult?.type ??
                       "",
                 ),
             ],
@@ -1058,7 +1067,7 @@ class _CareerScreenState extends State<CareerScreen> {
                           .userProfile.value!.personalityTestResult!,
                       personalityType: personalityType!,
                       type: userProfileController
-                              .userProfile.value!.personalityType ??
+                              .userProfile.value!.personalityTestResult?.type ??
                           "",
                     ),
                   ),
@@ -1208,7 +1217,7 @@ class _CareerScreenState extends State<CareerScreen> {
     );
   }
 
-  Widget getGoals(List<String>? goals) {
+  Widget getGoals(List<KeyVal>? goals) {
     return Wrap(
       children: goals?.map((e) {
             return getGoalItem(e);
@@ -1246,7 +1255,7 @@ class _CareerScreenState extends State<CareerScreen> {
   //     ),
   //   );
   // }
-  Widget getGoalItem(String goal) {
+  Widget getGoalItem(KeyVal goal) {
     return Chip(
       backgroundColor: AppColors.primaryColor,
       elevation: 1,
@@ -1256,7 +1265,7 @@ class _CareerScreenState extends State<CareerScreen> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       label: Text(
-        goal,
+        goal.name,
         style: TextStyle(
           fontSize: 14,
           color: Colors.white,

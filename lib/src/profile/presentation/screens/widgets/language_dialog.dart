@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LanguageAddDialog extends StatefulWidget {
-  final List<String>? existingLanguages;
+  final List<KeyVal>? existingLanguages;
   final Function(List<String>) onSubmit;
   const LanguageAddDialog({
     super.key,
@@ -27,7 +28,7 @@ class _LanguageAddDialogState extends State<LanguageAddDialog> {
     super.initState();
     if (widget.existingLanguages != null &&
         widget.existingLanguages!.isNotEmpty) {
-      _languages.addAll(widget.existingLanguages!);
+      _languages.addAll(widget.existingLanguages!.map((e) => e.name).toList());
     }
   }
 

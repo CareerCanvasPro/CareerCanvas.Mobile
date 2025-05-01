@@ -83,7 +83,7 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
           },
         ),
       );
-      print(response.data['data']);
+      // print(response.data['data']);
       UserProfileData profile = UserProfileData.fromMap(response.data['data']);
       routeData.userProfile = profile;
       routeData.initialRoute = HomePage.routeName;
@@ -93,18 +93,18 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        print(e.response!.data["message"]);
-        print(e.response!.statusCode);
-        print(e.response!.headers);
-        print(e.response!.requestOptions);
+        // print(e.response!.data["message"]);
+        // print(e.response!.statusCode);
+        // print(e.response!.headers);
+        // print(e.response!.requestOptions);
         if (e.response!.statusCode != null && e.response!.statusCode == 404) {
           routeData.initialRoute = ProfileCompletionScreenOne.routeName;
         }
         return routeData;
       } else {
         // Something happened in setting up or sending the request that triggered an Error
-        print(e.requestOptions);
-        print(e.message);
+        // print(e.requestOptions);
+        // print(e.message);
         routeData.initialRoute = HomePage.routeName;
         return routeData;
       }

@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class InterestAddDialog extends StatefulWidget {
-  final List<String>? existingInterests;
+  final List<KeyVal>? existingInterests;
   final Function(List<String>) onSubmit;
   const InterestAddDialog({
     super.key,
@@ -27,7 +28,7 @@ class _InterestAddDialogState extends State<InterestAddDialog> {
     super.initState();
     if (widget.existingInterests != null &&
         widget.existingInterests!.isNotEmpty) {
-      _interests.addAll(widget.existingInterests!);
+      _interests.addAll(widget.existingInterests!.map((e) => e.name).toList());
     }
   }
 

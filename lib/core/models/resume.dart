@@ -7,6 +7,9 @@ class Resume {
   String name;
   int size;
   String type;
+  DateTime createdAt;
+  DateTime updatedAt;
+  String url;
 
   Resume({
     required this.id,
@@ -14,6 +17,9 @@ class Resume {
     required this.name,
     required this.size,
     required this.type,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.url,
   });
 
   factory Resume.fromJson(String str) => Resume.fromMap(json.decode(str));
@@ -26,6 +32,9 @@ class Resume {
         name: json["name"],
         size: json["size"] ?? 0,
         type: json["type"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        url: json["url"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {

@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
 import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/src/constants.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SkillAddDialog extends StatefulWidget {
-  final List<String>? existingSkills;
+  final List<KeyVal>? existingSkills;
   final Function(List<String>) onSubmit;
   const SkillAddDialog({
     super.key,
@@ -26,7 +27,7 @@ class _SkillAddDialogState extends State<SkillAddDialog> {
   void initState() {
     super.initState();
     if (widget.existingSkills != null && widget.existingSkills!.isNotEmpty) {
-      _skills.addAll(widget.existingSkills!);
+      _skills.addAll(widget.existingSkills!.map((e) => e.name).toList());
     }
   }
 

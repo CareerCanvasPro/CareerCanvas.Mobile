@@ -8,6 +8,7 @@ import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/src/profile/domain/models/UploadLanguage.dart';
 import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class UserProfileRepository_API_Impl extends UserProfileRepository {
   final ApiClient apiClient;
@@ -30,7 +31,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
         throw Exception(e.message);
       }
     } catch (e) {
-      print('Error fetching user profile: $e');
+      // print('Error fetching user profile: $e');
       return null;
     }
   }
@@ -38,12 +39,13 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   @override
   Future<String> addEducation(UploadEducation education) async {
     try {
-      print(education.toMap());
-      await apiClient.post(
+      // print(education.toMap());
+      Response response = await apiClient.post(
         ApiClient.userBase + '/educations',
         data: education.toMap(),
         useToken: true,
       );
+      debugPrint(response.data.toString());
       return "Uploaded Education";
     } on DioException catch (e) {
       // The request was made and the server responded with a status code
@@ -70,11 +72,12 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   @override
   Future<String> addExperiance(UploadExperiance experiance) async {
     try {
-      await apiClient.post(
+      Response response = await apiClient.post(
         ApiClient.userBase + '/occupations',
         data: experiance.toMap(),
         useToken: true,
       );
+      debugPrint(response.data.toString());
       return "Uploaded Experiance";
     } on DioException catch (e) {
       // The request was made and the server responded with a status code
@@ -232,7 +235,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   @override
   Future<String> deleteEducation(Education education) async {
     try {
-      String url = "ApiClient.userBase + '/educations/${education.id}";
+      String url = ApiClient.userBase + "/educations/${education.id}";
       if (education.certificate != null) {
         url += "?key=${education.certificate?.key}";
       }
@@ -245,9 +248,18 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
+        // print("Resonse");
+        // print(e.response!.statusCode);
+        // print(e.response!.statusMessage);
+        // print(e.response!.data["message"]);
+        // print(e.response!.headers);
+        // print(e.response!.requestOptions);
         return e.response!.data?["message"].toString() ??
             'Failed to delete education';
       } else {
+        // print("No resonse");
+        // print(e.requestOptions);
+        // print(e.message);
         return e.message ?? e.toString();
       }
     } catch (e) {
@@ -258,7 +270,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
   @override
   Future<String> deleteExperiance(Experiance experiance) async {
     try {
-      String url = "ApiClient.userBase + '/occupations/${experiance.id}";
+      String url = ApiClient.userBase + "/occupations/${experiance.id}";
       await apiClient.delete(
         url,
         useToken: true,

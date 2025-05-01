@@ -21,6 +21,9 @@ class CareerTrendResponse {
 
   factory CareerTrendResponse.fromJson(String source) =>
       CareerTrendResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'CareerTrendResponse(data: $data, message: $message)';
 }
 
 class CareerTrend {
@@ -44,6 +47,9 @@ class CareerTrend {
 
   factory CareerTrend.fromJson(String source) =>
       CareerTrend.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'CareerTrend(careerTrends: $careerTrends)';
 }
 
 class Career {
@@ -72,7 +78,7 @@ class Career {
     return Career(
       description: map['description'] as String? ?? '',
       name: map['name'] as String? ?? '',
-      image: map['image'] as String? ?? '',
+      image: map['image'] as String? ?? 'https://google.com',
       id: map['id'] as String? ?? '',
     );
   }
@@ -81,4 +87,9 @@ class Career {
 
   factory Career.fromJson(String source) =>
       Career.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Career(description: $description, name: $name, image: $image, id: $id)';
+  }
 }

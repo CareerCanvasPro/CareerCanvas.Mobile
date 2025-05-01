@@ -25,7 +25,7 @@ class PersonalityTestRepositoryImpl implements PersonalityTestRepository {
         throw Exception('Failed to load personality test');
       }
     } catch (e) {
-      print('Error fetching personality test: $e');
+      // print('Error fetching personality test: $e');
       return null;
     }
   }

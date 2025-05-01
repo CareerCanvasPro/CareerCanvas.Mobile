@@ -55,10 +55,10 @@ class UploadExperiance {
 class Experiance {
   String id;
   String designation;
-  int startDate;
+  DateTime startDate;
   bool isCurrent;
   String organization;
-  int? endDate;
+  DateTime? endDate;
   Experiance({
     required this.id,
     required this.designation,
@@ -71,10 +71,10 @@ class Experiance {
   Experiance copyWith({
     String? id,
     String? designation,
-    int? startDate,
+    DateTime? startDate,
     bool? isCurrent,
     String? organization,
-    int? endDate,
+    DateTime? endDate,
   }) {
     return Experiance(
       id: id ?? this.id,
@@ -89,12 +89,12 @@ class Experiance {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{
       'designation': designation,
-      'startDate': startDate,
+      'startDate': startDate.toIso8601String(),
       'isCurrent': isCurrent,
       'organization': organization,
     };
     if (endDate != null) {
-      data['endDate'] = endDate;
+      data['endDate'] = endDate!.toIso8601String();
     }
     return data;
   }
@@ -103,10 +103,12 @@ class Experiance {
     return Experiance(
       id: map['id'] as String,
       designation: map['designation'] as String,
-      startDate: map['startDate'] as int,
+      startDate: DateTime.parse(map['startDate'] as String),
       isCurrent: map['isCurrent'] as bool,
       organization: map['organization'] as String,
-      endDate: map['endDate'] != null ? map['endDate'] as int : null,
+      endDate: map['endDate'] != null
+          ? DateTime.parse(map['endDate'] as String)
+          : null,
     );
   }
 

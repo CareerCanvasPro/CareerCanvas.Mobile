@@ -72,7 +72,7 @@ class Education {
   String achievements;
   UploadedFile? certificate;
   String field;
-  int? graduationDate;
+  DateTime? graduationDate;
   String institute;
   bool isCurrent;
   Education({
@@ -90,7 +90,7 @@ class Education {
     String? achievements,
     UploadedFile? certificate,
     String? field,
-    int? graduationDate,
+    DateTime? graduationDate,
     String? institute,
     bool? isCurrent,
   }) {
@@ -110,7 +110,7 @@ class Education {
       'achievements': achievements,
       'certificate': certificate?.toMap(),
       'field': field,
-      'graduationDate': graduationDate,
+      'graduationDate': graduationDate?.toIso8601String(),
       'institute': institute,
       'isCurrent': isCurrent,
     };
@@ -124,8 +124,9 @@ class Education {
           ? UploadedFile.fromMap(map['certificate'] as Map<String, dynamic>)
           : null,
       field: map['field'] as String,
-      graduationDate:
-          map['graduationDate'] != null ? map['graduationDate'] as int : null,
+      graduationDate: map['graduationDate'] != null
+          ? DateTime.parse(map['graduationDate'] as String)
+          : null,
       institute: map['institute'] as String,
       isCurrent: map['isCurrent'] as bool,
     );

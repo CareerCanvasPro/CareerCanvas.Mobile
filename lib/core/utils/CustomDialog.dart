@@ -470,12 +470,10 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                             Experiance experiance = Experiance(
                               id: UniqueKey().toString(),
                               designation: designationController.text,
-                              startDate: startDate!.millisecondsSinceEpoch,
+                              startDate: startDate!,
                               isCurrent: isCurrentExperiance,
                               organization: organizationNameController.text,
-                              endDate: endDate != null
-                                  ? endDate!.millisecondsSinceEpoch
-                                  : null,
+                              endDate: endDate,
                             );
                             widget.onPressedSubmit(experiance);
                           }
@@ -577,9 +575,9 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
           },
         ),
       );
-      debugPrint(response.data['message']);
+      // debugPrint(response.data['message']);
       certificateFile = UploadedFile.fromMap(response.data['data']['file']);
-      print(certificateFile.toString());
+      // print(certificateFile.toString());
       setState(() {
         imageUploading = false;
       });
@@ -590,13 +588,13 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
-        print(e.response!.data);
-        print(e.response!.headers);
-        print(e.response!.requestOptions);
+        debugPrint(e.response!.data);
+        debugPrint(e.response!.headers.toString());
+        debugPrint(e.response!.requestOptions.toString());
       } else {
         // Something happened in setting up or sending the request that triggered an Error
-        print(e.requestOptions);
-        print(e.message);
+        debugPrint(e.requestOptions.toString());
+        debugPrint(e.message);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -1010,7 +1008,6 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                               isCurrent: isCurrentEducation,
                               graduationDate: expectedGraduationDate != null
                                   ? expectedGraduationDate!
-                                      .millisecondsSinceEpoch
                                   : null,
                               certificate: certificateFile,
                             );
@@ -1100,7 +1097,7 @@ class _getOTPVerificationDialogState extends State<getOTPVerificationDialog> {
       final response = await apiClient.get(
         ApiClient.authBase + "/otp/verify?otp=${pin}&username=${widget.to}", //
       );
-      print(response.data);
+      // print(response.data);
       setState(() {
         isLoading = false;
       });
@@ -1108,7 +1105,7 @@ class _getOTPVerificationDialogState extends State<getOTPVerificationDialog> {
         final otpResponse = Otpverificationresponse.fromMap(
           response.data['data'],
         );
-        print(response);
+        // print(response);
         widget.onPressedSubmit(
           otpResponse,
         );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
@@ -312,12 +314,27 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         ),
                       ),
                       onTap: () async {
+                        String androidLink =
+                            "https://play.google.com/store/apps/details?id=com.careercanvas.app";
+                        //TODO: Add iOS link
+                        String iosLink =
+                            "https://apps.apple.com/us/app/career-canvas/id1601239870";
+                        String webLink = "https://careercanvas.pro";
+                        String appLink = "";
+                        if (Platform.isAndroid) {
+                          appLink = androidLink;
+                        } else if (Platform.isIOS) {
+                          appLink = iosLink;
+                        } else {
+                          appLink = webLink;
+                        }
                         ShareResult result = await Share.share(
-                            'Check out Career Canvas App. https://careercanvas.pro',
-                            subject: 'Look what I found on Career Canvas');
-
+                          "Check out Career Canvas App. $appLink",
+                          subject: 'Look what I found on Career Canvas',
+                          sharePositionOrigin: Rect.fromLTWH(0, 0, 100, 100),
+                        );
                         if (result.status == ShareResultStatus.success) {
-                          print('Thank you for sharing my website!');
+                          debugPrint('Thank you for sharing my website!');
                         }
                       },
                       leading: SvgPicture.asset(

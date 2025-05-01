@@ -7,6 +7,7 @@ import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -26,6 +27,7 @@ class UserProfileController extends GetxController {
   Future<void> getUserProfile() async {
     isLoading.value = true;
     final result = await userProfileRepository.getUserProfile();
+    debugPrint(result.toString());
     if (result != null) {
       userProfile.value = result;
       resumes.value = result.resumes;
@@ -39,7 +41,7 @@ class UserProfileController extends GetxController {
   Future<void> uploadEducation(UploadEducation education) async {
     isLoading.value = true;
     final result = await userProfileRepository.addEducation(education);
-    print(result);
+    // print(result);
     Fluttertoast.showToast(
       msg: result,
       toastLength: Toast.LENGTH_LONG,
@@ -52,7 +54,7 @@ class UserProfileController extends GetxController {
   Future<void> deleteEducation(Education education) async {
     isLoading.value = true;
     final result = await userProfileRepository.deleteEducation(education);
-    print(result);
+    // print(result);
     Fluttertoast.showToast(
       msg: result,
       toastLength: Toast.LENGTH_LONG,
@@ -65,7 +67,7 @@ class UserProfileController extends GetxController {
   Future<void> deleteExperiance(Experiance experiance) async {
     isLoading.value = true;
     final result = await userProfileRepository.deleteExperiance(experiance);
-    print(result);
+    // print(result);
     Fluttertoast.showToast(
       msg: result,
       toastLength: Toast.LENGTH_LONG,

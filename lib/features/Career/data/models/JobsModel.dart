@@ -47,7 +47,7 @@ class JobsModel extends JobsEntity {
 
   factory JobsModel.fromMap(Map<String, dynamic> json) => JobsModel(
         id: json["id"],
-        companyLogo: json["companyLogo"],
+        companyLogo: json["companyLogo"] ?? "https://google.com",
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),

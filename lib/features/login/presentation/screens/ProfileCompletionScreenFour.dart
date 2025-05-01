@@ -647,9 +647,9 @@ class _ProfileCompletionScreenFourState
                         // The request was made and the server responded with a status code
                         // that falls out of the range of 2xx and is also not 304.
                         if (e.response != null) {
-                          print(e.response!.data["message"]);
-                          print(e.response!.headers);
-                          print(e.response!.requestOptions);
+                          // print(e.response!.data["message"]);
+                          // print(e.response!.headers);
+                          // print(e.response!.requestOptions);
                           CustomDialog.showCustomDialog(
                             context,
                             title: "Error",
@@ -657,8 +657,8 @@ class _ProfileCompletionScreenFourState
                           );
                         } else {
                           // Something happened in setting up or sending the request that triggered an Error
-                          print(e.requestOptions);
-                          print(e.message);
+                          // print(e.requestOptions);
+                          // print(e.message);
                           CustomDialog.showCustomDialog(
                             context,
                             title: "Error",

@@ -1,6 +1,7 @@
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
@@ -17,6 +18,7 @@ class JobsController extends GetxController {
   Future<void> getJobsRecomendation() async {
     isLoading.value = true;
     final result = await jobsRepository.getJobsRecomendation();
+    debugPrint(result.toString());
     if (result != null) {
       jobs.value = result;
       errorMessage.value = '';
@@ -29,6 +31,7 @@ class JobsController extends GetxController {
   Future<void> getCareerTrends() async {
     isLoadingCareerTrends.value = true;
     final result = await jobsRepository.getCareerTrends();
+    debugPrint(result.toString());
     if (result != null) {
       careerTrends.value = result;
       errorMessageCareerTrends.value = '';
