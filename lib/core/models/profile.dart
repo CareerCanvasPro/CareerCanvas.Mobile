@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/resume.dart';
+import 'package:flutter/foundation.dart';
 
 class PersonalityTestResult {
   double TF;
@@ -29,12 +30,13 @@ class PersonalityTestResult {
   }
 
   factory PersonalityTestResult.fromMap(Map<String, dynamic> map) {
+    debugPrint("PersonalityTestResult fromMap: $map");
     return PersonalityTestResult(
       TF: double.tryParse(map['testResultTF'].toString()) ?? 0,
       SN: double.tryParse(map['testResultSN'].toString()) ?? 0,
       EI: double.tryParse(map['testResultEI'].toString()) ?? 0,
       JP: double.tryParse(map['testResultJP'].toString()) ?? 0,
-      type: map['testResultJP'].toString(),
+      type: map['type'].toString(),
     );
   }
 
@@ -117,6 +119,7 @@ class UserProfileData {
   });
 
   factory UserProfileData.fromMap(Map<String, dynamic> map) {
+    debugPrint(map["personality"].toString());
     return UserProfileData(
       following: (map['following'] as int?) ?? 0,
       followers: (map['followers'] as int?) ?? 0,

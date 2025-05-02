@@ -51,7 +51,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
 
     try {
       final Map<String, dynamic> requestBody = {
-        "result": selectedAnswers,
+        "answers": selectedAnswers,
       };
       final response = await Dio().post(
         apiUrl,

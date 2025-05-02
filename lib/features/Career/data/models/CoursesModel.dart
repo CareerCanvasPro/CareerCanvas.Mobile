@@ -26,8 +26,6 @@ class CoursesModel extends CoursesEntity {
   factory CoursesModel.fromJson(String str) =>
       CoursesModel.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap());
-
   factory CoursesModel.fromMap(Map<String, dynamic> json) => CoursesModel(
         id: json["id"],
         createdAt: DateTime.parse(json["createdAt"]).toLocal(),
@@ -41,17 +39,6 @@ class CoursesModel extends CoursesEntity {
             : List<TagModel>.from(
                 json["tags"]!.map((x) => TagModel.fromMap(x))),
       );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "createdAt": createdAt.toIso8601String(),
-        "description": description,
-        "name": name,
-        "sourceName": sourceName,
-        "sourceUrl": sourceUrl,
-        "updatedAt": updatedAt.toIso8601String(),
-        "tags": List<dynamic>.from(tags.map((x) => x.toMap())),
-      };
 }
 
 class TagModel extends TagEntity {
@@ -90,18 +77,9 @@ class CoursesDataModel extends CoursesDataEntity {
       : count = json['count'],
         courses = json['courses'] != null
             ? (json['courses'] as List)
-                .map((v) => CoursesModel.fromJson(v))
+                .map((v) => CoursesModel.fromMap(v))
                 .toList()
             : null;
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['count'] = count;
-    if (courses != null) {
-      data['courses'] = courses!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 
   CoursesDataModel copyWith({int? count, List<CoursesModel>? courses}) {
     return CoursesDataModel(
@@ -129,15 +107,6 @@ class CoursesResponseModel extends CoursesResponseEntity {
             ? CoursesDataModel.fromJson(json['data'])
             : null,
         message = json['message'];
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['message'] = this.message;
-    return data;
-  }
 
   CoursesResponseModel copyWith({CoursesDataModel? data, String? message}) {
     return CoursesResponseModel(
