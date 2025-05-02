@@ -33,11 +33,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     if (userProfileController.userProfile.value == null) {
       userProfileController.getUserProfile().then((value) {
         profileSettingsController.isPrivate.value =
-            userProfileController.userProfile.value!.isPrivate;
+            userProfileController.userProfile.value?.isPrivate ?? false;
       });
     } else {
       profileSettingsController.isPrivate.value =
-          userProfileController.userProfile.value!.isPrivate;
+          userProfileController.userProfile.value?.isPrivate ?? false;
     }
   }
 
