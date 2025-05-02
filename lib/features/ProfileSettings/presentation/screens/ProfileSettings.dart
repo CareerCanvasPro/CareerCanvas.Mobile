@@ -31,7 +31,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     userProfileController = getIt<UserProfileController>();
     profileSettingsController = getIt<ProfileSettingsController>();
     if (userProfileController.userProfile.value == null) {
-      userProfileController.getUserProfile();
+      userProfileController.getUserProfile().then((value) {
+        profileSettingsController.isPrivate.value =
+            userProfileController.userProfile.value!.isPrivate;
+      });
+    } else {
+      profileSettingsController.isPrivate.value =
+          userProfileController.userProfile.value!.isPrivate;
     }
   }
 
@@ -180,30 +186,39 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 child: Column(
                   children: [
                     SizedBox(height: 12),
-                    ListTile(
-                      title: Text(
-                        "Edit Profile",
-                        style: TextStyle(
-                          color: primaryBlue,
-                          fontSize: 14,
+                    Obx(() {
+                      return ListTile(
+                        title: Text(
+                          "Private Profile",
+                          style: TextStyle(
+                            color: primaryBlue,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                      onTap: () {},
-                      leading: SvgPicture.asset(
-                        "assets/svg/icons/user_icon.svg",
-                        height: 20,
-                        width: 20,
-                        colorFilter: ColorFilter.mode(
-                          primaryBlue,
-                          BlendMode.srcIn,
+                        subtitle: Text(
+                          "Your profile is private by default. You can make it public to share it with your friends.",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 20,
-                        color: primaryBlue,
-                      ),
-                    ),
+                        onTap: () {},
+                        leading: SvgPicture.asset(
+                          "assets/svg/icons/user_icon.svg",
+                          height: 20,
+                          width: 20,
+                          colorFilter: ColorFilter.mode(
+                            primaryBlue,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        trailing: Switch.adaptive(
+                          activeColor: primaryBlue,
+                          value: profileSettingsController.isPrivate.value,
+                          onChanged: _onChangePrivate,
+                        ),
+                      );
+                    }),
                     // ListTile(
                     //   title: Text(
                     //     "Notification",
@@ -260,6 +275,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           fontSize: 14,
                         ),
                       ),
+                      subtitle: Text(
+                        "Read our privacy policy to learn more about how we use your data.",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
                       onTap: () async {
                         launchUrl(
                           Uri.parse("https://careercanvas.pro/pp.html"),
@@ -289,6 +311,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           fontSize: 14,
                         ),
                       ),
+                      subtitle: Text(
+                        "If you have any questions or need help, visit our help center.",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
                       onTap: launchEmailApp,
                       leading: SvgPicture.asset(
                         "assets/svg/icons/help_center_icon.svg",
@@ -311,6 +340,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         style: TextStyle(
                           color: primaryBlue,
                           fontSize: 14,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Invite your friends to join Career Canvas and start building your career profile.",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
                         ),
                       ),
                       onTap: () async {
@@ -360,6 +396,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           fontSize: 14,
                         ),
                       ),
+                      subtitle: Text(
+                        "Log out of Career Canvas to start fresh.",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
                       onTap: () {
                         CustomDialog.showCustomDialog(
                           context,
@@ -390,6 +433,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 14,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Delete your account and all your data.",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
                         ),
                       ),
                       onTap: () {
@@ -442,5 +492,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     } else {
       throw 'Could not launch email client';
     }
+  }
+
+  void _onChangePrivate(bool value) async {
+    await profileSettingsController.updateProfilePrivacy(value);
   }
 }

@@ -87,6 +87,7 @@ class UserProfileData {
   String email;
   String name;
   String aboutMe;
+  bool isPrivate;
   int coins;
   List<Experiance> occupation;
   List<Education> education;
@@ -113,6 +114,7 @@ class UserProfileData {
     required this.interests,
     required this.phone,
     required this.resumes,
+    required this.isPrivate,
     this.coins = 0,
     required this.goals,
     this.personalityTestResult,
@@ -121,6 +123,7 @@ class UserProfileData {
   factory UserProfileData.fromMap(Map<String, dynamic> map) {
     debugPrint(map["personality"].toString());
     return UserProfileData(
+      isPrivate: map['isPrivate'] as bool? ?? false,
       following: (map['following'] as int?) ?? 0,
       followers: (map['followers'] as int?) ?? 0,
       goals: List<KeyVal>.from(

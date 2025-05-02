@@ -44,6 +44,52 @@ class ProfileSettingsController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool imageUploading = false.obs;
   String? errorMessage;
+  RxBool isPrivate = false.obs;
+
+  Future<void> updateProfilePrivacy(bool private) async {
+    isPrivate.value = private;
+    try {
+      final apiClient = getIt<ApiClient>();
+      await apiClient.put(
+        ApiClient.userBase + '/profile-privacy',
+        data: {
+          "isPrivate": isPrivate,
+        },
+        useToken: true,
+      );
+      Fluttertoast.showToast(
+        msg: "Updated your profile privacy.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    } on dio.DioException catch (e) {
+      isPrivate.value = !private;
+      if (e.response != null) {
+        Fluttertoast.showToast(
+          msg: e.response!.data["message"],
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: e.message ?? e.toString(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      }
+    } catch (e) {
+      isPrivate.value = !private;
+      Fluttertoast.showToast(
+        msg: "Failed to update profile privacy: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+  }
 
   Future<void> updateProfileImageToProfile(String url) async {
     try {
