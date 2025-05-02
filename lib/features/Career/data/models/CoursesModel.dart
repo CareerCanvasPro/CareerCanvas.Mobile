@@ -30,12 +30,12 @@ class CoursesModel extends CoursesEntity {
 
   factory CoursesModel.fromMap(Map<String, dynamic> json) => CoursesModel(
         id: json["id"],
-        createdAt: DateTime.parse(json["createdAt"]),
+        createdAt: DateTime.parse(json["createdAt"]).toLocal(),
         description: json["description"] ?? "",
         name: json["name"] ?? "",
         sourceName: json["sourceName"] ?? "",
         sourceUrl: json["sourceUrl"] ?? "",
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]).toLocal(),
         tags: json["tags"] == null
             ? []
             : List<TagModel>.from(

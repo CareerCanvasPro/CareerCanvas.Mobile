@@ -103,11 +103,11 @@ class Experiance {
     return Experiance(
       id: map['id'] as String,
       designation: map['designation'] as String,
-      startDate: DateTime.parse(map['startDate'] as String),
+      startDate: DateTime.parse(map['startDate'] as String).toLocal(),
       isCurrent: map['isCurrent'] as bool,
       organization: map['organization'] as String,
       endDate: map['endDate'] != null
-          ? DateTime.parse(map['endDate'] as String)
+          ? DateTime.parse(map['endDate'] as String).toLocal()
           : null,
     );
   }

@@ -41,7 +41,8 @@ class Otpverificationresponse {
       accessToken: map['accessToken'] as String,
       isNewUser: map['isNewUser'] as bool,
       email: map['username'] as String,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expiresAt'] as int),
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expiresAt'] as int)
+          .toLocal(),
     );
   }
 

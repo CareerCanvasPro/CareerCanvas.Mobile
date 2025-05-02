@@ -43,16 +43,15 @@ class JobsModel extends JobsEntity {
 
   factory JobsModel.fromJson(String str) => JobsModel.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap());
-
   factory JobsModel.fromMap(Map<String, dynamic> json) => JobsModel(
         id: json["id"],
         companyLogo: json["companyLogo"] ?? "https://google.com",
         createdAt: json["createdAt"] == null
             ? null
-            : DateTime.parse(json["createdAt"]),
-        deadline:
-            json["deadline"] == null ? null : DateTime.parse(json["deadline"]),
+            : DateTime.parse(json["createdAt"]).toLocal(),
+        deadline: json["deadline"] == null
+            ? null
+            : DateTime.parse(json["deadline"]).toLocal(),
         location: json["location"],
         locationType: json["locationType"],
         organization: json["organization"],
@@ -60,23 +59,9 @@ class JobsModel extends JobsEntity {
         type: json["type"],
         updatedAt: json["updatedAt"] == null
             ? null
-            : DateTime.parse(json["updatedAt"]),
+            : DateTime.parse(json["updatedAt"]).toLocal(),
         url: json["url"],
       );
-
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "companyLogo": companyLogo,
-        "createdAt": createdAt?.toIso8601String(),
-        "deadline": deadline?.toIso8601String(),
-        "location": location,
-        "locationType": locationType,
-        "organization": organization,
-        "position": position,
-        "type": type,
-        "updatedAt": updatedAt?.toIso8601String(),
-        "url": url,
-      };
 }
 
 class JobDataModel extends JobsDataEntity {
@@ -92,15 +77,6 @@ class JobDataModel extends JobsDataEntity {
         jobs = json['jobs'] != null
             ? (json['jobs'] as List).map((v) => JobsModel.fromMap(v)).toList()
             : null;
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['count'] = count;
-    if (jobs != null) {
-      data['jobs'] = jobs!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 
   JobDataModel copyWith({int? count, List<JobsModel>? jobs}) {
     return JobDataModel(
@@ -127,15 +103,6 @@ class JobsResponseModel extends JobsResponseEntity {
       : data =
             json['data'] != null ? JobDataModel.fromJson(json['data']) : null,
         message = json['message'];
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['message'] = this.message;
-    return data;
-  }
 
   JobsResponseModel copyWith({JobDataModel? data, String? message}) {
     return JobsResponseModel(

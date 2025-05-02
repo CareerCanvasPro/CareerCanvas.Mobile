@@ -32,8 +32,8 @@ class Resume {
         name: json["name"],
         size: json["size"] ?? 0,
         type: json["type"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        createdAt: DateTime.parse(json["createdAt"]).toLocal(),
+        updatedAt: DateTime.parse(json["updatedAt"]).toLocal(),
         url: json["url"] ?? "",
       );
 

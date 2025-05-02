@@ -125,7 +125,7 @@ class Education {
           : null,
       field: map['field'] as String,
       graduationDate: map['graduationDate'] != null
-          ? DateTime.parse(map['graduationDate'] as String)
+          ? DateTime.tryParse(map['graduationDate'] as String)?.toLocal()
           : null,
       institute: map['institute'] as String,
       isCurrent: map['isCurrent'] as bool,
