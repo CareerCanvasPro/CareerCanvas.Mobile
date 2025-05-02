@@ -12,6 +12,8 @@ class PersonalityTestController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
+  var isUploading = false.obs;
+
   Future<void> loadPersonalityTest(String token) async {
     isLoading.value = true;
     final result = await _repository.fetchPersonalityTest(token);

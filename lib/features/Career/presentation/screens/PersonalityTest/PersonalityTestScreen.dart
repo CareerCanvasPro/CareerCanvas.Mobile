@@ -50,6 +50,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
     final String apiUrl = "${ApiClient.personalityBase}/answers";
 
     try {
+      controller.isUploading.value = true;
       final Map<String, dynamic> requestBody = {
         "answers": selectedAnswers,
       };
@@ -63,7 +64,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
           },
         ),
       );
-
+      controller.isUploading.value = false;
       // print("Response: ${response.data}");
 
       // Delay state updates until after the frame is built
@@ -91,6 +92,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
         }
       });
     } on DioException catch (e) {
+      controller.isUploading.value = false;
       print("Error sending data: ${e.response?.data ?? e.message}");
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -529,6 +531,7 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
                             color: Colors.white,
                             width: 1,
                           ),
+                          isLoading: controller.isUploading.value,
                           textStyle: getCTATextStyle(context, 12),
                           title: currentPage <=
                                   (controller.personalityTest.value!.data!
