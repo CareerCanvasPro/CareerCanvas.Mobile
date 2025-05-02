@@ -163,7 +163,6 @@ class UserProfileController extends GetxController {
 
   Future<void> uploadResume(
     File file,
-    int index,
   ) async {
     try {
       cancelToken = dio.CancelToken();

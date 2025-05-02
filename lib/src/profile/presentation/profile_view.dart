@@ -264,11 +264,9 @@ class _UserProfileState extends State<UserProfile> {
             file = File(filePath);
           }
 
-          // Get the index of the new resume
-          int index = userProfileController.resumes.length + 1;
-
           // Proceed to upload the resume
-          await userProfileController.uploadResume(file, index);
+          await userProfileController.uploadResume(file);
+          await userProfileController.getUserProfile();
         } else {
           Fluttertoast.showToast(
             msg: "Failed to get the file path.",
