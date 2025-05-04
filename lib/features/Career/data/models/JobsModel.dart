@@ -15,13 +15,15 @@ class JobsModel extends JobsEntity {
   @override
   String? location;
   @override
-  String? locationType;
+  String? sourceName;
+  @override
+  JobLocationType? locationType;
   @override
   String? organization;
   @override
   String? position;
   @override
-  String? type;
+  JobType? type;
   @override
   DateTime? updatedAt;
   @override
@@ -39,13 +41,14 @@ class JobsModel extends JobsEntity {
     this.type,
     this.updatedAt,
     this.url,
+    this.sourceName,
   });
 
   factory JobsModel.fromJson(String str) => JobsModel.fromMap(json.decode(str));
 
   factory JobsModel.fromMap(Map<String, dynamic> json) => JobsModel(
         id: json["id"],
-        companyLogo: json["companyLogo"] ?? "https://google.com",
+        companyLogo: json["companyLogo"] ?? "",
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]).toLocal(),
@@ -53,15 +56,23 @@ class JobsModel extends JobsEntity {
             ? null
             : DateTime.parse(json["deadline"]).toLocal(),
         location: json["location"],
-        locationType: json["locationType"],
+        locationType: json["locationType"] != null
+            ? JobLocationType.fromString(json["locationType"])
+            : null,
         organization: json["organization"],
+        sourceName: json["sourceName"],
         position: json["position"],
-        type: json["type"],
+        type: json["type"] != null ? JobType.fromString(json["type"]) : null,
         updatedAt: json["updatedAt"] == null
             ? null
             : DateTime.parse(json["updatedAt"]).toLocal(),
         url: json["url"],
       );
+
+  @override
+  String toString() {
+    return 'JobsModel(id: $id, companyLogo: $companyLogo, createdAt: $createdAt, deadline: $deadline, location: $location, locationType: $locationType, organization: $organization, position: $position, type: $type, updatedAt: $updatedAt, url: $url)';
+  }
 }
 
 class JobDataModel extends JobsDataEntity {

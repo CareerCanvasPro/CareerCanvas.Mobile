@@ -7,6 +7,7 @@ import 'package:career_canvas/core/models/personalityInfo.dart';
 import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/utils/AppColors.dart';
 import 'package:career_canvas/core/utils/CustomButton.dart';
+import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
@@ -20,11 +21,13 @@ import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // CareerScreen
 class CareerScreen extends StatefulWidget {
@@ -118,6 +121,13 @@ class _CareerScreenState extends State<CareerScreen> {
     } else {
       return value.toString(); // No formatting needed
     }
+  }
+
+  String formatedDate(DateTime? date) {
+    if (date == null) {
+      return "N/A";
+    }
+    return DateFormat.yMEd().format(date);
   }
 
   GlobalKey _one = GlobalKey();
@@ -761,11 +771,15 @@ class _CareerScreenState extends State<CareerScreen> {
                     description:
                         "Here you can see some job suggestions based on your profile.",
                     child: Container(
-                      constraints: const BoxConstraints(maxHeight: 210),
+                      constraints: const BoxConstraints(
+                        maxHeight: 250,
+                        minHeight: 200,
+                      ),
                       child: Obx(() {
                         if (jobsController.isLoading.value) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CircularProgressIndicator(),
+                          );
                         }
                         if (jobsController.errorMessage.isNotEmpty) {
                           return Center(
@@ -1117,100 +1131,244 @@ class _CareerScreenState extends State<CareerScreen> {
     );
   }
 
-  Widget getJobItem(BuildContext context, JobsModel job) {
+  Widget getJobItem(
+    BuildContext context,
+    JobsModel job, {
+    bool isSaved = false,
+  }) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 300),
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
       margin: const EdgeInsets.only(
         left: 8,
       ),
       child: Card(
         elevation: 3,
-        color: scaffoldBackgroundColor,
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: job.companyLogo ?? "",
-                      placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          primaryBlue,
-                        ),
-                      )),
-                      errorWidget: (context, url, error) => Center(
-                        child: Icon(
-                          Icons.error,
-                        ),
+          child: GestureDetector(
+            onTap: () {
+              CustomDialog.showCustomDialog(
+                context,
+                title: "Redirection Alert",
+                content:
+                    "You are about to be redirected to the job page of ${job.sourceName ?? "Source"}. Do you want to continue?",
+                buttonText: "Continue",
+                button2Text: "Cancel",
+                onPressed: () async {
+                  Get.back();
+                  if (job.url != null && job.url!.isNotEmpty) {
+                    await launchUrl(
+                      Uri.parse(job.url!),
+                      mode: LaunchMode.inAppBrowserView,
+                    );
+                  }
+                },
+                onPressed2: () {
+                  Get.back();
+                },
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      fit: BoxFit.contain,
+                      child: CachedNetworkImage(
+                        imageUrl: job.companyLogo ?? "https://google.com",
+                        placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            primaryBlue,
+                          ),
+                        )),
+                        errorWidget: (context, url, error) => Center(
+                          child: SvgPicture.asset(
+                            "assets/svg/icons/Icon_Work_experience.svg",
+                          ),
+                        ),
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.more_vert_rounded,
+                    Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        isSaved
+                            ? "assets/svg/icons/Icon_Bookmarked.svg"
+                            : "assets/svg/icons/Icon_Bookmark.svg",
+                        height: 20,
+                        width: 20,
+                      ),
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 45,
-                child: Text(
-                  job.position ?? "",
-                  maxLines: 2,
-                  style: getCTATextStyle(
-                    context,
-                    14,
-                    color: Colors.black,
-                  ),
+                    // PopupMenuButton(
+                    //   itemBuilder: (context) {
+                    //     return [
+                    //       PopupMenuItem(
+                    //         child: Row(
+                    //           children: [
+                    //             Text(
+                    //               "Apply",
+                    //               style: getCTATextStyle(
+                    //                 context,
+                    //                 12,
+                    //                 color: Colors.black,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         value: 0,
+                    //       ),
+                    //       PopupMenuItem(
+                    //         child: Row(
+                    //           children: [
+                    //             Text(
+                    //               "Save",
+                    //               style: getCTATextStyle(
+                    //                 context,
+                    //                 12,
+                    //                 color: Colors.black,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         value: 1,
+                    //       ),
+                    //     ];
+                    //   },
+                    //   onSelected: (value) {},
+                    //   icon: Icon(
+                    //     Icons.more_vert_rounded,
+                    //   ),
+                    // ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "${job.organization} · ${job.location}\n${job.type} · ${job.locationType}",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                const SizedBox(height: 8),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            job.position.toString(),
+                            style: getCTATextStyle(
+                              context,
+                              14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(getFormatedDateForJobs(job.deadline)),
-                  // Text(
-                  //   getStyledSalaryRange(
-                  //     job.salary,
-                  //     job.salaryMax,
-                  //     job.currency,
-                  //     job.salaryTime,
-                  //   ),
-                  // ),
-                ],
-              ),
-            ],
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            job.organization.toString() +
+                                " · " +
+                                job.location.toString(),
+                            style: getCTATextStyle(
+                              context,
+                              12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Deadline: ${formatedDate(job.deadline)}",
+                            style: getCTATextStyle(
+                              context,
+                              12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: primaryBlue,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          child: Text(
+                            job.locationType.toString(),
+                            style: getCTATextStyle(
+                              context,
+                              12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: primaryBlue,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          child: Text(
+                            job.type.toString(),
+                            style: getCTATextStyle(
+                              context,
+                              12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        if (job.sourceName != null)
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: primaryBlue,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 12,
+                            ),
+                            child: Text(
+                              "By ${job.sourceName ?? "N/A"}",
+                              style: getCTATextStyle(
+                                context,
+                                12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
