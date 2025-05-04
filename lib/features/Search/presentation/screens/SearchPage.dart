@@ -230,68 +230,33 @@ class _SearchPageState extends State<SearchPage> {
                                 ),
                               ),
                             if (!searchController.isLoading.value &&
-                                searchController.errorMessage.isNotEmpty)
+                                searchController.jobsErrorMessage.isNotEmpty)
                               Center(
                                 child: Text(
-                                  searchController.errorMessage.value,
+                                  searchController.jobsErrorMessage.value,
                                   style: TextStyle(
                                     color: Colors.red,
                                   ),
                                 ),
                               ),
                             if (!searchController.isLoading.value &&
-                                searchController.errorMessage.isEmpty)
+                                searchController.jobsErrorMessage.isEmpty &&
+                                (searchController
+                                        .jobs.value?.data?.jobs?.isNotEmpty ??
+                                    false))
                               Expanded(
-                                child: Column(
-                                  children: [
-                                    (searchController.jobs.value == null ||
-                                            searchController.jobs.value!.data ==
-                                                null ||
-                                            searchController
-                                                    .jobs.value!.data!.jobs ==
-                                                null ||
-                                            searchController.jobs.value!.data!
-                                                .jobs!.isEmpty)
-                                        ? Expanded(
-                                            child: Container(
-                                              padding: const EdgeInsets.all(16),
-                                              child: Center(
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        'No Jobs Available at the moment. Please check back later.',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: getCTATextStyle(
-                                                          context,
-                                                          16,
-                                                          color: Colors.red,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              scrollDirection: Axis.vertical,
-                                              itemBuilder: (context, index) {
-                                                return getJobsItem(
-                                                    context,
-                                                    searchController.jobs.value!
-                                                        .data!.jobs![index]);
-                                              },
-                                              itemCount: searchController.jobs
-                                                  .value!.data!.jobs!.length,
-                                            ),
-                                          ),
-                                  ],
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return getJobsItem(
+                                        context,
+                                        searchController
+                                            .jobs.value!.data!.jobs![index]);
+                                  },
+                                  itemCount: searchController
+                                      .jobs.value!.data!.jobs!.length,
                                 ),
                               ),
                           ],
@@ -315,76 +280,33 @@ class _SearchPageState extends State<SearchPage> {
                                 ),
                               ),
                             if (!searchController.isLoading.value &&
-                                searchController.errorMessage.isNotEmpty)
+                                searchController.coursesErrorMessage.isNotEmpty)
                               Center(
                                 child: Text(
-                                  searchController.errorMessage.value,
+                                  searchController.coursesErrorMessage.value,
                                   style: TextStyle(
                                     color: Colors.red,
                                   ),
                                 ),
                               ),
                             if (!searchController.isLoading.value &&
-                                searchController.errorMessage.isEmpty)
+                                searchController.coursesErrorMessage.isEmpty &&
+                                (searchController.courses.value?.data?.courses
+                                        ?.isNotEmpty ??
+                                    false))
                               Expanded(
-                                child: Column(
-                                  children: [
-                                    (searchController.courses.value == null ||
-                                            searchController
-                                                    .courses.value!.data ==
-                                                null ||
-                                            searchController.courses.value!
-                                                    .data!.courses ==
-                                                null ||
-                                            searchController.courses.value!
-                                                .data!.courses!.isEmpty)
-                                        ? Expanded(
-                                            child: Container(
-                                              padding: const EdgeInsets.all(16),
-                                              child: Center(
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        'No Courses Available at the moment. Please check back later.',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: getCTATextStyle(
-                                                          context,
-                                                          16,
-                                                          color: Colors.red,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              scrollDirection: Axis.vertical,
-                                              itemBuilder: (context, index) {
-                                                return getCourseItem(
-                                                    context,
-                                                    searchController
-                                                        .courses
-                                                        .value!
-                                                        .data!
-                                                        .courses![index]);
-                                              },
-                                              itemCount: searchController
-                                                  .courses
-                                                  .value!
-                                                  .data!
-                                                  .courses!
-                                                  .length,
-                                            ),
-                                          ),
-                                  ],
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return getCourseItem(
+                                        context,
+                                        searchController.courses.value!.data!
+                                            .courses![index]);
+                                  },
+                                  itemCount: searchController
+                                      .courses.value!.data!.courses!.length,
                                 ),
                               ),
                           ],

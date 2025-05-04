@@ -2,7 +2,6 @@ import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 enum SearchState { course, job }
@@ -12,7 +11,8 @@ class GlobalSearchController extends GetxController {
   JobsRepository jobsRepository;
   GlobalSearchController(this.coursesRepository, this.jobsRepository);
   final isLoading = false.obs;
-  final errorMessage = ''.obs;
+  final coursesErrorMessage = ''.obs;
+  final jobsErrorMessage = ''.obs;
   final courses = Rxn<CoursesResponseModel>();
   final jobs = Rxn<JobsResponseModel>();
   final searchState = Rxn<SearchState>(SearchState.course);
@@ -24,9 +24,14 @@ class GlobalSearchController extends GetxController {
     final result = await coursesRepository.getCoursesRecomendation();
     if (result != null) {
       courses.value = result;
-      errorMessage.value = '';
+      if (result.data?.courses?.isEmpty ?? true) {
+        coursesErrorMessage.value =
+            'No courses available at the moment. Please check back later.';
+      } else {
+        coursesErrorMessage.value = '';
+      }
     } else {
-      errorMessage.value = 'Failed to load courses.';
+      coursesErrorMessage.value = 'Failed to load courses.';
     }
     isLoading.value = false;
   }
@@ -34,13 +39,18 @@ class GlobalSearchController extends GetxController {
   Future<void> getJobsRecomendation() async {
     isLoading.value = true;
     final result = await jobsRepository.getJobsRecomendation();
-    debugPrint("--------------Jobs----------------");
-    debugPrint(result.toString());
+    // debugPrint("--------------Jobs----------------");
+    // debugPrint(result.toString());
     if (result != null) {
       jobs.value = result;
-      errorMessage.value = '';
+      if (result.data?.jobs?.isEmpty ?? true) {
+        jobsErrorMessage.value =
+            'No jobs available at the moment. Please check back later.';
+      } else {
+        jobsErrorMessage.value = '';
+      }
     } else {
-      errorMessage.value = 'Failed to load jobs.';
+      jobsErrorMessage.value = 'Failed to load jobs.';
     }
     isLoading.value = false;
   }
@@ -58,9 +68,14 @@ class GlobalSearchController extends GetxController {
     }
     if (result != null) {
       courses.value = result;
-      errorMessage.value = '';
+      if (result.data?.courses?.isEmpty ?? true) {
+        coursesErrorMessage.value =
+            'No courses available at the moment. Please check back later.';
+      } else {
+        coursesErrorMessage.value = '';
+      }
     } else {
-      errorMessage.value = 'Failed to load courses.';
+      coursesErrorMessage.value = 'Failed to load courses.';
     }
     isLoading.value = false;
   }
@@ -79,9 +94,14 @@ class GlobalSearchController extends GetxController {
     }
     if (result != null) {
       courses.value = result;
-      errorMessage.value = '';
+      if (result.data?.jobs?.isEmpty ?? true) {
+        jobsErrorMessage.value =
+            'No jobs available at the moment. Please check back later.';
+      } else {
+        jobsErrorMessage.value = '';
+      }
     } else {
-      errorMessage.value = 'Failed to load courses.';
+      jobsErrorMessage.value = 'Failed to load courses.';
     }
     isLoading.value = false;
   }

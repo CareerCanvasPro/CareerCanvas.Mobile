@@ -14,8 +14,8 @@ class JobsRepository_API_Impl extends JobsRepository {
     try {
       final response = await jobsRemoteDataSource.getJobs();
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = response.data;
-        return JobsResponseModel.fromJson(data);
+        JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        return data;
       } else {
         throw Exception('Failed to load jobs');
       }

@@ -48,9 +48,11 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       CoursesRemoteDataSource coursesRemoteDataSource =
           CoursesRemoteDataSource(apiClient);
       final response = await coursesRemoteDataSource.searchCourses(query);
-      debugPrint(response.data.toString());
+      // debugPrint(response.data.toString());
       if (response.statusCode == 200) {
-        return CoursesResponseModel.fromJson(response.data);
+        CoursesResponseModel data =
+            CoursesResponseModel.fromJson(response.data);
+        return data;
       } else {
         throw Exception('Failed to load courses');
       }
