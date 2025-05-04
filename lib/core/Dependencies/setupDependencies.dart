@@ -68,8 +68,9 @@ Future<void> setupDependencies() async {
 
   getIt.registerLazySingleton<CoursesController>(
       () => CoursesController(getIt<CoursesRepository>()));
-  getIt.registerLazySingleton<GlobalSearchController>(
-      () => GlobalSearchController(getIt<CoursesRepository>()));
+  getIt.registerLazySingleton<GlobalSearchController>(() =>
+      GlobalSearchController(
+          getIt<CoursesRepository>(), getIt<JobsRepository>()));
 
   getIt.registerLazySingleton<UserProfileRepository>(
     () => UserProfileRepository_API_Impl(getIt<ApiClient>()),

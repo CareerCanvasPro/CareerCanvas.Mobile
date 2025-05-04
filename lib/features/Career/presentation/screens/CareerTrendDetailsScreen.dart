@@ -27,7 +27,14 @@ class _CareerTrendsState extends State<CareerTrends> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Career Trends Details'),
+        title: Text(
+          'Career Trends Details',
+          style: getCTATextStyle(
+            context,
+            16,
+            color: Colors.black,
+          ),
+        ),
         backgroundColor: scaffoldBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),

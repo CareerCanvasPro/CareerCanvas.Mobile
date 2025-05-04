@@ -1,9 +1,8 @@
 import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/presentation/getx/controller/CoursesController.dart';
+import 'package:career_canvas/features/Search/presentation/screens/CourseDetails.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
@@ -27,67 +26,37 @@ class _SkillsPageState extends State<SkillsPage> {
     }
   }
 
-  String getFormatedDutaionForCourse(int seconds) {
-    if (seconds < 60) return "${seconds}s"; // Less than 1 minute
-
-    const int minute = 60;
-    const int hour = 60 * minute;
-    const int day = 24 * hour;
-    const int week = 7 * day;
-    const int month = 30 * day; // Approximate month length
-    const int year = 365 * day; // Approximate year length
-
-    if (seconds >= year) {
-      int y = seconds ~/ year;
-      int remainingDays = (seconds % year) ~/ day;
-      return remainingDays > 0 ? "${y}y ${remainingDays}d" : "${y}y";
-    }
-
-    if (seconds >= month) {
-      int mo = seconds ~/ month;
-      int remainingDays = (seconds % month) ~/ day;
-      return remainingDays > 0 ? "${mo}mo ${remainingDays}d" : "${mo}mo";
-    }
-
-    if (seconds >= week) {
-      int w = seconds ~/ week;
-      int remainingDays = (seconds % week) ~/ day;
-      return remainingDays > 0 ? "${w}w ${remainingDays}d" : "${w}w";
-    }
-
-    if (seconds >= day) {
-      int d = seconds ~/ day;
-      int remainingHours = (seconds % day) ~/ hour;
-      return remainingHours > 0 ? "${d}d ${remainingHours}h" : "${d}d";
-    }
-
-    if (seconds >= hour) {
-      int h = seconds ~/ hour;
-      int remainingMinutes = (seconds % hour) ~/ minute;
-      return remainingMinutes > 0 ? "${h}h ${remainingMinutes}m" : "${h}h";
-    }
-
-    // If it's more than a minute but less than an hour
-    int m = seconds ~/ minute;
-    int remainingSeconds = seconds % minute;
-    return remainingSeconds > 0 ? "${m}m ${remainingSeconds}s" : "${m}m";
-  }
-
-  String formatNumber(num value) {
-    if (value >= 1e9) {
-      return '${(value / 1e9).toStringAsFixed(1)}B'; // Billion
-    } else if (value >= 1e6) {
-      return '${(value / 1e6).toStringAsFixed(1)}M'; // Million
-    } else if (value >= 1e3) {
-      return '${(value / 1e3).toStringAsFixed(1)}K'; // Thousand
-    } else {
-      return value.toString(); // No formatting needed
-    }
-  }
-
   Future<void> onRefresh() async {
     await coursesController.getCoursesRecomendation();
     await coursesController.getCoursesBasedOnGoals();
+  }
+
+  String getImageCardTitle(List<TagModel> tags) {
+    if (tags.isEmpty) return "";
+
+    // Extract valid names from tags (after ':', if present)
+    final words = tags
+        .map((tag) => tag.name?.split(":").last.trim().replaceAll("-", " "))
+        .where((word) => word != null && word.isNotEmpty)
+        .cast<String>()
+        .toList();
+
+    // Join up to 3 words into a title
+    return words.take(3).join("\n");
+  }
+
+  double getFontSizeBasedOnLongestWord(String title) {
+    final words = title.trim().split(RegExp(r"\s+"));
+    if (words.isEmpty) return 24;
+
+    final longestLength =
+        words.map((w) => w.length).reduce((a, b) => a > b ? a : b);
+
+    if (longestLength <= 5) return 20;
+    if (longestLength <= 8) return 18;
+    if (longestLength <= 10) return 16;
+    if (longestLength <= 12) return 14;
+    return 12; // for very long words
   }
 
   @override
@@ -157,7 +126,7 @@ class _SkillsPageState extends State<SkillsPage> {
                 SizedBox(height: 8),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  constraints: const BoxConstraints(maxHeight: 250),
+                  constraints: const BoxConstraints(maxHeight: 260),
                   child: Obx(() {
                     if (coursesController.isLoading.value) {
                       return const Center(child: CircularProgressIndicator());
@@ -210,7 +179,7 @@ class _SkillsPageState extends State<SkillsPage> {
                 SizedBox(height: 8),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  constraints: const BoxConstraints(maxHeight: 250),
+                  constraints: const BoxConstraints(maxHeight: 260),
                   child: Obx(() {
                     if (coursesController.isLoadingGolsBasedCourses.value) {
                       return const Center(child: CircularProgressIndicator());
@@ -248,81 +217,64 @@ class _SkillsPageState extends State<SkillsPage> {
   }
 
   Widget getCourseItem(BuildContext context, CoursesModel course) {
-    return Container(
-      width: 312,
-      margin: const EdgeInsets.only(left: 12.0),
-      child: Card(
-        elevation: 3,
-        color: scaffoldBackgroundColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              )),
-              width: 312,
-              height: 130,
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  Container(
-                    width: 312,
-                    height: 130,
-                    child: CachedNetworkImage(
-                      imageUrl: course.sourceUrl,
-                      placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          primaryBlue,
-                        ),
-                      )),
-                      errorWidget: (context, url, error) => Center(
-                        child: Icon(
-                          Icons.error,
-                        ),
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => CourseDetails(
+            course: course,
+          ),
+        );
+      },
+      child: Container(
+        width: 312,
+        margin: const EdgeInsets.only(left: 12.0),
+        child: Card(
+          elevation: 3,
+          color: scaffoldBackgroundColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Hero(
+                tag: course.id,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                    color: primaryBlue,
+                  ),
+                  width: 312,
+                  height: 130,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  alignment: Alignment.bottomLeft,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Text(
+                      getImageCardTitle(course.tags).toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getFontSizeBasedOnLongestWord(
+                            getImageCardTitle(course.tags)),
+                        fontWeight: FontWeight.bold,
                       ),
-                      fit: BoxFit.cover,
                     ),
                   ),
-                  // Positioned(
-                  //   bottom: 0,
-                  //   right: 0,
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.black.withOpacity(0.5),
-                  //       borderRadius: BorderRadius.circular(10),
-                  //     ),
-                  //     margin: const EdgeInsets.all(4),
-                  //     padding: const EdgeInsets.symmetric(
-                  //       horizontal: 8,
-                  //       vertical: 4,
-                  //     ),
-                  //     child: Text(
-                  //       getFormatedDutaionForCourse(course.),
-                  //       style: getCTATextStyle(
-                  //         context,
-                  //         12,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 45,
-                    child: Text(
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
                       course.name,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -332,27 +284,28 @@ class _SkillsPageState extends State<SkillsPage> {
                         color: Colors.black,
                       ),
                     ),
-                  ),
-                  Text(
-                    "${course.description}",
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        course.sourceName,
+                    SizedBox(height: 2),
+                    Text(
+                      "${course.description}",
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          "Course By ${course.sourceName}",
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

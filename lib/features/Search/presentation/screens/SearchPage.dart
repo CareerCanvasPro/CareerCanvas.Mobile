@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
+import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Search/presentation/getx/controllers/searchController.dart';
+import 'package:career_canvas/features/Search/presentation/screens/CourseDetails.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,11 @@ class _SearchPageState extends State<SearchPage> {
     searchController = getIt<GlobalSearchController>();
     if (searchController.courses.value == null) {
       searchController.getCoursesRecomendation();
+    }
+    if (searchController.jobs.value == null ||
+        searchController.jobs.value!.data == null ||
+        searchController.jobs.value!.data!.jobs == null) {
+      searchController.getJobsRecomendation();
     }
   }
 
@@ -107,79 +114,271 @@ class _SearchPageState extends State<SearchPage> {
             ),
             SizedBox(height: 12),
             Obx(() {
-              if (searchController.isLoading.value) {
-                return Expanded(
-                  child: Container(
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          primaryBlue,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              if (searchController.errorMessage.isNotEmpty) {
-                return Center(
-                  child: Text(
-                    searchController.errorMessage.value,
-                    style: TextStyle(
-                      color: Colors.red,
-                    ),
-                  ),
-                );
-              }
-              if (searchController.courses.value == null ||
-                  searchController.courses.value!.data == null ||
-                  searchController.courses.value!.data!.courses == null) {
-                return const Center(child: Text('No Courses Available'));
-              }
               return Expanded(
                 child: Column(
                   children: [
-                    Text(
-                      searchController.searchQuery.value.isEmpty
-                          ? 'Recomended Courses'
-                          : 'Search Result for: "${searchController.searchQuery.value}"',
-                      style: getCTATextStyle(
-                        context,
-                        16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    (searchController.courses.value == null ||
-                            searchController.courses.value!.data == null ||
-                            searchController.courses.value!.data!.courses ==
-                                null ||
-                            searchController
-                                .courses.value!.data!.courses!.isEmpty)
-                        ? Center(
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
                             child: Text(
-                              'No Courses Available',
+                              searchController.searchQuery.value.isEmpty
+                                  ? 'Recomended ${searchController.searchState.value == SearchState.course ? "Courses" : "Jobs"}'
+                                  : '${searchController.searchState.value == SearchState.course ? "Courses" : "Jobs"} Result for: "${searchController.searchQuery.value}"',
                               style: getCTATextStyle(
                                 context,
-                                20,
-                                color: Colors.red,
+                                12,
+                                color: Colors.black,
                               ),
                             ),
-                          )
-                        : Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (context, index) {
-                                return getCourseItem(
-                                    context,
-                                    searchController
-                                        .courses.value!.data!.courses![index]);
-                              },
-                              itemCount: searchController
-                                  .courses.value!.data!.courses!.length,
+                          ),
+                          PopupMenuButton<SearchState>(
+                            initialValue: searchController.searchState.value,
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(
+                                  child: Row(
+                                    children: [
+                                      Radio.adaptive(
+                                        value: SearchState.course,
+                                        fillColor:
+                                            WidgetStatePropertyAll(primaryBlue),
+                                        groupValue:
+                                            searchController.searchState.value,
+                                        onChanged: null,
+                                      ),
+                                      Text(
+                                        "Courses",
+                                        style: getCTATextStyle(
+                                          context,
+                                          12,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  value: SearchState.course,
+                                ),
+                                PopupMenuItem(
+                                  child: Row(
+                                    children: [
+                                      Radio.adaptive(
+                                        value: SearchState.job,
+                                        groupValue:
+                                            searchController.searchState.value,
+                                        fillColor:
+                                            WidgetStatePropertyAll(primaryBlue),
+                                        onChanged: null,
+                                      ),
+                                      Text(
+                                        "Jobs",
+                                        style: getCTATextStyle(
+                                          context,
+                                          12,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  value: SearchState.job,
+                                ),
+                              ];
+                            },
+                            onSelected: (value) {
+                              controller.text = "";
+                              searchController.searchQuery.value = "";
+                              searchController.searchState.value = value;
+                            },
+                            icon: SvgPicture.asset(
+                              "assets/svg/icons/Icon_Filter.svg",
+                              height: 20,
+                              width: 20,
+                              colorFilter: ColorFilter.mode(
+                                Colors.grey,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    if (searchController.searchState.value == SearchState.job)
+                      Expanded(
+                        child: Column(
+                          children: [
+                            if (searchController.isLoading.value)
+                              Expanded(
+                                child: Container(
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        primaryBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (!searchController.isLoading.value &&
+                                searchController.errorMessage.isNotEmpty)
+                              Center(
+                                child: Text(
+                                  searchController.errorMessage.value,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            if (!searchController.isLoading.value)
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    (searchController.jobs.value == null ||
+                                            searchController.jobs.value!.data ==
+                                                null ||
+                                            searchController
+                                                    .jobs.value!.data!.jobs ==
+                                                null ||
+                                            searchController.jobs.value!.data!
+                                                .jobs!.isEmpty)
+                                        ? Expanded(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Center(
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        'No Jobs Available at the moment. Please check back later.',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: getCTATextStyle(
+                                                          context,
+                                                          16,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Expanded(
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              scrollDirection: Axis.vertical,
+                                              itemBuilder: (context, index) {
+                                                return getJobsItem(
+                                                    context,
+                                                    searchController.jobs.value!
+                                                        .data!.jobs![index]);
+                                              },
+                                              itemCount: searchController.jobs
+                                                  .value!.data!.jobs!.length,
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    if (searchController.searchState.value ==
+                        SearchState.course)
+                      Expanded(
+                        child: Column(
+                          children: [
+                            if (searchController.isLoading.value)
+                              Expanded(
+                                child: Container(
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        primaryBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (!searchController.isLoading.value &&
+                                searchController.errorMessage.isNotEmpty)
+                              Center(
+                                child: Text(
+                                  searchController.errorMessage.value,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            if (!searchController.isLoading.value)
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    (searchController.courses.value == null ||
+                                            searchController
+                                                    .courses.value!.data ==
+                                                null ||
+                                            searchController.courses.value!
+                                                    .data!.courses ==
+                                                null ||
+                                            searchController.courses.value!
+                                                .data!.courses!.isEmpty)
+                                        ? Expanded(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Center(
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        'No Courses Available at the moment. Please check back later.',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: getCTATextStyle(
+                                                          context,
+                                                          16,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Expanded(
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              scrollDirection: Axis.vertical,
+                                              itemBuilder: (context, index) {
+                                                return getCourseItem(
+                                                    context,
+                                                    searchController
+                                                        .courses
+                                                        .value!
+                                                        .data!
+                                                        .courses![index]);
+                                              },
+                                              itemCount: searchController
+                                                  .courses
+                                                  .value!
+                                                  .data!
+                                                  .courses!
+                                                  .length,
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               );
@@ -190,81 +389,175 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  String getImageCardTitle(List<TagModel> tags) {
+    if (tags.isEmpty) return "";
+
+    // Extract valid names from tags (after ':', if present)
+    final words = tags
+        .map((tag) => tag.name?.split(":").last.trim().replaceAll("-", " "))
+        .where((word) => word != null && word.isNotEmpty)
+        .cast<String>()
+        .toList();
+
+    // Join up to 3 words into a title
+    return words.take(3).join("\n");
+  }
+
+  double getFontSizeBasedOnLongestWord(String title) {
+    final words = title.trim().split(RegExp(r"\s+"));
+    if (words.isEmpty) return 24;
+
+    final longestLength =
+        words.map((w) => w.length).reduce((a, b) => a > b ? a : b);
+
+    if (longestLength <= 5) return 20;
+    if (longestLength <= 8) return 18;
+    if (longestLength <= 10) return 16;
+    if (longestLength <= 12) return 14;
+    return 12; // for very long words
+  }
+
+  Widget getJobsItem(BuildContext context, JobsModel job) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+      padding: const EdgeInsets.only(right: 16.0),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 120,
+                height: 120,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: job.companyLogo != null
+                    ? CachedNetworkImage(
+                        imageUrl: job.companyLogo!,
+                      )
+                    : SvgPicture.asset(
+                        "assets/svg/icons/Icon_Work_experience.svg",
+                      ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(job.position.toString(),
+                      style: getCTATextStyle(context, 14, color: Colors.black)),
+                  SizedBox(height: 4),
+                  Text(job.organization.toString(),
+                      style: getCTATextStyle(context, 12, color: Colors.grey)),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget getCourseItem(BuildContext context, CoursesModel course) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
       padding: const EdgeInsets.only(right: 16.0),
       width: MediaQuery.of(context).size.width,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
+      child: GestureDetector(
+        onTap: () {
+          Get.to(
+            () => CourseDetails(
+              course: course,
             ),
-            width: 120,
-            height: 100,
-            clipBehavior: Clip.antiAlias,
-            child: CachedNetworkImage(
-              imageUrl: course.sourceUrl,
-              placeholder: (context, url) => Center(
-                  child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  primaryBlue,
+          );
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Hero(
+              tag: course.id,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: primaryBlue,
                 ),
-              )),
-              errorWidget: (context, url, error) => Center(
-                child: Icon(
-                  Icons.error,
-                  color: Colors.red,
-                ),
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 50,
-                    child: Text(
-                      course.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: getCTATextStyle(
-                        context,
-                        14,
-                        color: Colors.black,
-                      ),
+                padding: const EdgeInsets.all(8.0),
+                width: 120,
+                height: 120,
+                clipBehavior: Clip.antiAlias,
+                alignment: Alignment.bottomLeft,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    getImageCardTitle(course.tags).toUpperCase(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: getFontSizeBasedOnLongestWord(
+                          getImageCardTitle(course.tags)),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    course.description,
-                    style: getBodyTextStyle(context, 12, color: Colors.grey),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "${course.sourceName}",
-                        style: getCTATextStyle(
-                          context,
-                          12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+            SizedBox(width: 16),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            course.name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: getCTATextStyle(
+                              context,
+                              14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            course.description,
+                            style: getBodyTextStyle(context, 12,
+                                color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          "Course By ${course.sourceName}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,13 +1,20 @@
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
+import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
+import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
 import 'package:get/get.dart';
+
+enum SearchState { course, job }
 
 class GlobalSearchController extends GetxController {
   CoursesRepository coursesRepository;
-  GlobalSearchController(this.coursesRepository);
+  JobsRepository jobsRepository;
+  GlobalSearchController(this.coursesRepository, this.jobsRepository);
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final courses = Rxn<CoursesResponseModel>();
+  final jobs = Rxn<JobsResponseModel>();
+  final searchState = Rxn<SearchState>(SearchState.course);
 
   final searchQuery = ''.obs;
 
@@ -19,6 +26,18 @@ class GlobalSearchController extends GetxController {
       errorMessage.value = '';
     } else {
       errorMessage.value = 'Failed to load courses.';
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getJobsRecomendation() async {
+    isLoading.value = true;
+    final result = await jobsRepository.getJobsRecomendation();
+    if (result != null) {
+      jobs.value = result;
+      errorMessage.value = '';
+    } else {
+      errorMessage.value = 'Failed to load jobs.';
     }
     isLoading.value = false;
   }

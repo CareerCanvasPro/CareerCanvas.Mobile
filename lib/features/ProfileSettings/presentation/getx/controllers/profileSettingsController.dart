@@ -40,6 +40,25 @@ class ProfileUpload {
       ProfileUpload.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
+class UserPrivacy {
+  bool isPrivate;
+  UserPrivacy({required this.isPrivate});
+  factory UserPrivacy.fromMap(Map<String, dynamic> map) {
+    return UserPrivacy(
+      isPrivate: map['isPrivate'] as bool,
+    );
+  }
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'isPrivate': isPrivate,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
+  factory UserPrivacy.fromJson(String source) =>
+      UserPrivacy.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
 class ProfileSettingsController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool imageUploading = false.obs;
@@ -52,9 +71,7 @@ class ProfileSettingsController extends GetxController {
       final apiClient = getIt<ApiClient>();
       await apiClient.put(
         ApiClient.userBase + '/profile-privacy',
-        data: {
-          "isPrivate": isPrivate,
-        },
+        data: UserPrivacy(isPrivate: isPrivate.value).toJson(),
         useToken: true,
       );
       Fluttertoast.showToast(
