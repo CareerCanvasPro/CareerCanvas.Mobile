@@ -22,10 +22,12 @@ class JobsScreen extends StatefulWidget {
 class _JobsScreenState extends State<JobsScreen> {
   late final UserProfileController userProfileController;
   late final JobsController jobsController;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(_checkScrollPosition);
     jobsController = getIt<JobsController>();
     if (jobsController.jobs.value == null) {
       jobsController.getJobsRecomendation();
@@ -43,10 +45,47 @@ class _JobsScreenState extends State<JobsScreen> {
     return DateFormat.yMEd().format(date);
   }
 
+  bool _showFab = false;
+
+  void _checkScrollPosition() {
+    if (!scrollController.hasClients) return;
+
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.position.pixels;
+    final percent = currentScroll / maxScroll;
+
+    if (percent >= 0.8 && !_showFab) {
+      setState(() => _showFab = true);
+    } else if (percent < 0.8 && _showFab) {
+      setState(() => _showFab = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(_checkScrollPosition);
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
+      floatingActionButton: _showFab
+          ? FloatingActionButton(
+              onPressed: () {
+                scrollController.animateTo(
+                  scrollController.position.minScrollExtent,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: Icon(
+                Icons.arrow_upward_rounded,
+              ),
+            )
+          : null,
       appBar: AppBar(
         backgroundColor: scaffoldBackgroundColor,
         elevation: 0,
@@ -75,6 +114,8 @@ class _JobsScreenState extends State<JobsScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        // primary: true,
+        controller: scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -95,7 +136,7 @@ class _JobsScreenState extends State<JobsScreen> {
             ),
             Container(
               constraints: const BoxConstraints(
-                maxHeight: 270,
+                maxHeight: 280,
                 minHeight: 200,
               ),
               child: Obx(() {
@@ -116,6 +157,7 @@ class _JobsScreenState extends State<JobsScreen> {
                 }
                 return ListView.builder(
                   shrinkWrap: true,
+                  primary: false,
                   physics: const BouncingScrollPhysics(),
                   // itemExtent: 8,
                   scrollDirection: Axis.horizontal,
@@ -123,6 +165,7 @@ class _JobsScreenState extends State<JobsScreen> {
                     return getSavedJobItem(
                       context,
                       userProfileController.userProfile.value!.savedJobs[index],
+                      true,
                     );
                   },
                   itemCount:
@@ -145,7 +188,7 @@ class _JobsScreenState extends State<JobsScreen> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height - 200,
+              // height: MediaQuery.of(context).size.height - 190,
               child: Obx(() {
                 if (jobsController.isLoading.value)
                   return Container(
@@ -187,7 +230,8 @@ class _JobsScreenState extends State<JobsScreen> {
 
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
+                  primary: false,
+                  physics: const NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return getJobsItem(
@@ -208,6 +252,7 @@ class _JobsScreenState extends State<JobsScreen> {
   Widget getSavedJobItem(
     BuildContext context,
     JobsModel job,
+    bool isSaved,
   ) {
     return Container(
       constraints:
@@ -278,53 +323,13 @@ class _JobsScreenState extends State<JobsScreen> {
                         await jobsController.unsaveJob(job);
                       },
                       icon: SvgPicture.asset(
-                        job.isSaved
+                        isSaved
                             ? "assets/svg/icons/Icon_Bookmarked.svg"
                             : "assets/svg/icons/Icon_Bookmark.svg",
                         height: 20,
                         width: 20,
                       ),
                     ),
-                    // PopupMenuButton(
-                    //   itemBuilder: (context) {
-                    //     return [
-                    //       PopupMenuItem(
-                    //         child: Row(
-                    //           children: [
-                    //             Text(
-                    //               "Apply",
-                    //               style: getCTATextStyle(
-                    //                 context,
-                    //                 12,
-                    //                 color: Colors.black,
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         value: 0,
-                    //       ),
-                    //       PopupMenuItem(
-                    //         child: Row(
-                    //           children: [
-                    //             Text(
-                    //               "Save",
-                    //               style: getCTATextStyle(
-                    //                 context,
-                    //                 12,
-                    //                 color: Colors.black,
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         value: 1,
-                    //       ),
-                    //     ];
-                    //   },
-                    //   onSelected: (value) {},
-                    //   icon: Icon(
-                    //     Icons.more_vert_rounded,
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(height: 8),

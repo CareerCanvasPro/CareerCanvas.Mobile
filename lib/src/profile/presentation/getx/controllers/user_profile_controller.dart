@@ -25,7 +25,6 @@ class UserProfileController extends GetxController {
   dio.CancelToken? cancelToken;
 
   Future<void> getUserProfile() async {
-    isLoading.value = true;
     final result = await userProfileRepository.getUserProfile();
     debugPrint(result.toString());
     if (result != null) {
@@ -35,7 +34,6 @@ class UserProfileController extends GetxController {
     } else {
       errorMessage.value = 'Failed to load user profile.';
     }
-    isLoading.value = false;
   }
 
   Future<void> uploadEducation(UploadEducation education) async {

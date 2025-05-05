@@ -1,6 +1,8 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -30,51 +32,79 @@ class JobsController extends GetxController {
   }
 
   Future<void> saveJob(JobsModel job) async {
-    jobs.value?.data?.jobs
-        ?.where((element) => element.id == job.id)
-        .toList()
-        .first
-        .isSaved = true;
-    jobs.refresh();
-    bool result = await jobsRepository.saveJob(job);
-    if (result == false) {
-      jobs.value?.data?.jobs
-          ?.where((element) => element.id == job.id)
-          .toList()
-          .first
-          .isSaved = false;
-      jobs.refresh();
-      Fluttertoast.showToast(
-        msg: "Failed to save job.",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        fontSize: 14.0,
-      );
-    }
-    debugPrint(result.toString());
-  }
-
-  Future<void> unsaveJob(JobsModel job) async {
-    jobs.value?.data?.jobs
-        ?.where((element) => element.id == job.id)
-        .toList()
-        .first
-        .isSaved = false;
-    jobs.refresh();
-    bool result = await jobsRepository.unsaveJob(job);
-    if (result == false) {
+    if (jobs.value?.data?.jobs
+            ?.where((element) => element.id == job.id)
+            .toList()
+            .isNotEmpty ??
+        false) {
       jobs.value?.data?.jobs
           ?.where((element) => element.id == job.id)
           .toList()
           .first
           .isSaved = true;
       jobs.refresh();
+    }
+    bool result = await jobsRepository.saveJob(job);
+    if (result == false) {
+      if (jobs.value?.data?.jobs
+              ?.where((element) => element.id == job.id)
+              .toList()
+              .isNotEmpty ??
+          false) {
+        jobs.value?.data?.jobs
+            ?.where((element) => element.id == job.id)
+            .toList()
+            .first
+            .isSaved = false;
+        jobs.refresh();
+      }
+      Fluttertoast.showToast(
+        msg: "Failed to save job.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
+    }
+    debugPrint(result.toString());
+  }
+
+  Future<void> unsaveJob(JobsModel job, {bool isSaved = false}) async {
+    if (jobs.value?.data?.jobs
+            ?.where((element) => element.id == job.id)
+            .toList()
+            .isNotEmpty ??
+        false) {
+      jobs.value?.data?.jobs
+          ?.where((element) => element.id == job.id)
+          .toList()
+          .first
+          .isSaved = false;
+      jobs.refresh();
+    }
+    bool result = await jobsRepository.unsaveJob(job);
+    if (result == false) {
+      if (jobs.value?.data?.jobs
+              ?.where((element) => element.id == job.id)
+              .toList()
+              .isNotEmpty ??
+          false) {
+        jobs.value?.data?.jobs
+            ?.where((element) => element.id == job.id)
+            .toList()
+            .first
+            .isSaved = true;
+        jobs.refresh();
+      }
       Fluttertoast.showToast(
         msg: "Failed to unsave job.",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         fontSize: 14.0,
       );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
     }
     debugPrint(result.toString());
   }

@@ -1,8 +1,5 @@
 import 'dart:convert';
-
-import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/domain/entities/CoursesEntity.dart';
-import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 
 class CoursesModel extends CoursesEntity {
   String id;
@@ -38,14 +35,7 @@ class CoursesModel extends CoursesEntity {
         sourceName: json["sourceName"] ?? "",
         sourceUrl: json["sourceUrl"] ?? "",
         updatedAt: DateTime.parse(json["updatedAt"]).toLocal(),
-        isSaved: getIt<UserProfileController>()
-                .userProfile
-                .value
-                ?.savedCourses
-                .where((element) => element.id == json["id"])
-                .toList()
-                .isNotEmpty ??
-            false,
+        isSaved: json["isSaved"] ?? false,
         tags: json["tags"] == null
             ? []
             : List<TagModel>.from(
