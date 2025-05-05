@@ -17,6 +17,7 @@ abstract class CoursesEntity {
   String? get sourceUrl;
   DateTime? get updatedAt;
   List<TagEntity>? get tags;
+  bool get isSaved;
 }
 
 abstract class TagEntity {

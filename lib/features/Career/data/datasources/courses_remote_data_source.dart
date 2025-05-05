@@ -1,4 +1,5 @@
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:dio/dio.dart';
 
 class CoursesRemoteDataSource {
@@ -9,6 +10,22 @@ class CoursesRemoteDataSource {
   Future<Response> getCourses() async {
     final response = await apiClient.get(
       ApiClient.coursesBase + '/recommendation',
+      useToken: true,
+    );
+    return response;
+  }
+
+  Future<Response> saveCourse(CoursesModel course) async {
+    final response = await apiClient.put(
+      ApiClient.userBase + '/courses/${course.id}',
+      useToken: true,
+    );
+    return response;
+  }
+
+  Future<Response> unsaveCourse(CoursesModel course) async {
+    final response = await apiClient.delete(
+      ApiClient.userBase + '/courses/${course.id}',
       useToken: true,
     );
     return response;

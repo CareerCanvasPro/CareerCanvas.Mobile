@@ -110,4 +110,74 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       return null;
     }
   }
+
+  @override
+  Future<bool> saveCourse(CoursesModel course) async {
+    try {
+      CoursesRemoteDataSource coursesRemoteDataSource =
+          CoursesRemoteDataSource(apiClient);
+      final response = await coursesRemoteDataSource.saveCourse(course);
+      debugPrint(response.toString());
+      if (response.statusCode == 200) {
+        // CoursesResponseModel.fromJson(response.data);
+        return true;
+      } else {
+        throw Exception('Failed to load courses');
+      }
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        debugPrint(e.response!.data["message"]);
+        debugPrint(e.response!.headers.toString());
+        debugPrint(e.response!.requestOptions.toString());
+        return false;
+        // throw Exception(e.response!.data["message"]);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        debugPrint(e.requestOptions.toString());
+        debugPrint(e.message);
+        return false;
+        // throw Exception(e.message);
+      }
+    } catch (e) {
+      debugPrint('Error fetching courses: ${e.toString()}');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> unsaveCourse(CoursesModel course) async {
+    try {
+      CoursesRemoteDataSource coursesRemoteDataSource =
+          CoursesRemoteDataSource(apiClient);
+      final response = await coursesRemoteDataSource.unsaveCourse(course);
+      debugPrint(response.toString());
+      if (response.statusCode == 200) {
+        // return CoursesResponseModel.fromJson(response.data);
+        return true;
+      } else {
+        throw Exception('Failed to save course');
+      }
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        debugPrint(e.response!.data["message"]);
+        debugPrint(e.response!.headers.toString());
+        debugPrint(e.response!.requestOptions.toString());
+        return false;
+        // throw Exception(e.response!.data["message"]);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        debugPrint(e.requestOptions.toString());
+        debugPrint(e.message);
+        return false;
+        // throw Exception(e.message);
+      }
+    } catch (e) {
+      debugPrint('Error saving course: ${e.toString()}');
+      return false;
+    }
+  }
 }

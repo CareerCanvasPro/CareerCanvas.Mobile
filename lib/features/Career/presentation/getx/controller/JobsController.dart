@@ -2,6 +2,7 @@ import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
@@ -26,6 +27,56 @@ class JobsController extends GetxController {
       errorMessage.value = 'Failed to load jobs.';
     }
     isLoading.value = false;
+  }
+
+  Future<void> saveJob(JobsModel job) async {
+    jobs.value?.data?.jobs
+        ?.where((element) => element.id == job.id)
+        .toList()
+        .first
+        .isSaved = true;
+    jobs.refresh();
+    bool result = await jobsRepository.saveJob(job);
+    if (result == false) {
+      jobs.value?.data?.jobs
+          ?.where((element) => element.id == job.id)
+          .toList()
+          .first
+          .isSaved = false;
+      jobs.refresh();
+      Fluttertoast.showToast(
+        msg: "Failed to save job.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+    debugPrint(result.toString());
+  }
+
+  Future<void> unsaveJob(JobsModel job) async {
+    jobs.value?.data?.jobs
+        ?.where((element) => element.id == job.id)
+        .toList()
+        .first
+        .isSaved = false;
+    jobs.refresh();
+    bool result = await jobsRepository.unsaveJob(job);
+    if (result == false) {
+      jobs.value?.data?.jobs
+          ?.where((element) => element.id == job.id)
+          .toList()
+          .first
+          .isSaved = true;
+      jobs.refresh();
+      Fluttertoast.showToast(
+        msg: "Failed to unsave job.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+    debugPrint(result.toString());
   }
 
   Future<void> getCareerTrends() async {

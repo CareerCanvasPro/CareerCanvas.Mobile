@@ -90,4 +90,5 @@ abstract class JobsEntity {
   JobType? get type;
   DateTime? get updatedAt;
   String? get url;
+  bool get isSaved;
 }

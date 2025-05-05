@@ -2,6 +2,8 @@ import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 enum SearchState { course, job }
@@ -18,6 +20,54 @@ class GlobalSearchController extends GetxController {
   final searchState = Rxn<SearchState>(SearchState.course);
 
   final searchQuery = ''.obs;
+
+  Future<void> saveJob(JobsModel job) async {
+    jobs.value?.data?.jobs
+        ?.where((element) => element.id == job.id)
+        .toList()
+        .first
+        .isSaved = true;
+    jobs.refresh();
+    bool result = await jobsRepository.saveJob(job);
+    if (result == false) {
+      jobs.value?.data?.jobs
+          ?.where((element) => element.id == job.id)
+          .toList()
+          .first
+          .isSaved = false;
+      jobs.refresh();
+      Fluttertoast.showToast(
+        msg: "Failed to save job.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+    debugPrint(result.toString());
+  }
+
+  Future<void> unsaveJob(JobsModel job) async {
+    jobs.value?.data?.jobs
+        ?.where((element) => element.id == job.id)
+        .toList()
+        .first
+        .isSaved = false;
+    bool result = await jobsRepository.unsaveJob(job);
+    if (result == false) {
+      jobs.value?.data?.jobs
+          ?.where((element) => element.id == job.id)
+          .toList()
+          .first
+          .isSaved = true;
+      Fluttertoast.showToast(
+        msg: "Failed to unsave job.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+    debugPrint(result.toString());
+  }
 
   Future<void> getCoursesRecomendation() async {
     isLoading.value = true;

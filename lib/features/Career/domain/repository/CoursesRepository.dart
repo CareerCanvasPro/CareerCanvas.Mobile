@@ -4,4 +4,6 @@ abstract class CoursesRepository {
   Future<CoursesResponseModel?> getCoursesRecomendation();
   Future<CoursesResponseModel?> getCoursesBasedOnGoals();
   Future<CoursesResponseModel?> searchCourses(String query);
+  Future<bool> saveCourse(CoursesModel course);
+  Future<bool> unsaveCourse(CoursesModel course);
 }

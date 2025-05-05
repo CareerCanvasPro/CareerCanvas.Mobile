@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/resume.dart';
+import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
+import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:flutter/foundation.dart';
 
 class PersonalityTestResult {
@@ -98,6 +100,8 @@ class UserProfileData {
   String phone;
   List<Resume> resumes;
   List<KeyVal> goals;
+  List<CoursesModel> savedCourses;
+  List<JobsModel> savedJobs;
   PersonalityTestResult? personalityTestResult;
   UserProfileData({
     required this.following,
@@ -118,6 +122,8 @@ class UserProfileData {
     this.coins = 0,
     required this.goals,
     this.personalityTestResult,
+    required this.savedCourses,
+    required this.savedJobs,
   });
 
   factory UserProfileData.fromMap(Map<String, dynamic> map) {
@@ -126,6 +132,16 @@ class UserProfileData {
       isPrivate: map['isPrivate'] as bool? ?? false,
       following: (map['following'] as int?) ?? 0,
       followers: (map['followers'] as int?) ?? 0,
+      savedCourses: List<CoursesModel>.from(
+        (map['savedCourses'] as List<dynamic>? ?? []).map<CoursesModel>(
+          (x) => CoursesModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      savedJobs: List<JobsModel>.from(
+        (map['savedJobs'] as List<dynamic>? ?? []).map<JobsModel>(
+          (x) => JobsModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
       goals: List<KeyVal>.from(
         (map['goals'] as List<dynamic>? ?? []).map<KeyVal>(
           (x) => KeyVal.fromMap(x as Map<String, dynamic>),

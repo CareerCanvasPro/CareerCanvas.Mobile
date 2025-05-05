@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/domain/entities/JobsEntity.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 
 class JobsModel extends JobsEntity {
   @override
@@ -29,6 +31,9 @@ class JobsModel extends JobsEntity {
   @override
   String? url;
 
+  @override
+  bool isSaved;
+
   JobsModel({
     this.id,
     this.companyLogo,
@@ -42,6 +47,7 @@ class JobsModel extends JobsEntity {
     this.updatedAt,
     this.url,
     this.sourceName,
+    required this.isSaved,
   });
 
   factory JobsModel.fromJson(String str) => JobsModel.fromMap(json.decode(str));
@@ -62,6 +68,14 @@ class JobsModel extends JobsEntity {
         organization: json["organization"],
         sourceName: json["sourceName"],
         position: json["position"],
+        isSaved: getIt<UserProfileController>()
+                .userProfile
+                .value
+                ?.savedJobs
+                .where((element) => element.id == json["id"])
+                .toList()
+                .isNotEmpty ??
+            false,
         type: json["type"] != null ? JobType.fromString(json["type"]) : null,
         updatedAt: json["updatedAt"] == null
             ? null

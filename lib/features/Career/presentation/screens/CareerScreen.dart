@@ -772,7 +772,7 @@ class _CareerScreenState extends State<CareerScreen> {
                         "Here you can see some job suggestions based on your profile.",
                     child: Container(
                       constraints: const BoxConstraints(
-                        maxHeight: 250,
+                        maxHeight: 270,
                         minHeight: 200,
                       ),
                       child: Obx(() {
@@ -1133,9 +1133,8 @@ class _CareerScreenState extends State<CareerScreen> {
 
   Widget getJobItem(
     BuildContext context,
-    JobsModel job, {
-    bool isSaved = false,
-  }) {
+    JobsModel job,
+  ) {
     return Container(
       constraints:
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
@@ -1201,9 +1200,15 @@ class _CareerScreenState extends State<CareerScreen> {
                     ),
                     Spacer(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (job.isSaved) {
+                          await jobsController.unsaveJob(job);
+                        } else {
+                          await jobsController.saveJob(job);
+                        }
+                      },
                       icon: SvgPicture.asset(
-                        isSaved
+                        job.isSaved
                             ? "assets/svg/icons/Icon_Bookmarked.svg"
                             : "assets/svg/icons/Icon_Bookmark.svg",
                         height: 20,

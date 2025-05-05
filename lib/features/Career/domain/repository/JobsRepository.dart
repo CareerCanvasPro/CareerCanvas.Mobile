@@ -5,4 +5,6 @@ abstract class JobsRepository {
   Future<JobsResponseModel?> getJobsRecomendation();
   Future<CareerTrendResponse?> getCareerTrends();
   // Future<JobsResponseModel?> searchJobs(String query);
+  Future<bool> saveJob(JobsModel job);
+  Future<bool> unsaveJob(JobsModel job);
 }

@@ -251,9 +251,10 @@ class _SearchPageState extends State<SearchPage> {
                                   scrollDirection: Axis.vertical,
                                   itemBuilder: (context, index) {
                                     return getJobsItem(
-                                        context,
-                                        searchController
-                                            .jobs.value!.data!.jobs![index]);
+                                      context,
+                                      searchController
+                                          .jobs.value!.data!.jobs![index],
+                                    );
                                   },
                                   itemCount: searchController
                                       .jobs.value!.data!.jobs!.length,
@@ -359,9 +360,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget getJobsItem(
     BuildContext context,
-    JobsModel job, {
-    bool isSaved = false,
-  }) {
+    JobsModel job,
+  ) {
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: 20.0,
@@ -479,9 +479,15 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                if (job.isSaved) {
+                                  await searchController.unsaveJob(job);
+                                } else {
+                                  await searchController.saveJob(job);
+                                }
+                              },
                               icon: SvgPicture.asset(
-                                isSaved
+                                job.isSaved
                                     ? "assets/svg/icons/Icon_Bookmarked.svg"
                                     : "assets/svg/icons/Icon_Bookmark.svg",
                                 height: 20,
