@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/profile.dart';
-import 'package:career_canvas/features/Networking/presentation/screens/networkingScreen.dart';
 import 'package:career_canvas/features/Search/presentation/screens/SearchPage.dart';
 import 'package:career_canvas/features/Skill/presentations/screens/SkillPage.dart';
+import 'package:career_canvas/features/jobs/presentations/screens/JobsScreen.dart';
 import 'package:career_canvas/src/constants.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       UserProfile(),
       SearchPage(),
       SkillsPage(),
-      NetworkingScreen(),
+      JobsScreen(),
     ];
   }
 
@@ -156,21 +156,40 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              "assets/svg/icons/icon_networking_page.svg",
+              "assets/svg/icons/Icon_jobs.svg",
+              height: 18,
               colorFilter: ColorFilter.mode(
                 Colors.grey,
                 BlendMode.srcIn,
               ),
             ),
             activeIcon: SvgPicture.asset(
-              "assets/svg/icons/icon_networking_page.svg",
+              "assets/svg/icons/Icon_jobs.svg",
+              height: 18,
               colorFilter: ColorFilter.mode(
                 primaryBlue,
                 BlendMode.srcIn,
               ),
             ),
-            label: 'Network',
+            label: 'Jobs',
           ),
+          // BottomNavigationBarItem(
+          //   icon: SvgPicture.asset(
+          //     "assets/svg/icons/icon_networking_page.svg",
+          //     colorFilter: ColorFilter.mode(
+          //       Colors.grey,
+          //       BlendMode.srcIn,
+          //     ),
+          //   ),
+          //   activeIcon: SvgPicture.asset(
+          //     "assets/svg/icons/icon_networking_page.svg",
+          //     colorFilter: ColorFilter.mode(
+          //       primaryBlue,
+          //       BlendMode.srcIn,
+          //     ),
+          //   ),
+          //   label: 'Network',
+          // ),
         ],
       ),
     );

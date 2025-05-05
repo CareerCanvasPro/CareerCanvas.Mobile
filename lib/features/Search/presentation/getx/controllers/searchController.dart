@@ -1,7 +1,9 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -20,6 +22,60 @@ class GlobalSearchController extends GetxController {
   final searchState = Rxn<SearchState>(SearchState.course);
 
   final searchQuery = ''.obs;
+
+  Future<void> saveCourse(CoursesModel course) async {
+    courses.value?.data?.courses
+        ?.where((element) => element.id == course.id)
+        .toList()
+        .first
+        .isSaved = true;
+    courses.refresh();
+    bool result = await coursesRepository.saveCourse(course);
+    if (result == false) {
+      courses.value?.data?.courses
+          ?.where((element) => element.id == course.id)
+          .toList()
+          .first
+          .isSaved = false;
+      courses.refresh();
+      Fluttertoast.showToast(
+        msg: "Failed to save course.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
+    }
+    debugPrint(result.toString());
+  }
+
+  Future<void> unsaveCourse(CoursesModel course) async {
+    courses.value?.data?.courses
+        ?.where((element) => element.id == course.id)
+        .toList()
+        .first
+        .isSaved = false;
+    courses.refresh();
+    bool result = await coursesRepository.unsaveCourse(course);
+    if (result == false) {
+      courses.value?.data?.courses
+          ?.where((element) => element.id == course.id)
+          .toList()
+          .first
+          .isSaved = true;
+      courses.refresh();
+      Fluttertoast.showToast(
+        msg: "Failed to unsave course.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
+    }
+    debugPrint(result.toString());
+  }
 
   Future<void> saveJob(JobsModel job) async {
     jobs.value?.data?.jobs
@@ -42,6 +98,8 @@ class GlobalSearchController extends GetxController {
         gravity: ToastGravity.BOTTOM,
         fontSize: 14.0,
       );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
     }
     debugPrint(result.toString());
   }
@@ -65,6 +123,8 @@ class GlobalSearchController extends GetxController {
         gravity: ToastGravity.BOTTOM,
         fontSize: 14.0,
       );
+    } else {
+      await getIt<UserProfileController>().getUserProfile();
     }
     debugPrint(result.toString());
   }

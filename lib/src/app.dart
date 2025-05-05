@@ -4,6 +4,7 @@ import 'package:app_links/app_links.dart';
 import 'package:career_canvas/core/models/mainRouting.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/screens/ProfileSettings.dart';
+import 'package:career_canvas/features/jobs/presentations/screens/JobsScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFive.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
@@ -207,6 +208,8 @@ class _MyAppState extends State<MyApp> {
                     return MyMentorsTab();
                   case ChatScreen.routeName:
                     return ChatScreen();
+                  case JobsScreen.routeName:
+                    return JobsScreen();
                   case PersonalityTestScreen.routeName:
                     return PersonalityTestScreen();
                   case AnalyzingResultsScreen.routeName:

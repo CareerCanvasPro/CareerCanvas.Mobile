@@ -73,7 +73,7 @@ class JobsRepository_API_Impl extends JobsRepository {
   Future<bool> saveJob(JobsModel job) async {
     JobsRemoteDataSource jobsRemoteDataSource = JobsRemoteDataSource(apiClient);
     try {
-      final response = await jobsRemoteDataSource.getJobs();
+      final response = await jobsRemoteDataSource.saveJob(job);
       if (response.statusCode == 200) {
         // JobsResponseModel data = JobsResponseModel.fromJson(response.data);
         return true;
@@ -104,7 +104,7 @@ class JobsRepository_API_Impl extends JobsRepository {
   Future<bool> unsaveJob(JobsModel job) async {
     JobsRemoteDataSource jobsRemoteDataSource = JobsRemoteDataSource(apiClient);
     try {
-      final response = await jobsRemoteDataSource.getJobs();
+      final response = await jobsRemoteDataSource.unsaveJob(job);
       if (response.statusCode == 200) {
         // JobsResponseModel data = JobsResponseModel.fromJson(response.data);
         return true;
