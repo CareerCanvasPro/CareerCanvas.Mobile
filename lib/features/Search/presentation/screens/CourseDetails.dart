@@ -9,7 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CourseDetails extends StatelessWidget {
   final CoursesModel course;
-  const CourseDetails({super.key, required this.course});
+  final String? tag;
+  const CourseDetails({super.key, required this.course, this.tag});
 
   String getImageCardTitle(List<TagModel> tags) {
     if (tags.isEmpty) return "";
@@ -69,7 +70,7 @@ class CourseDetails extends StatelessWidget {
         child: Column(
           children: [
             Hero(
-              tag: course.id,
+              tag: tag ?? course.id,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
