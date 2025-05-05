@@ -342,6 +342,7 @@ class _JobsScreenState extends State<JobsScreen> {
                         Expanded(
                           child: Text(
                             job.position.toString(),
+                            maxLines: 2,
                             style: getCTATextStyle(
                               context,
                               14,
@@ -359,6 +360,7 @@ class _JobsScreenState extends State<JobsScreen> {
                             job.organization.toString() +
                                 " · " +
                                 job.location.toString(),
+                            maxLines: 2,
                             style: getCTATextStyle(
                               context,
                               12,
