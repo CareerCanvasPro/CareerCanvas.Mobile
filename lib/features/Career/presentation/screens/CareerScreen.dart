@@ -1311,7 +1311,7 @@ class _CareerScreenState extends State<CareerScreen> {
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
-                      runSpacing: 8,
+                      runSpacing: 4,
                       children: [
                         Container(
                           decoration: BoxDecoration(

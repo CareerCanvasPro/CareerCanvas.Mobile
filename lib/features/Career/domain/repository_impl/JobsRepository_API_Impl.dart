@@ -130,4 +130,35 @@ class JobsRepository_API_Impl extends JobsRepository {
       return false;
     }
   }
+
+  @override
+  Future<JobsResponseModel?> searchJobs(String query) async {
+    JobsRemoteDataSource jobsRemoteDataSource = JobsRemoteDataSource(apiClient);
+    try {
+      final response = await jobsRemoteDataSource.searchJobs(query);
+      if (response.statusCode == 200) {
+        JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        return data;
+      } else {
+        throw Exception('Failed to load jobs');
+      }
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        // print(e.response!.data["message"]);
+        // print(e.response!.headers);
+        // print(e.response!.requestOptions);
+        throw Exception(e.response!.data["message"]);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        // print(e.requestOptions);
+        // print(e.message);
+        throw Exception(e.message);
+      }
+    } catch (e) {
+      // print('Error fetching jobs: $e');
+      return null;
+    }
+  }
 }

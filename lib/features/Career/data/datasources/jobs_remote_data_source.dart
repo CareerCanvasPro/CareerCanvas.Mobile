@@ -16,6 +16,15 @@ class JobsRemoteDataSource {
     return response;
   }
 
+  Future<Response<dynamic>> searchJobs(String query) async {
+    final response = await apiClient.get(
+      '${ApiClient.jobsBase}/search?keyword=$query',
+      useToken: true,
+    );
+    debugPrint(response.toString());
+    return response;
+  }
+
   Future<Response<dynamic>> saveJob(JobsModel job) async {
     final response = await apiClient.put(
       '${ApiClient.userBase}/jobs/${job.id}',

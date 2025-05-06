@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> onRefresh() async {
-    await searchController.searchCourses(null);
+    await searchController.getCoursesRecomendation();
     await searchController.getJobsRecomendation();
   }
 

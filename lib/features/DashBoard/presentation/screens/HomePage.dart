@@ -42,10 +42,10 @@ class _HomePageState extends State<HomePage> {
       ShowCaseWidget(builder: (context) {
         return CareerScreen();
       }),
-      UserProfile(),
       SearchPage(),
       SkillsPage(),
       JobsScreen(),
+      UserProfile(),
     ];
   }
 
@@ -103,23 +103,6 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              'assets/svg/icons/user_icon.svg',
-              colorFilter: ColorFilter.mode(
-                Colors.grey,
-                BlendMode.srcIn,
-              ),
-            ),
-            activeIcon: SvgPicture.asset(
-              'assets/svg/icons/user_icon.svg',
-              colorFilter: ColorFilter.mode(
-                primaryBlue,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: 'About Me',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
               "assets/svg/icons/search_icon.svg",
               height: 20,
               colorFilter: ColorFilter.mode(
@@ -172,6 +155,23 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             label: 'Jobs',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/svg/icons/user_icon.svg',
+              colorFilter: ColorFilter.mode(
+                Colors.grey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/svg/icons/user_icon.svg',
+              colorFilter: ColorFilter.mode(
+                primaryBlue,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: 'About Me',
           ),
           // BottomNavigationBarItem(
           //   icon: SvgPicture.asset(

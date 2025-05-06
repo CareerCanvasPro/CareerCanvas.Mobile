@@ -197,13 +197,13 @@ class GlobalSearchController extends GetxController {
     }
     var result;
     if (searchQuery.value.isNotEmpty) {
-      // result = await jobsRepository.searchJobs(searchQuery.value);
-      result = await jobsRepository.getJobsRecomendation();
+      result = await jobsRepository.searchJobs(searchQuery.value);
+      // result = await jobsRepository.getJobsRecomendation();
     } else {
       result = await jobsRepository.getJobsRecomendation();
     }
     if (result != null) {
-      courses.value = result;
+      jobs.value = result;
       if (result.data?.jobs?.isEmpty ?? true) {
         jobsErrorMessage.value =
             'No jobs available at the moment. Please check back later.';
