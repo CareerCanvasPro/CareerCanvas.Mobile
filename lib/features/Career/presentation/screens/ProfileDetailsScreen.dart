@@ -87,7 +87,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
       Uint8List pngBytes = byteData!.buffer.asUint8List();
 
       String androidLink =
-          "https://play.google.com/store/apps/details?id=com.careercanvas.app";
+          "https://play.google.com/store/apps/details?id=pro.careercanvas.app";
       //TODO: Add iOS link
       String iosLink =
           "https://apps.apple.com/us/app/career-canvas/id1601239870";

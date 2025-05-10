@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
+import 'package:career_canvas/core/utils/LoadingDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/ProfileSettings/presentation/getx/controllers/profileSettingsController.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
@@ -351,7 +352,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       onTap: () async {
                         String androidLink =
-                            "https://play.google.com/store/apps/details?id=com.careercanvas.app";
+                            "https://play.google.com/store/apps/details?id=pro.careercanvas.app";
                         //TODO: Add iOS link
                         String iosLink =
                             "https://apps.apple.com/us/app/career-canvas/id1601239870";
@@ -450,8 +451,22 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               "Are you sure you want to delete your account?",
                           buttonText: "Delete",
                           button2Text: "Cancel",
-                          onPressed: () {
+                          onPressed: () async {
                             Get.back();
+                            LoadingDialog.instance().show(
+                              context: context,
+                              text: "Deleting Profile",
+                            );
+                            await profileSettingsController.deleteProfile(
+                              onDeleted: () async {
+                                LoadingDialog.instance().hide();
+                                await Get.offNamedUntil(
+                                    LoginScreen.routeName, (route) => false);
+                              },
+                              onError: () {
+                                LoadingDialog.instance().hide();
+                              },
+                            );
                           },
                         );
                       },

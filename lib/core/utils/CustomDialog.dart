@@ -9,6 +9,7 @@ import 'package:career_canvas/src/constants.dart';
 import 'package:dio/dio.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
@@ -466,7 +467,22 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                         title: "Add Experiance",
                         onPressed: () {
                           FocusScope.of(context).unfocus();
-                          if (formKey.currentState!.validate()) {
+                          if (startDate == null) {
+                            Fluttertoast.showToast(
+                              msg: "Please enter start date",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 14.0,
+                            );
+                          } else if (isCurrentExperiance == true &&
+                              endDate == null) {
+                            Fluttertoast.showToast(
+                              msg: "Please enter end date",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 14.0,
+                            );
+                          } else if (formKey.currentState!.validate()) {
                             Experiance experiance = Experiance(
                               id: UniqueKey().toString(),
                               designation: designationController.text,
@@ -802,6 +818,12 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 3,
                           minLines: 1,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Academic Achievements is required";
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                             hintText: "Academic Achievements",
                             contentPadding: const EdgeInsets.symmetric(
@@ -999,16 +1021,29 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                         title: "Add Education",
                         onPressed: () {
                           FocusScope.of(context).unfocus();
-                          if (formKey.currentState!.validate()) {
+                          if (certificateFile == null) {
+                            Fluttertoast.showToast(
+                              msg: "Please upload certificate",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 14.0,
+                            );
+                          } else if (isCurrentEducation == true &&
+                              expectedGraduationDate == null) {
+                            Fluttertoast.showToast(
+                              msg: "Please enter expected graduation date",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 14.0,
+                            );
+                          } else if (formKey.currentState!.validate()) {
                             Education education = Education(
                               id: UniqueKey().toString(),
                               achievements: academicAchievementsController.text,
                               field: fieldOfEducationController.text,
                               institute: instituteNameController.text,
                               isCurrent: isCurrentEducation,
-                              graduationDate: expectedGraduationDate != null
-                                  ? expectedGraduationDate!
-                                  : null,
+                              graduationDate: expectedGraduationDate,
                               certificate: certificateFile,
                             );
                             widget.onPressedSubmit(education);

@@ -107,13 +107,24 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: SvgPicture.asset(
-                        "assets/svg/icons/search_icon.svg",
-                        height: 20,
-                        width: 20,
-                        colorFilter: ColorFilter.mode(
-                          Colors.grey,
-                          BlendMode.srcIn,
+                      child: IconButton(
+                        onPressed: () {
+                          focusNode.unfocus();
+                          if (searchController.searchState.value ==
+                              SearchState.course) {
+                            searchController.searchCourses(controller.text);
+                          } else {
+                            searchController.searchJobs(controller.text);
+                          }
+                        },
+                        icon: SvgPicture.asset(
+                          "assets/svg/icons/search_icon.svg",
+                          height: 20,
+                          width: 20,
+                          colorFilter: ColorFilter.mode(
+                            Colors.grey,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),

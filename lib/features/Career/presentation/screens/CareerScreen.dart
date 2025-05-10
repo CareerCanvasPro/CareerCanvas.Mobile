@@ -772,7 +772,7 @@ class _CareerScreenState extends State<CareerScreen> {
                         "Here you can see some job suggestions based on your profile.",
                     child: Container(
                       constraints: const BoxConstraints(
-                        maxHeight: 270,
+                        maxHeight: 280,
                         minHeight: 200,
                       ),
                       child: Obx(() {

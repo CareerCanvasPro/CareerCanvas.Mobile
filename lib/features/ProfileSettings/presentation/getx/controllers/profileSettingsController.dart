@@ -250,4 +250,59 @@ class ProfileSettingsController extends GetxController {
       }
     }
   }
+
+  Future<void> deleteProfile({
+    required Future<void> Function() onDeleted,
+    required Function() onError,
+  }) async {
+    try {
+      final apiClient = getIt<ApiClient>();
+      dio.Response response = await apiClient.delete(
+        ApiClient.userBase,
+        useToken: true,
+      );
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Profile Deleted",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+        await onDeleted();
+      } else {
+        onError();
+        Fluttertoast.showToast(
+          msg: "Failed to delete profile",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      }
+    } on dio.DioException catch (e) {
+      onError();
+      if (e.response != null) {
+        Fluttertoast.showToast(
+          msg: e.response!.data["message"],
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: e.message ?? e.toString(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 14.0,
+        );
+      }
+    } catch (e) {
+      onError();
+      Fluttertoast.showToast(
+        msg: "Failed to delete profile: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    }
+  }
 }
