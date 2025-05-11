@@ -163,7 +163,7 @@ class _MyAppState extends State<MyApp> {
         buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
       ),
       darkTheme: ThemeData.dark(),
-
+      themeMode: ThemeMode.light,
       initialRoute: widget.mainRouteData.initialRoute,
       // initialRoute: ProfileCompletionScreenTwo.routeName,
 
