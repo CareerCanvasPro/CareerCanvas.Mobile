@@ -7,14 +7,21 @@ import 'package:career_canvas/features/Career/domain/repository/CoursesRepositor
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CoursesRepository_API_Impl extends CoursesRepository {
   final ApiClient apiClient;
   CoursesRepository_API_Impl(this.apiClient);
   @override
   Future<CoursesResponseModel?> getCoursesRecomendation() async {
-    if (getIt<UserProfileController>().isOnline.value == false &&
+    if (await getIt<UserProfileController>().isOnline == false &&
         Appcache.courses != null) {
+      Fluttertoast.showToast(
+        msg: "No internet connection. Loading Courses from cache",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
       return Appcache.courses;
     }
     try {
@@ -25,7 +32,7 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       if (response.statusCode == 200) {
         CoursesResponseModel course =
             CoursesResponseModel.fromMap(response.data);
-        Appcache.setCourses(course);
+        await Appcache.setCourses(course);
         return course;
       } else {
         throw Exception('Failed to load courses');

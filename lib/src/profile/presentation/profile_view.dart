@@ -1252,8 +1252,8 @@ class _UserProfileState extends State<UserProfile> {
               GestureDetector(
                 onTap: userProfileController.isUploadingResume.value
                     ? null
-                    : () {
-                        if (getIt<UserProfileController>().isOnline.value ==
+                    : () async {
+                        if (await getIt<UserProfileController>().isOnline ==
                             false) {
                           Fluttertoast.showToast(
                             msg: "You Are Offline",

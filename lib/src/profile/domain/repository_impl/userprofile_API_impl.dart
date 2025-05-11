@@ -12,6 +12,7 @@ import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dar
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UserProfileRepository_API_Impl extends UserProfileRepository {
   final ApiClient apiClient;
@@ -19,8 +20,14 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<UserProfileData?> getUserProfile() async {
-    if (getIt<UserProfileController>().isOnline.value == false &&
+    if (await getIt<UserProfileController>().isOnline == false &&
         Appcache.userProfile != null) {
+      Fluttertoast.showToast(
+        msg: "No internet connection. Loading profile from cache",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
       return Appcache.userProfile;
     }
     try {
@@ -48,7 +55,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> addEducation(UploadEducation education) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -84,7 +91,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> addExperiance(UploadExperiance experiance) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -113,7 +120,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateAboutMe(String aboutMe) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -140,7 +147,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateSkills(List<String> skills) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -165,7 +172,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateLanguage(List<String> languages) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -190,7 +197,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateInterest(List<String> interests) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -215,7 +222,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateGoals(List<String> goals) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -243,7 +250,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteResume(Resume resume) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -268,7 +275,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteEducation(Education education) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {
@@ -306,7 +313,7 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteExperiance(Experiance experiance) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       return "You Are Offline";
     }
     try {

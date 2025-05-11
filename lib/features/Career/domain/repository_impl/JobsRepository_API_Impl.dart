@@ -13,7 +13,7 @@ class JobsRepository_API_Impl extends JobsRepository {
   JobsRepository_API_Impl(this.apiClient);
   @override
   Future<JobsResponseModel?> getJobsRecomendation() async {
-    if (getIt<UserProfileController>().isOnline.value == false &&
+    if (await getIt<UserProfileController>().isOnline == false &&
         Appcache.jobs != null) {
       return Appcache.jobs;
     }
@@ -22,7 +22,7 @@ class JobsRepository_API_Impl extends JobsRepository {
       final response = await jobsRemoteDataSource.getJobs();
       if (response.statusCode == 200) {
         JobsResponseModel data = JobsResponseModel.fromMap(response.data);
-        Appcache.setJobs(data);
+        await Appcache.setJobs(data);
         return data;
       } else {
         throw Exception('Failed to load jobs');
@@ -49,7 +49,7 @@ class JobsRepository_API_Impl extends JobsRepository {
 
   @override
   Future<CareerTrendResponse?> getCareerTrends() async {
-    if (getIt<UserProfileController>().isOnline.value == false &&
+    if (await getIt<UserProfileController>().isOnline == false &&
         Appcache.careerTrends != null) {
       return Appcache.careerTrends;
     }
@@ -58,7 +58,7 @@ class JobsRepository_API_Impl extends JobsRepository {
       final response = await jobsRemoteDataSource.getCareerTrends();
       if (response.statusCode == 200) {
         CareerTrendResponse trends = CareerTrendResponse.fromMap(response.data);
-        Appcache.setCareerTrends(trends);
+        await Appcache.setCareerTrends(trends);
         return trends;
       } else {
         throw Exception('Failed to load jobs');

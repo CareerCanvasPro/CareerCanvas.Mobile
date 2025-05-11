@@ -2,6 +2,7 @@ import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Appcache {
@@ -35,7 +36,14 @@ class Appcache {
 
   static Future<void> setUserProfile(UserProfileData userProfile) async {
     Appcache.userProfile = userProfile;
-    await secureStorage.write(key: 'userProfile', value: userProfile.toJson());
+    var data = userProfile.toJson(
+      isSaving: true,
+    );
+    debugPrint(data.toString());
+    await secureStorage.write(
+      key: 'userProfile',
+      value: data,
+    );
   }
 
   static Future<void> setJobs(JobsResponseModel jobs) async {
@@ -66,6 +74,7 @@ class Appcache {
     String? userProfileJson = await secureStorage.read(key: 'userProfile');
     if (userProfileJson != null) {
       userProfile = UserProfileData.fromJson(userProfileJson);
+      debugPrint(userProfileJson.toString());
     }
     return userProfile;
   }

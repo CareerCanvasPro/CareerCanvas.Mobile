@@ -105,16 +105,21 @@ class Education {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
+  Map<String, dynamic> toMap({
+    bool isSaving = false,
+  }) {
+    var data = <String, dynamic>{
       'achievements': achievements,
-      'certificate': certificate?.toMap(),
+      'certificate': certificate?.toMap(isSaving: isSaving),
       'field': field,
       'graduationDate': graduationDate?.toIso8601String(),
       'institute': institute,
       'isCurrent': isCurrent,
     };
+    if (isSaving) {
+      data['id'] = id;
+    }
+    return data;
   }
 
   factory Education.fromMap(Map<String, dynamic> map) {

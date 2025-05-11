@@ -20,28 +20,9 @@ class UserProfileController extends GetxController {
 
   UserProfileController(this.userProfileRepository, this.connectivityService);
 
-  @override
-  void onInit() {
-    super.onInit();
-
-    connectivityService.connectivityStream.listen((hasInternet) {
-      isOnline.value = hasInternet;
-      Fluttertoast.showToast(
-        msg: hasInternet ? "Connected to Internet" : "No Internet",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        fontSize: 14.0,
-      );
-    });
+  Future<bool> get isOnline async {
+    return await ConnectivityService().checkCurrentStatus();
   }
-
-  @override
-  void onClose() {
-    connectivityService.dispose();
-    super.onClose();
-  }
-
-  final RxBool isOnline = false.obs;
 
   var userProfile = Rxn<UserProfileData>();
   var isLoading = false.obs;

@@ -1,4 +1,3 @@
-import 'package:career_canvas/core/utils/AppCache.dart';
 import 'package:career_canvas/core/utils/ConnectivityService.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
@@ -20,7 +19,6 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../features/user/data/datasources/user_local_data_source.dart';
 import '../../features/user/data/datasources/user_remote_data_source.dart';
@@ -33,7 +31,6 @@ import '../../features/user/domain/usecases/sync_users.dart';
 import '../../features/user/domain/usecases/update_user.dart';
 import '../../features/user/presentation/bloc/cubit/user_cubit.dart';
 import '../network/api_client.dart';
-import '../utils/constants.dart';
 import '../network/network_info.dart';
 
 Future<String> getDatabasePath(String dbName) async {
@@ -47,7 +44,9 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<Dio>(() => Dio());
   // Register ApiClient
   getIt.registerLazySingleton<ApiClient>(() => ApiClient(Dio()));
-
+  getIt.registerSingleton<ConnectivityService>(
+    ConnectivityService(),
+  );
   // Register PersonalityTestRepositoryImpl, injecting Dio
   getIt.registerLazySingleton<PersonalityTestRepository>(
       () => PersonalityTestRepositoryImpl(getIt<Dio>()));
@@ -73,16 +72,13 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GlobalSearchController>(() =>
       GlobalSearchController(
           getIt<CoursesRepository>(), getIt<JobsRepository>()));
-  getIt.registerLazySingleton<ConnectivityService>(
-    () => ConnectivityService(),
-  );
 
   getIt.registerLazySingleton<UserProfileRepository>(
     () => UserProfileRepository_API_Impl(getIt<ApiClient>()),
   );
 
-  getIt.registerLazySingleton<UserProfileController>(
-    () => UserProfileController(
+  getIt.registerSingleton<UserProfileController>(
+    UserProfileController(
       getIt<UserProfileRepository>(),
       getIt<ConnectivityService>(),
     ),

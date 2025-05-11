@@ -128,7 +128,7 @@ class _CareerScreenState extends State<CareerScreen> {
     if (date == null) {
       return "N/A";
     }
-    return DateFormat.yMEd().format(date);
+    return DateFormat.yMMMMd().format(date);
   }
 
   GlobalKey _one = GlobalKey();
@@ -368,11 +368,22 @@ class _CareerScreenState extends State<CareerScreen> {
                                       12,
                                       color: Colors.white,
                                     ),
-                                    onPressed: () {
-                                      Navigator.pushNamed(context,
-                                          PersonalityTestScreen.routeName);
+                                    onPressed: () async {
+                                      if (await getIt<UserProfileController>()
+                                              .isOnline ==
+                                          false) {
+                                        Fluttertoast.showToast(
+                                          msg: "You Are Offline",
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          fontSize: 14.0,
+                                        );
+                                      } else {
+                                        Navigator.pushNamed(context,
+                                            PersonalityTestScreen.routeName);
+                                      }
                                     },
-                                    title: "Start Assessment",
+                                    title: "Start Assesment",
                                   ),
                                 ),
                               ],
@@ -479,12 +490,23 @@ class _CareerScreenState extends State<CareerScreen> {
                                           color: primaryBlue,
                                           width: 1,
                                         ),
-                                        onPressed: () {
-                                          //                                         WidgetsBinding.instance.addPostFrameCallback((_) {
-                                          //   Navigator.pushNamed(context, PersonalityTestScreen.routeName);
-                                          // });
-                                          Navigator.pushNamed(context,
-                                              PersonalityTestScreen.routeName);
+                                        onPressed: () async {
+                                          if (await getIt<
+                                                      UserProfileController>()
+                                                  .isOnline ==
+                                              false) {
+                                            Fluttertoast.showToast(
+                                              msg: "You Are Offline",
+                                              toastLength: Toast.LENGTH_LONG,
+                                              gravity: ToastGravity.BOTTOM,
+                                              fontSize: 14.0,
+                                            );
+                                          } else {
+                                            Navigator.pushNamed(
+                                              context,
+                                              PersonalityTestScreen.routeName,
+                                            );
+                                          }
                                         },
                                         title: "Re-Assess",
                                       ),
@@ -886,8 +908,8 @@ class _CareerScreenState extends State<CareerScreen> {
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: () {
-                        if (getIt<UserProfileController>().isOnline.value ==
+                      onPressed: () async {
+                        if (await getIt<UserProfileController>().isOnline ==
                             false) {
                           Fluttertoast.showToast(
                             msg: "You Are Offline",
@@ -1115,8 +1137,8 @@ class _CareerScreenState extends State<CareerScreen> {
             ),
             SizedBox(width: 8),
             ElevatedButton(
-              onPressed: () {
-                if (getIt<UserProfileController>().isOnline.value == false) {
+              onPressed: () async {
+                if (await getIt<UserProfileController>().isOnline == false) {
                   Fluttertoast.showToast(
                     msg: "You Are Offline",
                     toastLength: Toast.LENGTH_LONG,
@@ -1200,16 +1222,22 @@ class _CareerScreenState extends State<CareerScreen> {
                       width: 50,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        shape: BoxShape.rectangle,
                       ),
                       child: CachedNetworkImage(
-                        imageUrl: job.companyLogo ?? "https://google.com",
+                        imageUrl: job.companyLogo.toString().isNotEmpty
+                            ? job.companyLogo.toString()
+                            : "https://www.google.com/",
                         placeholder: (context, url) => Center(
-                            child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            primaryBlue,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              primaryBlue,
+                            ),
                           ),
-                        )),
+                        ),
+                        errorListener: (value) {
+                          debugPrint(value.toString());
+                        },
                         errorWidget: (context, url, error) => Center(
                           child: SvgPicture.asset(
                             "assets/svg/icons/Icon_Work_experience.svg",

@@ -66,7 +66,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   SizedBox(height: context.screenHeight * 0.12),
                   _buildTabContent(
-                    'Enter your eMail',
+                    'Enter your email',
                     // 'Continue with Magic Link',
                     "Get OTP",
                     context,

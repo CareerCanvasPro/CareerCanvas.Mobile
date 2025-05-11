@@ -29,7 +29,7 @@ class EmailController extends GetxController {
     }
 
     try {
-      if (getIt<UserProfileController>().isOnline.value == false) {
+      if (await getIt<UserProfileController>().isOnline == false) {
         throw "You Are Offline";
       }
       if (emailController.text.isEmpty) {

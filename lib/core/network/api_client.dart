@@ -1,6 +1,5 @@
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiClient {
   final Dio dio;
@@ -74,8 +73,8 @@ class ApiClient {
     if (useToken) {
       headers["Authorization"] = "Bearer ${TokenInfo.token}";
     }
-    debugPrint("Headers: $headers");
-    debugPrint("Url: $path");
+    // debugPrint("Headers: $headers");
+    // debugPrint("Url: $path");
     return dio.delete(
       path,
       options: Options(

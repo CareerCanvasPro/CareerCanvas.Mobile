@@ -47,7 +47,7 @@ class _ProfileCompletionScreenOneState
   bool isUploadingData = false;
 
   Future<void> _pickImage(BuildContext context) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (getIt<UserProfileController>().isOnline == false) {
       CustomDialog.showCustomDialog(
         context,
         title: "Error",
@@ -99,7 +99,7 @@ class _ProfileCompletionScreenOneState
             ),
           );
           String fileName = croppedFile.path.split('/').last;
-          print(fileName);
+          // print(fileName);
           FormData formData = FormData.fromMap(
             {
               "file": await MultipartFile.fromFile(
@@ -365,7 +365,7 @@ class _ProfileCompletionScreenOneState
   Future<void> _onNext(BuildContext context) async {
     try {
       FocusScope.of(context).unfocus();
-      if (getIt<UserProfileController>().isOnline.value == false) {
+      if (await getIt<UserProfileController>().isOnline == false) {
         throw "You Are Offline";
       }
       Onboardingone onboardingone = Onboardingone(
@@ -606,6 +606,7 @@ class _ProfileCompletionScreenOneState
               border: Border.all(
                 color: Colors.grey.shade300,
                 width: 2,
+                strokeAlign: BorderSide.strokeAlignOutside,
               ),
             ),
             clipBehavior: Clip.antiAlias,

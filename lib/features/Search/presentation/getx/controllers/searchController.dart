@@ -24,7 +24,7 @@ class GlobalSearchController extends GetxController {
   final searchQuery = ''.obs;
 
   Future<void> saveCourse(CoursesModel course) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,
@@ -60,7 +60,7 @@ class GlobalSearchController extends GetxController {
   }
 
   Future<void> unsaveCourse(CoursesModel course) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,
@@ -96,7 +96,7 @@ class GlobalSearchController extends GetxController {
   }
 
   Future<void> saveJob(JobsModel job) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,
@@ -132,7 +132,7 @@ class GlobalSearchController extends GetxController {
   }
 
   Future<void> unsaveJob(JobsModel job) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,
@@ -202,7 +202,7 @@ class GlobalSearchController extends GetxController {
   }
 
   Future<void> searchCourses(String? query) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,
@@ -236,7 +236,7 @@ class GlobalSearchController extends GetxController {
   }
 
   Future<void> searchJobs(String? query) async {
-    if (getIt<UserProfileController>().isOnline.value == false) {
+    if (await getIt<UserProfileController>().isOnline == false) {
       Fluttertoast.showToast(
         msg: "You Are Offline",
         toastLength: Toast.LENGTH_LONG,

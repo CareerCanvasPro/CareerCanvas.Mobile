@@ -368,7 +368,7 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("From"),
+                              Text("Joining Date"),
                               if (startDate != null)
                                 Text(
                                   formatDate(startDate!),
@@ -420,7 +420,7 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Till Date"),
+                                Text("Leaving Date"),
                                 if (endDate != null)
                                   Text(
                                     formatDate(endDate!),
@@ -469,15 +469,15 @@ class _AddExperianceDialogState extends State<AddExperianceDialog> {
                           FocusScope.of(context).unfocus();
                           if (startDate == null) {
                             Fluttertoast.showToast(
-                              msg: "Please enter start date",
+                              msg: "Please enter Joining date",
                               toastLength: Toast.LENGTH_LONG,
                               gravity: ToastGravity.BOTTOM,
                               fontSize: 14.0,
                             );
-                          } else if (isCurrentExperiance == true &&
+                          } else if (isCurrentExperiance != true &&
                               endDate == null) {
                             Fluttertoast.showToast(
-                              msg: "Please enter end date",
+                              msg: "Please enter Leaving date",
                               toastLength: Toast.LENGTH_LONG,
                               gravity: ToastGravity.BOTTOM,
                               fontSize: 14.0,
@@ -613,7 +613,7 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
         debugPrint(e.message);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
       setState(() {
         imageUploading = false;
       });
@@ -921,7 +921,7 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                                           dialogTitle: 'Upload Certificate',
                                         );
                                         if (result != null) {
-                                          print(result.files.first.path);
+                                          // print(result.files.first.path);
                                           await uploadCertifiate(
                                               result.files.first.path!);
                                         }
@@ -1028,7 +1028,7 @@ class _AddEducationDialogState extends State<AddEducationDialog> {
                               gravity: ToastGravity.BOTTOM,
                               fontSize: 14.0,
                             );
-                          } else if (isCurrentEducation == true &&
+                          } else if (isCurrentEducation != true &&
                               expectedGraduationDate == null) {
                             Fluttertoast.showToast(
                               msg: "Please enter expected graduation date",

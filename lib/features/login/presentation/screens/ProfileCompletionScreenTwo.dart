@@ -447,7 +447,7 @@ class _ProfileCompletionScreenTwoState
                           return;
                         }
                         try {
-                          if (getIt<UserProfileController>().isOnline.value ==
+                          if (await getIt<UserProfileController>().isOnline ==
                               false) {
                             throw "You Are Offline";
                           }

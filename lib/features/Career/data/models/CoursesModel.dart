@@ -29,33 +29,35 @@ class CoursesModel extends CoursesEntity {
   factory CoursesModel.fromJson(String str) =>
       CoursesModel.fromMap(json.decode(str));
 
-  factory CoursesModel.fromMap(Map<String, dynamic> json) => CoursesModel(
-        id: json["id"],
-        createdAt: DateTime.parse(json["createdAt"]).toLocal(),
-        description: json["description"] ?? "",
-        name: json["name"] ?? "",
-        sourceName: json["sourceName"] ?? "",
-        sourceUrl: json["sourceUrl"] ?? "",
-        updatedAt: DateTime.parse(json["updatedAt"]).toLocal(),
-        isSaved: json["isSaved"] ?? false,
-        tags: json["tags"] == null
-            ? []
-            : List<TagModel>.from(
-                json["tags"]!.map(
-                  (x) => TagModel.fromMap(x),
-                ),
+  factory CoursesModel.fromMap(Map<String, dynamic> json) {
+    return CoursesModel(
+      id: json["id"],
+      createdAt: DateTime.parse(json["createdAt"]).toLocal(),
+      description: json["description"] ?? "",
+      name: json["name"] ?? "",
+      sourceName: json["sourceName"] ?? "",
+      sourceUrl: json["sourceUrl"] ?? "",
+      updatedAt: DateTime.parse(json["updatedAt"]).toLocal(),
+      isSaved: json["isSaved"] ?? false,
+      tags: json["tags"] == null
+          ? []
+          : List<TagModel>.from(
+              json["tags"]!.map(
+                (x) => TagModel.fromMap(x),
               ),
-      );
+            ),
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
       'description': description,
       'name': name,
       'sourceName': sourceName,
       'sourceUrl': sourceUrl,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.toIso8601String(),
       'tags': tags.map((x) => x.toMap()).toList(),
       'isSaved': isSaved,
     };
@@ -120,7 +122,7 @@ class CoursesDataModel extends CoursesDataEntity {
       count: map['count'] != null ? map['count'] as int : null,
       courses: map['courses'] != null
           ? List<CoursesModel>.from(
-              (map['courses'] as List<int>).map<CoursesModel?>(
+              (map['courses'] as List? ?? []).map<CoursesModel?>(
                 (x) => CoursesModel.fromMap(x as Map<String, dynamic>),
               ),
             )

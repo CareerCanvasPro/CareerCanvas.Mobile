@@ -8,14 +8,11 @@ import 'package:career_canvas/features/AuthService.dart';
 import 'package:career_canvas/features/DashBoard/presentation/screens/HomePage.dart';
 import 'package:career_canvas/features/login/presentation/screens/LoginScreen.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenOne.dart';
-import 'package:career_canvas/features/user/data/datasources/user_local_data_source.dart';
-import 'package:career_canvas/features/user/data/models/user_model.dart';
 import 'package:career_canvas/core/utils/VersionInfo.dart';
 import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'src/app.dart';
 
@@ -41,8 +38,8 @@ void main() async {
   //final database = getIt<Database>();
   //await resetDatabase(database); // Reset for development only
 
-  final userLocalDataSource = getIt<UserLocalDataSource>();
-  await userLocalDataSource.initDatabase();
+  // final userLocalDataSource = getIt<UserLocalDataSource>();
+  // await userLocalDataSource.initDatabase();
   //await insertExampleData(userLocalDataSource); // Insert example data
   await getIt<AuthService>().loadToken(); // Load the stored token
   await Appcache.init();
@@ -63,7 +60,7 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
     initialRoute: LoginScreen.routeName,
   );
   if (TokenInfo.isloggedInUser()) {
-    if (getIt<UserProfileController>().isOnline.value == false &&
+    if (await getIt<UserProfileController>().isOnline == false &&
         Appcache.userProfile != null) {
       routeData.userProfile = Appcache.userProfile;
       routeData.initialRoute = HomePage.routeName;
@@ -87,7 +84,6 @@ Future<MainRouteData> checkIfUserLoggedIn() async {
           },
         ),
       );
-      // print(response.data['data']);
       UserProfileData profile = UserProfileData.fromMap(response.data['data']);
       routeData.userProfile = profile;
       routeData.initialRoute = HomePage.routeName;

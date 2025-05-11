@@ -86,9 +86,8 @@ class Experiance {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool isSaving = false}) {
     Map<String, dynamic> data = <String, dynamic>{
-      'id': id,
       'designation': designation,
       'startDate': startDate.toIso8601String(),
       'isCurrent': isCurrent,
@@ -96,6 +95,9 @@ class Experiance {
     };
     if (endDate != null) {
       data['endDate'] = endDate!.toIso8601String();
+    }
+    if (isSaving) {
+      data['id'] = id;
     }
     return data;
   }

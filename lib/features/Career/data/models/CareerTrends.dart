@@ -45,7 +45,7 @@ class CareerTrend {
   factory CareerTrend.fromMap(Map<String, dynamic> map) {
     return CareerTrend(
       careerTrends: List<Career>.from(
-        (map['careerTrends'] as List<int>).map<Career>(
+        (map['careerTrends'] as List? ?? []).map<Career>(
           (x) => Career.fromMap(x as Map<String, dynamic>),
         ),
       ),

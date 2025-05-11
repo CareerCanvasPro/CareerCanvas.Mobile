@@ -50,29 +50,31 @@ class JobsModel extends JobsEntity {
 
   factory JobsModel.fromJson(String str) => JobsModel.fromMap(json.decode(str));
 
-  factory JobsModel.fromMap(Map<String, dynamic> json) => JobsModel(
-        id: json["id"],
-        companyLogo: json["companyLogo"] ?? "",
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]).toLocal(),
-        deadline: json["deadline"] == null
-            ? null
-            : DateTime.parse(json["deadline"]).toLocal(),
-        location: json["location"],
-        locationType: json["locationType"] != null
-            ? JobLocationType.fromString(json["locationType"])
-            : null,
-        organization: json["organization"],
-        sourceName: json["sourceName"],
-        position: json["position"],
-        isSaved: json["isSaved"] ?? false,
-        type: json["type"] != null ? JobType.fromString(json["type"]) : null,
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]).toLocal(),
-        url: json["url"],
-      );
+  factory JobsModel.fromMap(Map<String, dynamic> json) {
+    return JobsModel(
+      id: json["id"],
+      companyLogo: json["companyLogo"] ?? "",
+      createdAt: json["createdAt"] == null
+          ? null
+          : DateTime.parse(json["createdAt"]).toLocal(),
+      deadline: json["deadline"] == null
+          ? null
+          : DateTime.parse(json["deadline"]).toLocal(),
+      location: json["location"],
+      locationType: json["locationType"] != null
+          ? JobLocationType.fromString(json["locationType"])
+          : null,
+      organization: json["organization"],
+      sourceName: json["sourceName"],
+      position: json["position"],
+      isSaved: json["isSaved"] ?? false,
+      type: json["type"] != null ? JobType.fromString(json["type"]) : null,
+      updatedAt: json["updatedAt"] == null
+          ? null
+          : DateTime.parse(json["updatedAt"]).toLocal(),
+      url: json["url"],
+    );
+  }
 
   @override
   String toString() {
@@ -83,15 +85,15 @@ class JobsModel extends JobsEntity {
     return <String, dynamic>{
       'id': id,
       'companyLogo': companyLogo,
-      'createdAt': createdAt?.millisecondsSinceEpoch,
-      'deadline': deadline?.millisecondsSinceEpoch,
+      'createdAt': createdAt?.toIso8601String(),
+      'deadline': deadline?.toIso8601String(),
       'location': location,
       'sourceName': sourceName,
       'locationType': locationType?.name,
       'organization': organization,
       'position': position,
       'type': type?.name,
-      'updatedAt': updatedAt?.millisecondsSinceEpoch,
+      'updatedAt': updatedAt?.toIso8601String(),
       'url': url,
       'isSaved': isSaved,
     };
@@ -132,7 +134,7 @@ class JobDataModel extends JobsDataEntity {
       count: map['count'] != null ? map['count'] as int : null,
       jobs: map['jobs'] != null
           ? List<JobsModel>.from(
-              (map['jobs'] as List<int>).map<JobsModel?>(
+              (map['jobs'] as List? ?? []).map<JobsModel?>(
                 (x) => JobsModel.fromMap(x as Map<String, dynamic>),
               ),
             )

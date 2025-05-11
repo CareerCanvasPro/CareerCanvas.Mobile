@@ -27,10 +27,10 @@ android {
 
     defaultConfig {
         applicationId = "pro.careercanvas.app"
-        minSdk = 18
+        minSdk = 21
         targetSdk = 35
-        versionCode = 36
-        versionName = "1.3.7"
+        versionCode = 37
+        versionName = "1.3.8"
     }
 
     bundle {
