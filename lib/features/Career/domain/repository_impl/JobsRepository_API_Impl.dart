@@ -1,8 +1,11 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/AppCache.dart';
 import 'package:career_canvas/features/Career/data/datasources/jobs_remote_data_source.dart';
 import 'package:career_canvas/features/Career/data/models/CareerTrends.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 
 class JobsRepository_API_Impl extends JobsRepository {
@@ -10,11 +13,16 @@ class JobsRepository_API_Impl extends JobsRepository {
   JobsRepository_API_Impl(this.apiClient);
   @override
   Future<JobsResponseModel?> getJobsRecomendation() async {
+    if (getIt<UserProfileController>().isOnline.value == false &&
+        Appcache.jobs != null) {
+      return Appcache.jobs;
+    }
     JobsRemoteDataSource jobsRemoteDataSource = JobsRemoteDataSource(apiClient);
     try {
       final response = await jobsRemoteDataSource.getJobs();
       if (response.statusCode == 200) {
-        JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        JobsResponseModel data = JobsResponseModel.fromMap(response.data);
+        Appcache.setJobs(data);
         return data;
       } else {
         throw Exception('Failed to load jobs');
@@ -41,11 +49,17 @@ class JobsRepository_API_Impl extends JobsRepository {
 
   @override
   Future<CareerTrendResponse?> getCareerTrends() async {
+    if (getIt<UserProfileController>().isOnline.value == false &&
+        Appcache.careerTrends != null) {
+      return Appcache.careerTrends;
+    }
     JobsRemoteDataSource jobsRemoteDataSource = JobsRemoteDataSource(apiClient);
     try {
       final response = await jobsRemoteDataSource.getCareerTrends();
       if (response.statusCode == 200) {
-        return CareerTrendResponse.fromMap(response.data);
+        CareerTrendResponse trends = CareerTrendResponse.fromMap(response.data);
+        Appcache.setCareerTrends(trends);
+        return trends;
       } else {
         throw Exception('Failed to load jobs');
       }
@@ -75,7 +89,7 @@ class JobsRepository_API_Impl extends JobsRepository {
     try {
       final response = await jobsRemoteDataSource.saveJob(job);
       if (response.statusCode == 200) {
-        // JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        // JobsResponseModel data = JobsResponseModel.fromMap(response.data);
         return true;
       } else {
         throw Exception('Failed to save job');
@@ -106,7 +120,7 @@ class JobsRepository_API_Impl extends JobsRepository {
     try {
       final response = await jobsRemoteDataSource.unsaveJob(job);
       if (response.statusCode == 200) {
-        // JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        // JobsResponseModel data = JobsResponseModel.fromMap(response.data);
         return true;
       } else {
         throw Exception('Failed to unsave job');
@@ -137,7 +151,7 @@ class JobsRepository_API_Impl extends JobsRepository {
     try {
       final response = await jobsRemoteDataSource.searchJobs(query);
       if (response.statusCode == 200) {
-        JobsResponseModel data = JobsResponseModel.fromJson(response.data);
+        JobsResponseModel data = JobsResponseModel.fromMap(response.data);
         return data;
       } else {
         throw Exception('Failed to load jobs');

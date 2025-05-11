@@ -88,6 +88,7 @@ class Experiance {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{
+      'id': id,
       'designation': designation,
       'startDate': startDate.toIso8601String(),
       'isCurrent': isCurrent,

@@ -17,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mime/mime.dart';
 
 class CustomDialog {
-  static void showCustomDialog(
+  static Future showCustomDialog(
     BuildContext context, {
     required String title,
     required String content,
@@ -25,8 +25,8 @@ class CustomDialog {
     VoidCallback? onPressed,
     String? button2Text,
     VoidCallback? onPressed2,
-  }) {
-    showAdaptiveDialog(
+  }) async {
+    return showAdaptiveDialog(
       context: context,
       builder: (context) {
         return AlertDialog(

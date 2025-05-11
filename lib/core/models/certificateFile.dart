@@ -8,8 +8,9 @@ class UploadedFile {
     required this.key,
     required this.type,
     required this.url,
+    required this.id,
   });
-
+  String id;
   String name;
   int size;
   String key;
@@ -22,6 +23,7 @@ class UploadedFile {
   String toJson() => json.encode(toMap());
 
   factory UploadedFile.fromMap(Map<String, dynamic> json) => UploadedFile(
+        id: json["id"],
         key: json["key"],
         name: json["name"],
         size: json["size"],
@@ -34,5 +36,7 @@ class UploadedFile {
         "name": name,
         "size": size,
         "type": type,
+        "id": id,
+        "url": url,
       };
 }

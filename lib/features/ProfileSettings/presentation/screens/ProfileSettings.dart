@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
+import 'package:career_canvas/core/utils/AppCache.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
 import 'package:career_canvas/core/utils/LoadingDialog.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
@@ -404,16 +405,23 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           fontSize: 12,
                         ),
                       ),
-                      onTap: () {
-                        CustomDialog.showCustomDialog(
+                      onTap: () async {
+                        await CustomDialog.showCustomDialog(
                           context,
                           title: "Logout?",
                           content: "Are you sure you want to logout?",
                           buttonText: "Logout",
                           button2Text: "Cancel",
                           onPressed: () async {
-                            TokenInfo.clear();
-                            Get.offNamedUntil(
+                            Get.back();
+                            LoadingDialog.instance().show(
+                              context: context,
+                              text: "Deleting Profile",
+                            );
+                            await TokenInfo.clear();
+                            await Appcache.clear();
+                            LoadingDialog.instance().hide();
+                            await Get.offNamedUntil(
                                 LoginScreen.routeName, (route) => false);
                           },
                         );
@@ -448,7 +456,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           context,
                           title: "Delete Account?",
                           content:
-                              "Are you sure you want to delete your account?",
+                              "Are you sure you want to delete your account? This action is irreversible. All your data related to your account will be deleted.",
                           buttonText: "Delete",
                           button2Text: "Cancel",
                           onPressed: () async {
@@ -459,6 +467,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             );
                             await profileSettingsController.deleteProfile(
                               onDeleted: () async {
+                                await TokenInfo.clear();
+                                await Appcache.clear();
                                 LoadingDialog.instance().hide();
                                 await Get.offNamedUntil(
                                     LoginScreen.routeName, (route) => false);

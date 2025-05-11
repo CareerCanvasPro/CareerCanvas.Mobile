@@ -43,5 +43,8 @@ class Resume {
         "name": name,
         "size": size,
         "type": type,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+        "url": url,
       };
 }

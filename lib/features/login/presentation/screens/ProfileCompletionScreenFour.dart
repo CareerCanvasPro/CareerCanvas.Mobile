@@ -609,6 +609,10 @@ class _ProfileCompletionScreenFourState
                         return;
                       }
                       try {
+                        if (getIt<UserProfileController>().isOnline.value ==
+                            false) {
+                          throw "You Are Offline";
+                        }
                         setState(() {
                           isUploadingData = true;
                         });
@@ -636,7 +640,7 @@ class _ProfileCompletionScreenFourState
                         setState(() {
                           isUploadingData = false;
                         });
-                        getIt<UserProfileController>().getUserProfile();
+                        // getIt<UserProfileController>().getUserProfile();
                         Get.to(
                           () => ProfileCompletionScreenFive(),
                         );

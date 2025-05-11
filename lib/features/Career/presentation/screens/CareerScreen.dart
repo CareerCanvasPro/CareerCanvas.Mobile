@@ -22,6 +22,7 @@ import 'package:career_canvas/src/profile/presentation/getx/controllers/user_pro
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -886,10 +887,20 @@ class _CareerScreenState extends State<CareerScreen> {
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          PersonalityTestScreen.routeName,
-                        );
+                        if (getIt<UserProfileController>().isOnline.value ==
+                            false) {
+                          Fluttertoast.showToast(
+                            msg: "You Are Offline",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            fontSize: 14.0,
+                          );
+                        } else {
+                          Navigator.pushNamed(
+                            context,
+                            PersonalityTestScreen.routeName,
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -1105,10 +1116,19 @@ class _CareerScreenState extends State<CareerScreen> {
             SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  PersonalityTestScreen.routeName,
-                );
+                if (getIt<UserProfileController>().isOnline.value == false) {
+                  Fluttertoast.showToast(
+                    msg: "You Are Offline",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 14.0,
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    PersonalityTestScreen.routeName,
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

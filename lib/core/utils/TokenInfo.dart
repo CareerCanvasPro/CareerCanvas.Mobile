@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenInfo {
@@ -6,6 +7,7 @@ class TokenInfo {
   static late String type;
   static late DateTime expiresAt;
   static late SharedPreferences prefs;
+  static late FlutterSecureStorage secureStorage;
   static late bool careerTutorialViewDone;
 
   static final TokenInfo _instance = TokenInfo._internal();
@@ -17,6 +19,14 @@ class TokenInfo {
   static TokenInfo get instance => _instance;
 
   static Future init() async {
+    secureStorage = FlutterSecureStorage(
+      aOptions: AndroidOptions(
+        encryptedSharedPreferences: true,
+      ),
+      iOptions: IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+      ),
+    );
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
     int expiry = prefs.getInt('expiresAt') ?? 0;

@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:career_canvas/features/Career/domain/entities/CoursesEntity.dart';
 
 class CoursesModel extends CoursesEntity {
@@ -39,8 +41,27 @@ class CoursesModel extends CoursesEntity {
         tags: json["tags"] == null
             ? []
             : List<TagModel>.from(
-                json["tags"]!.map((x) => TagModel.fromMap(x))),
+                json["tags"]!.map(
+                  (x) => TagModel.fromMap(x),
+                ),
+              ),
       );
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'description': description,
+      'name': name,
+      'sourceName': sourceName,
+      'sourceUrl': sourceUrl,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'tags': tags.map((x) => x.toMap()).toList(),
+      'isSaved': isSaved,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class TagModel extends TagEntity {
@@ -75,14 +96,6 @@ class CoursesDataModel extends CoursesDataEntity {
 
   CoursesDataModel({this.count, this.courses});
 
-  CoursesDataModel.fromJson(Map<String, dynamic> json)
-      : count = json['count'],
-        courses = json['courses'] != null
-            ? (json['courses'] as List)
-                .map((v) => CoursesModel.fromMap(v))
-                .toList()
-            : null;
-
   CoursesDataModel copyWith({int? count, List<CoursesModel>? courses}) {
     return CoursesDataModel(
       count: count ?? this.count,
@@ -94,6 +107,31 @@ class CoursesDataModel extends CoursesDataEntity {
   String toString() {
     return 'CoursesDataModel(count: $count, courses: $courses)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'count': count,
+      'courses': courses?.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory CoursesDataModel.fromMap(Map<String, dynamic> map) {
+    return CoursesDataModel(
+      count: map['count'] != null ? map['count'] as int : null,
+      courses: map['courses'] != null
+          ? List<CoursesModel>.from(
+              (map['courses'] as List<int>).map<CoursesModel?>(
+                (x) => CoursesModel.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory CoursesDataModel.fromJson(String source) =>
+      CoursesDataModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class CoursesResponseModel extends CoursesResponseEntity {
@@ -103,12 +141,6 @@ class CoursesResponseModel extends CoursesResponseEntity {
   final String? message;
 
   CoursesResponseModel({this.data, this.message});
-
-  CoursesResponseModel.fromJson(Map<String, dynamic> json)
-      : data = json['data'] != null
-            ? CoursesDataModel.fromJson(json['data'])
-            : null,
-        message = json['message'];
 
   CoursesResponseModel copyWith({CoursesDataModel? data, String? message}) {
     return CoursesResponseModel(
@@ -121,4 +153,25 @@ class CoursesResponseModel extends CoursesResponseEntity {
   String toString() {
     return 'CoursesResponseModel(data: $data, message: $message)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'data': data?.toMap(),
+      'message': message,
+    };
+  }
+
+  factory CoursesResponseModel.fromMap(Map<String, dynamic> map) {
+    return CoursesResponseModel(
+      data: map['data'] != null
+          ? CoursesDataModel.fromMap(map['data'] as Map<String, dynamic>)
+          : null,
+      message: map['message'] != null ? map['message'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory CoursesResponseModel.fromJson(String source) =>
+      CoursesResponseModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

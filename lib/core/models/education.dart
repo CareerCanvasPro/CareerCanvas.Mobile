@@ -107,6 +107,7 @@ class Education {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'achievements': achievements,
       'certificate': certificate?.toMap(),
       'field': field,

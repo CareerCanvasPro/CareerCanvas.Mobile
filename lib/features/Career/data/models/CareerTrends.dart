@@ -24,6 +24,15 @@ class CareerTrendResponse {
 
   @override
   String toString() => 'CareerTrendResponse(data: $data, message: $message)';
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'data': data?.toMap(),
+      'message': message,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class CareerTrend {
@@ -35,13 +44,11 @@ class CareerTrend {
 
   factory CareerTrend.fromMap(Map<String, dynamic> map) {
     return CareerTrend(
-      careerTrends: map['careerTrends'] != null
-          ? List<Career>.from(
-              (map['careerTrends'] as List).map<Career?>(
-                (x) => Career.fromMap(x as Map<String, dynamic>),
-              ),
-            )
-          : [],
+      careerTrends: List<Career>.from(
+        (map['careerTrends'] as List<int>).map<Career>(
+          (x) => Career.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 
@@ -50,6 +57,14 @@ class CareerTrend {
 
   @override
   String toString() => 'CareerTrend(careerTrends: $careerTrends)';
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'careerTrends': careerTrends.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class Career {

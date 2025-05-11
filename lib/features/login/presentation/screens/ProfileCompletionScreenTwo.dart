@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
@@ -5,10 +6,11 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart' as getIt;
+import 'package:get/get.dart' as getG;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
@@ -42,7 +44,7 @@ class _ProfileCompletionScreenTwoState
     CustomDialog.showAddEducationDialog(
       context,
       onPressedSubmit: (education) {
-        getIt.Get.back();
+        getG.Get.back();
         _educationList.add(education);
         setState(() {});
       },
@@ -445,6 +447,10 @@ class _ProfileCompletionScreenTwoState
                           return;
                         }
                         try {
+                          if (getIt<UserProfileController>().isOnline.value ==
+                              false) {
+                            throw "You Are Offline";
+                          }
                           setState(() {
                             isUploadingData = true;
                           });

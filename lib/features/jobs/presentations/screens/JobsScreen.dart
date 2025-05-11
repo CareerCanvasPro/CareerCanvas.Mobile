@@ -42,7 +42,7 @@ class _JobsScreenState extends State<JobsScreen> {
     if (date == null) {
       return "N/A";
     }
-    return DateFormat.yMEd().format(date);
+    return DateFormat.yMMMMd().format(date);
   }
 
   bool _showFab = false;

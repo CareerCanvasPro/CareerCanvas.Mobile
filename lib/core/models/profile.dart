@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/data/models/JobsModel.dart';
-import 'package:flutter/foundation.dart';
 
 class PersonalityTestResult {
   double TF;
@@ -127,67 +128,66 @@ class UserProfileData {
   });
 
   factory UserProfileData.fromMap(Map<String, dynamic> map) {
-    debugPrint(map["personality"].toString());
     return UserProfileData(
-      isPrivate: map['isPrivate'] as bool? ?? false,
-      following: (map['following'] as int?) ?? 0,
-      followers: (map['followers'] as int?) ?? 0,
-      savedCourses: List<CoursesModel>.from(
-        (map['savedCourses'] as List<dynamic>? ?? []).map<CoursesModel>(
-          (x) => CoursesModel.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      savedJobs: List<JobsModel>.from(
-        (map['savedJobs'] as List<dynamic>? ?? []).map<JobsModel>(
-          (x) => JobsModel.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      goals: List<KeyVal>.from(
-        (map['goals'] as List<dynamic>? ?? []).map<KeyVal>(
-          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      coins: (map['coins'] as int?) ?? 0,
-      address: (map['address'] as String?) ?? "",
-      email: (map['email'] as String?) ?? "",
-      name: (map['name'] as String?) ?? "",
-      aboutMe: (map['aboutMe'] as String?) ?? "",
-      personalityTestResult: map["personality"] != null
-          ? PersonalityTestResult.fromMap(
-              map["personality"] as Map<String, dynamic>)
-          : null,
+      following: map['following'] as int,
+      followers: map['followers'] as int,
+      address: map['address'] as String,
+      email: map['email'] as String,
+      name: map['name'] as String,
+      aboutMe: map['aboutMe'] as String,
+      isPrivate: map['isPrivate'] as bool,
+      coins: map['coins'] as int,
       occupation: List<Experiance>.from(
-        (map['occupations'] as List<dynamic>? ?? []).map<Experiance>(
+        (map['occupation'] as List<int>).map<Experiance>(
           (x) => Experiance.fromMap(x as Map<String, dynamic>),
         ),
       ),
       education: List<Education>.from(
-        (map['educations'] as List<dynamic>? ?? []).map<Education>(
+        (map['education'] as List<int>).map<Education>(
           (x) => Education.fromMap(x as Map<String, dynamic>),
         ),
       ),
       languages: List<KeyVal>.from(
-        (map['languages'] as List<dynamic>? ?? []).map<KeyVal>(
+        (map['languages'] as List<int>).map<KeyVal>(
           (x) => KeyVal.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      profilePicture: (map['profilePicture'] as String?) ?? "",
+      profilePicture: map['profilePicture'] as String,
       skills: List<KeyVal>.from(
-        (map['skills'] as List<dynamic>? ?? []).map<KeyVal>(
+        (map['skills'] as List<int>).map<KeyVal>(
           (x) => KeyVal.fromMap(x as Map<String, dynamic>),
         ),
       ),
       interests: List<KeyVal>.from(
-        (map['interests'] as List<dynamic>? ?? []).map<KeyVal>(
+        (map['interests'] as List<int>).map<KeyVal>(
           (x) => KeyVal.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      phone: (map['phone'] as String?) ?? "",
+      phone: map['phone'] as String,
       resumes: List<Resume>.from(
-        (map['resumes'] as List<dynamic>? ?? []).map<Resume>(
+        (map['resumes'] as List<int>).map<Resume>(
           (x) => Resume.fromMap(x as Map<String, dynamic>),
         ),
       ),
+      goals: List<KeyVal>.from(
+        (map['goals'] as List<int>).map<KeyVal>(
+          (x) => KeyVal.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      savedCourses: List<CoursesModel>.from(
+        (map['savedCourses'] as List<int>).map<CoursesModel>(
+          (x) => CoursesModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      savedJobs: List<JobsModel>.from(
+        (map['savedJobs'] as List<int>).map<JobsModel>(
+          (x) => JobsModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      personalityTestResult: map['personalityTestResult'] != null
+          ? PersonalityTestResult.fromMap(
+              map['personalityTestResult'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -200,4 +200,31 @@ class UserProfileData {
   String toString() {
     return 'UserProfileData(following: $following, followers: $followers, address: $address, email: $email, name: $name, aboutMe: $aboutMe, occupation: $occupation, education: $education, languages: $languages, profilePicture: $profilePicture, skills: $skills, phone: $phone, resumes: $resumes, goals: $goals, personalityTestResult: $personalityTestResult)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'following': following,
+      'followers': followers,
+      'address': address,
+      'email': email,
+      'name': name,
+      'aboutMe': aboutMe,
+      'isPrivate': isPrivate,
+      'coins': coins,
+      'occupation': occupation.map((x) => x.toMap()).toList(),
+      'education': education.map((x) => x.toMap()).toList(),
+      'languages': languages.map((x) => x.toMap()).toList(),
+      'profilePicture': profilePicture,
+      'skills': skills.map((x) => x.toMap()).toList(),
+      'interests': interests.map((x) => x.toMap()).toList(),
+      'phone': phone,
+      'resumes': resumes.map((x) => x.toMap()).toList(),
+      'goals': goals.map((x) => x.toMap()).toList(),
+      'savedCourses': savedCourses.map((x) => x.toMap()).toList(),
+      'savedJobs': savedJobs.map((x) => x.toMap()).toList(),
+      'personalityTestResult': personalityTestResult?.toMap(),
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }

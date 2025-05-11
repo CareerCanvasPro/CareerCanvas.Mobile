@@ -366,7 +366,7 @@ class _SearchPageState extends State<SearchPage> {
     if (date == null) {
       return "N/A";
     }
-    return DateFormat.yMEd().format(date);
+    return DateFormat.yMMMMd().format(date);
   }
 
   Widget getJobsItem(

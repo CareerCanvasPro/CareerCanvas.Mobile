@@ -28,18 +28,14 @@ import '../features/Networking/presentation/screens/networkingScreen.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import '../features/login/presentation/screens/ProfileCompletionScreenThree.dart';
 import '../features/user/presentation/screens/user_screen.dart';
-import 'settings/settings_controller.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatefulWidget {
   final MainRouteData mainRouteData;
   const MyApp({
     super.key,
-    required this.settingsController,
     required this.mainRouteData,
   });
-
-  final SettingsController settingsController;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -129,98 +125,92 @@ class _MyAppState extends State<MyApp> {
 
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
-    return ListenableBuilder(
-      listenable: widget.settingsController,
-      builder: (BuildContext context, Widget? child) {
-        return GetMaterialApp(
-          // Providing a restorationScopeId allows the Navigator built by the
-          // MaterialApp to restore the navigation stack when a user leaves and
-          // returns to the app after it has been killed while running in the
-          // background.
-          debugShowCheckedModeBanner: false,
-          //restorationScopeId: 'uapp',
+    return GetMaterialApp(
+      // Providing a restorationScopeId allows the Navigator built by the
+      // MaterialApp to restore the navigation stack when a user leaves and
+      // returns to the app after it has been killed while running in the
+      // background.
+      debugShowCheckedModeBanner: false,
+      //restorationScopeId: 'uapp',
 
-          // Provide the generated AppLocalizations to the MaterialApp. This
-          // allows descendant Widgets to display the correct translations
-          // depending on the user's locale.
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+      // Provide the generated AppLocalizations to the MaterialApp. This
+      // allows descendant Widgets to display the correct translations
+      // depending on the user's locale.
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
 
-          // Use AppLocalizations to configure the correct application title
-          // depending on the user's locale.
-          //
-          // The appTitle is defined in .arb files found in the localization
-          // directory.
-          onGenerateTitle: (BuildContext context) => "Career Canvas",
+      // Use AppLocalizations to configure the correct application title
+      // depending on the user's locale.
+      //
+      // The appTitle is defined in .arb files found in the localization
+      // directory.
+      onGenerateTitle: (BuildContext context) => "Career Canvas",
 
-          // Define a light and dark color theme. Then, read the user's
-          // preferred ThemeMode (light, dark, or system default) from the
-          // SettingsController to display the correct theme.
-          theme: ThemeData.light().copyWith(
-            primaryColor: primaryBlue, // Sets primary color
-            colorScheme: ColorScheme.light(
-              primary: primaryBlue, // Sets highlight color
-              onPrimary: Colors.white, // Text color on primary
-            ),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-          ),
-          darkTheme: ThemeData.dark(),
-          themeMode: widget.settingsController.themeMode,
+      // Define a light and dark color theme. Then, read the user's
+      // preferred ThemeMode (light, dark, or system default) from the
+      // SettingsController to display the correct theme.
+      theme: ThemeData.light().copyWith(
+        primaryColor: primaryBlue, // Sets primary color
+        colorScheme: ColorScheme.light(
+          primary: primaryBlue, // Sets highlight color
+          onPrimary: Colors.white, // Text color on primary
+        ),
+        buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+      ),
+      darkTheme: ThemeData.dark(),
 
-          initialRoute: widget.mainRouteData.initialRoute,
-          // initialRoute: ProfileCompletionScreenTwo.routeName,
+      initialRoute: widget.mainRouteData.initialRoute,
+      // initialRoute: ProfileCompletionScreenTwo.routeName,
 
-          // Define a function to handle named routes in order to support
-          // Flutter web url navigation and deep linking.
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case LoginScreen.routeName:
-                    return LoginScreen();
-                  case ProfileCompletionScreenOne.routeName:
-                    return ProfileCompletionScreenOne();
-                  case ProfileCompletionScreenTwo.routeName:
-                    return ProfileCompletionScreenTwo();
-                  case ProfileCompletionScreenThree.routeName:
-                    return ProfileCompletionScreenThree();
-                  case ProfileCompletionScreenFour.routeName:
-                    return ProfileCompletionScreenFour();
-                  case ProfileCompletionScreenFive.routeName:
-                    return ProfileCompletionScreenFive();
-                  case UserScreen.routeName:
-                    return UserScreen();
-                  case UserProfile.routeName:
-                    return UserProfile();
-                  case NetworkingScreen.routeName:
-                    return NetworkingScreen();
-                  case CareerScreen.routeName:
-                    return CareerScreen();
-                  case HomePage.routeName:
-                    return HomePage();
-                  case MyMentorsTab.routeName:
-                    return MyMentorsTab();
-                  case ChatScreen.routeName:
-                    return ChatScreen();
-                  case JobsScreen.routeName:
-                    return JobsScreen();
-                  case PersonalityTestScreen.routeName:
-                    return PersonalityTestScreen();
-                  case AnalyzingResultsScreen.routeName:
-                    return AnalyzingResultsScreen();
-                  case ProfileSettings.routeName:
-                    return ProfileSettings();
-                  default:
-                    return LoginScreen();
-                }
-              },
-            );
+      // Define a function to handle named routes in order to support
+      // Flutter web url navigation and deep linking.
+      onGenerateRoute: (RouteSettings routeSettings) {
+        return MaterialPageRoute<void>(
+          settings: routeSettings,
+          builder: (BuildContext context) {
+            switch (routeSettings.name) {
+              case LoginScreen.routeName:
+                return LoginScreen();
+              case ProfileCompletionScreenOne.routeName:
+                return ProfileCompletionScreenOne();
+              case ProfileCompletionScreenTwo.routeName:
+                return ProfileCompletionScreenTwo();
+              case ProfileCompletionScreenThree.routeName:
+                return ProfileCompletionScreenThree();
+              case ProfileCompletionScreenFour.routeName:
+                return ProfileCompletionScreenFour();
+              case ProfileCompletionScreenFive.routeName:
+                return ProfileCompletionScreenFive();
+              case UserScreen.routeName:
+                return UserScreen();
+              case UserProfile.routeName:
+                return UserProfile();
+              case NetworkingScreen.routeName:
+                return NetworkingScreen();
+              case CareerScreen.routeName:
+                return CareerScreen();
+              case HomePage.routeName:
+                return HomePage();
+              case MyMentorsTab.routeName:
+                return MyMentorsTab();
+              case ChatScreen.routeName:
+                return ChatScreen();
+              case JobsScreen.routeName:
+                return JobsScreen();
+              case PersonalityTestScreen.routeName:
+                return PersonalityTestScreen();
+              case AnalyzingResultsScreen.routeName:
+                return AnalyzingResultsScreen();
+              case ProfileSettings.routeName:
+                return ProfileSettings();
+              default:
+                return LoginScreen();
+            }
           },
         );
       },

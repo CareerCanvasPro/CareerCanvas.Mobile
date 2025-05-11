@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/onBoardingOne.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
@@ -6,12 +7,14 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenTwo.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart' as getIt;
+import 'package:get/get.dart' as getG;
+// import 'package:get/get.dart' as getIt;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -43,7 +46,14 @@ class _ProfileCompletionScreenOneState
 
   bool isUploadingData = false;
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(BuildContext context) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      CustomDialog.showCustomDialog(
+        context,
+        title: "Error",
+        content: "You Are Offline",
+      );
+    }
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -133,7 +143,6 @@ class _ProfileCompletionScreenOneState
             // print(e.message);
           }
         } catch (e) {
-          debugPrint(e.toString());
           setState(() {
             imageUploading = false;
           });
@@ -354,12 +363,11 @@ class _ProfileCompletionScreenOneState
   }
 
   Future<void> _onNext(BuildContext context) async {
-    debugPrint("Uploading data");
     try {
       FocusScope.of(context).unfocus();
-      debugPrint(
-        "phoneNumber: " + phoneCode + mobileController.text.replaceAll("-", ""),
-      );
+      if (getIt<UserProfileController>().isOnline.value == false) {
+        throw "You Are Offline";
+      }
       Onboardingone onboardingone = Onboardingone(
         profilePicture: imageUrl,
         name: fullNameController.text,
@@ -367,7 +375,6 @@ class _ProfileCompletionScreenOneState
         address: addressController.text,
         email: emailController.text,
       );
-      debugPrint(onboardingone.toString());
 
       setState(() {
         isUploadingData = true;
@@ -393,7 +400,7 @@ class _ProfileCompletionScreenOneState
         isUploadingData = false;
       });
       // Navigator.pushNamed(context, '/profileCompletiontwo');
-      getIt.Get.to(
+      getG.Get.to(
         () => ProfileCompletionScreenTwo(),
       );
     } on DioException catch (e) {
@@ -422,7 +429,6 @@ class _ProfileCompletionScreenOneState
         );
       }
     } catch (e) {
-      debugPrint(e.toString());
       setState(() {
         isUploadingData = false;
       });
@@ -590,7 +596,7 @@ class _ProfileCompletionScreenOneState
       alignment: Alignment.center,
       children: [
         GestureDetector(
-          onTap: _pickImage, // Pick image when tapped
+          onTap: () => _pickImage(context), // Pick image when tapped
           child: Container(
             height: 100,
             width: 100,
@@ -627,7 +633,7 @@ class _ProfileCompletionScreenOneState
           bottom: 5,
           right: 5,
           child: GestureDetector(
-            onTap: _pickImage,
+            onTap: () => _pickImage(context),
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
@@ -710,134 +716,6 @@ class _ProfileCompletionScreenOneState
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SvgPicture.asset(
-            'assets/svg/icons/icon_coin_5.svg',
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(child: Container()),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: isUploadingData
-                      ? null
-                      : () async {
-                          debugPrint("Uploading data");
-                          try {
-                            FocusScope.of(context).unfocus();
-                            debugPrint(
-                              "phoneNumber: " +
-                                  phoneCode +
-                                  mobileController.text.replaceAll("-", ""),
-                            );
-                            Onboardingone onboardingone = Onboardingone(
-                              profilePicture: imageUrl,
-                              name: fullNameController.text,
-                              phone: phoneCode +
-                                  mobileController.text.replaceAll("-", ""),
-                              address: addressController.text,
-                              email: emailController.text,
-                            );
-                            debugPrint(onboardingone.toString());
-
-                            setState(() {
-                              isUploadingData = true;
-                            });
-                            final dio = Dio(
-                              BaseOptions(
-                                baseUrl: ApiClient.userBase,
-                                connectTimeout: const Duration(seconds: 3000),
-                                receiveTimeout: const Duration(seconds: 3000),
-                              ),
-                            );
-                            await dio.post(
-                              "${ApiClient.userBase}/user/profile",
-                              data: onboardingone.toJson(),
-                              options: Options(
-                                headers: {
-                                  'Content-Type': "application/json",
-                                  "Authorization": "Bearer ${TokenInfo.token}",
-                                },
-                              ),
-                            );
-                            setState(() {
-                              isUploadingData = false;
-                            });
-                            // Navigator.pushNamed(context, '/profileCompletiontwo');
-                            getIt.Get.to(
-                              () => ProfileCompletionScreenTwo(),
-                            );
-                          } on DioException catch (e) {
-                            setState(() {
-                              isUploadingData = false;
-                            });
-                            // The request was made and the server responded with a status code
-                            // that falls out of the range of 2xx and is also not 304.
-                            if (e.response != null) {
-                              // print(e.response!.data["message"]);
-                              // print(e.response!.headers);
-                              // print(e.response!.requestOptions);
-                              CustomDialog.showCustomDialog(
-                                context,
-                                title: "Error",
-                                content: e.response!.data["message"].toString(),
-                              );
-                            } else {
-                              // Something happened in setting up or sending the request that triggered an Error
-                              // print(e.requestOptions);
-                              // print(e.message);
-                              CustomDialog.showCustomDialog(
-                                context,
-                                title: "Error",
-                                content: e.message.toString(),
-                              );
-                            }
-                          } catch (e) {
-                            debugPrint(e.toString());
-                            setState(() {
-                              isUploadingData = false;
-                            });
-                            CustomDialog.showCustomDialog(
-                              context,
-                              title: "Error",
-                              content: e.toString(),
-                            );
-                          }
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isUploadingData ? Colors.grey : Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    minimumSize: const Size(80, 35),
-                  ),
-                  child: Text(
-                    'Next',
-                    style: getCTATextStyle(
-                      context,
-                      14,
-                      color: primaryBlue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

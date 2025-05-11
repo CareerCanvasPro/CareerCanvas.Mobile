@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/network/api_client.dart';
 import 'package:career_canvas/core/utils/CustomDialog.dart';
@@ -5,6 +6,7 @@ import 'package:career_canvas/core/utils/ScreenHeightExtension.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:career_canvas/features/login/presentation/screens/ProfileCompletionScreenFour.dart';
 import 'package:career_canvas/src/constants.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -464,6 +466,10 @@ class _ProfileCompletionScreenThreeState
                         return;
                       }
                       try {
+                        if (getIt<UserProfileController>().isOnline.value ==
+                            false) {
+                          throw "You Are Offline";
+                        }
                         setState(() {
                           isUploadingData = true;
                         });

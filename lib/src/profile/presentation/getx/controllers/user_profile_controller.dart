@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/ConnectivityService.dart';
 import 'package:career_canvas/core/utils/TokenInfo.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:career_canvas/core/models/education.dart';
@@ -15,7 +16,33 @@ import 'package:path/path.dart';
 
 class UserProfileController extends GetxController {
   UserProfileRepository userProfileRepository;
-  UserProfileController(this.userProfileRepository);
+  ConnectivityService connectivityService;
+
+  UserProfileController(this.userProfileRepository, this.connectivityService);
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    connectivityService.connectivityStream.listen((hasInternet) {
+      isOnline.value = hasInternet;
+      Fluttertoast.showToast(
+        msg: hasInternet ? "Connected to Internet" : "No Internet",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 14.0,
+      );
+    });
+  }
+
+  @override
+  void onClose() {
+    connectivityService.dispose();
+    super.onClose();
+  }
+
+  final RxBool isOnline = false.obs;
+
   var userProfile = Rxn<UserProfileData>();
   var isLoading = false.obs;
   var isUploadingResume = false.obs;

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:career_canvas/features/Career/domain/entities/JobsEntity.dart';
 
 class JobsModel extends JobsEntity {
@@ -77,6 +78,26 @@ class JobsModel extends JobsEntity {
   String toString() {
     return 'JobsModel(id: $id, companyLogo: $companyLogo, createdAt: $createdAt, deadline: $deadline, location: $location, locationType: $locationType, organization: $organization, position: $position, type: $type, updatedAt: $updatedAt, url: $url)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'companyLogo': companyLogo,
+      'createdAt': createdAt?.millisecondsSinceEpoch,
+      'deadline': deadline?.millisecondsSinceEpoch,
+      'location': location,
+      'sourceName': sourceName,
+      'locationType': locationType?.name,
+      'organization': organization,
+      'position': position,
+      'type': type?.name,
+      'updatedAt': updatedAt?.millisecondsSinceEpoch,
+      'url': url,
+      'isSaved': isSaved,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class JobDataModel extends JobsDataEntity {
@@ -86,12 +107,6 @@ class JobDataModel extends JobsDataEntity {
   final List<JobsModel>? jobs;
 
   JobDataModel({this.count, this.jobs});
-
-  JobDataModel.fromJson(Map<String, dynamic> json)
-      : count = json['count'],
-        jobs = json['jobs'] != null
-            ? (json['jobs'] as List).map((v) => JobsModel.fromMap(v)).toList()
-            : null;
 
   JobDataModel copyWith({int? count, List<JobsModel>? jobs}) {
     return JobDataModel(
@@ -104,6 +119,31 @@ class JobDataModel extends JobsDataEntity {
   String toString() {
     return 'JobDataModel(count: $count, jobs: $jobs)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'count': count,
+      'jobs': jobs?.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory JobDataModel.fromMap(Map<String, dynamic> map) {
+    return JobDataModel(
+      count: map['count'] != null ? map['count'] as int : null,
+      jobs: map['jobs'] != null
+          ? List<JobsModel>.from(
+              (map['jobs'] as List<int>).map<JobsModel?>(
+                (x) => JobsModel.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory JobDataModel.fromJson(String source) =>
+      JobDataModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class JobsResponseModel extends JobsResponseEntity {
@@ -113,11 +153,6 @@ class JobsResponseModel extends JobsResponseEntity {
   final String? message;
 
   JobsResponseModel({this.data, this.message});
-
-  JobsResponseModel.fromJson(Map<String, dynamic> json)
-      : data =
-            json['data'] != null ? JobDataModel.fromJson(json['data']) : null,
-        message = json['message'];
 
   JobsResponseModel copyWith({JobDataModel? data, String? message}) {
     return JobsResponseModel(
@@ -130,4 +165,25 @@ class JobsResponseModel extends JobsResponseEntity {
   String toString() {
     return 'JobsResponseModel(data: $data, message: $message)';
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'data': data?.toMap(),
+      'message': message,
+    };
+  }
+
+  factory JobsResponseModel.fromMap(Map<String, dynamic> map) {
+    return JobsResponseModel(
+      data: map['data'] != null
+          ? JobDataModel.fromMap(map['data'] as Map<String, dynamic>)
+          : null,
+      message: map['message'] != null ? map['message'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory JobsResponseModel.fromJson(String source) =>
+      JobsResponseModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

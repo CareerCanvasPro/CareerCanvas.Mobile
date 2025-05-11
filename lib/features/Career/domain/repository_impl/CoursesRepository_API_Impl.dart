@@ -1,7 +1,10 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/AppCache.dart';
 import 'package:career_canvas/features/Career/data/datasources/courses_remote_data_source.dart';
 import 'package:career_canvas/features/Career/data/models/CoursesModel.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,13 +13,20 @@ class CoursesRepository_API_Impl extends CoursesRepository {
   CoursesRepository_API_Impl(this.apiClient);
   @override
   Future<CoursesResponseModel?> getCoursesRecomendation() async {
+    if (getIt<UserProfileController>().isOnline.value == false &&
+        Appcache.courses != null) {
+      return Appcache.courses;
+    }
     try {
       CoursesRemoteDataSource coursesRemoteDataSource =
           CoursesRemoteDataSource(apiClient);
       final response = await coursesRemoteDataSource.getCourses();
       debugPrint(response.toString());
       if (response.statusCode == 200) {
-        return CoursesResponseModel.fromJson(response.data);
+        CoursesResponseModel course =
+            CoursesResponseModel.fromMap(response.data);
+        Appcache.setCourses(course);
+        return course;
       } else {
         throw Exception('Failed to load courses');
       }
@@ -50,8 +60,7 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       final response = await coursesRemoteDataSource.searchCourses(query);
       // debugPrint(response.data.toString());
       if (response.statusCode == 200) {
-        CoursesResponseModel data =
-            CoursesResponseModel.fromJson(response.data);
+        CoursesResponseModel data = CoursesResponseModel.fromMap(response.data);
         return data;
       } else {
         throw Exception('Failed to load courses');
@@ -85,7 +94,7 @@ class CoursesRepository_API_Impl extends CoursesRepository {
           CoursesRemoteDataSource(apiClient);
       final response = await coursesRemoteDataSource.getCoursesByGoals();
       if (response.statusCode == 200) {
-        return CoursesResponseModel.fromJson(response.data);
+        return CoursesResponseModel.fromMap(response.data);
       } else {
         throw Exception('Failed to load courses');
       }
@@ -119,7 +128,7 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       final response = await coursesRemoteDataSource.saveCourse(course);
       debugPrint(response.toString());
       if (response.statusCode == 200) {
-        // CoursesResponseModel.fromJson(response.data);
+        // CoursesResponseModel.fromMap(response.data);
         return true;
       } else {
         throw Exception('Failed to load courses');
@@ -154,7 +163,7 @@ class CoursesRepository_API_Impl extends CoursesRepository {
       final response = await coursesRemoteDataSource.unsaveCourse(course);
       debugPrint(response.toString());
       if (response.statusCode == 200) {
-        // return CoursesResponseModel.fromJson(response.data);
+        // return CoursesResponseModel.fromMap(response.data);
         return true;
       } else {
         throw Exception('Failed to save course');

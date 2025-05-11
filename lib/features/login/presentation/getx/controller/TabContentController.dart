@@ -1,4 +1,6 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,6 +29,9 @@ class EmailController extends GetxController {
     }
 
     try {
+      if (getIt<UserProfileController>().isOnline.value == false) {
+        throw "You Are Offline";
+      }
       if (emailController.text.isEmpty) {
         throw 'Email is required';
       }
@@ -42,8 +47,6 @@ class EmailController extends GetxController {
           ),
         ),
       );
-// "${ApiClient.authBase}${type == EmailLoginType.Otp ? "/otp/request/email" : "/magic-link/request"}",
-// "${ApiClient.authBase}/otp/request/email}",
       final response = await apiClient.post(
         "${ApiClient.authBase}${type == EmailLoginType.Otp ? "/otp/request/email" : "/magic-link/request"}",
         data: {

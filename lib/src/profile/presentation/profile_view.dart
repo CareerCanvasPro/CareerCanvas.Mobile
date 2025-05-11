@@ -1205,74 +1205,6 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Container _appreciationSection(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 20,
-        // vertical: 20,
-      ),
-      margin: const EdgeInsets.only(
-        top: 20,
-        left: 24,
-        right: 24,
-      ),
-      decoration: BoxDecoration(
-        color: scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 0,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                "assets/svg/icons/Icon_Appreciation.svg",
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "Appreciation",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              const Spacer(),
-              SvgPicture.asset(
-                "assets/svg/icons/Add.svg",
-              ),
-            ],
-          ),
-          Divider(
-            color: Colors.black.withOpacity(0.15),
-            height: 24,
-            thickness: 1,
-          ),
-          getAppreciationItem(
-            context,
-            title: "Wireless Symposium (RWS)",
-            organization: "Young Scientist",
-            date: DateTime.now(),
-          ),
-          getAppreciationItem(
-            context,
-            title: "Nasa Space Apps Challenge",
-            organization: "Local Champion",
-            date: DateTime.now(),
-          ),
-        ],
-      ),
-    );
-  }
-
   Container _resumeSection(BuildContext context, List<Resume> data) {
     return Container(
       constraints: BoxConstraints(
@@ -1321,7 +1253,17 @@ class _UserProfileState extends State<UserProfile> {
                 onTap: userProfileController.isUploadingResume.value
                     ? null
                     : () {
-                        pickFileAndUpload();
+                        if (getIt<UserProfileController>().isOnline.value ==
+                            false) {
+                          Fluttertoast.showToast(
+                            msg: "You Are Offline",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            fontSize: 14.0,
+                          );
+                        } else {
+                          pickFileAndUpload();
+                        }
                       },
                 child: SvgPicture.asset(
                   "assets/svg/icons/Add.svg",

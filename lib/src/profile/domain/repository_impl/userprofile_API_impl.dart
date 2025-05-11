@@ -1,3 +1,4 @@
+import 'package:career_canvas/core/Dependencies/setupDependencies.dart';
 import 'package:career_canvas/core/models/education.dart';
 import 'package:career_canvas/core/models/experiance.dart';
 import 'package:career_canvas/core/models/interests.dart';
@@ -5,8 +6,10 @@ import 'package:career_canvas/core/models/profile.dart';
 import 'package:career_canvas/core/models/resume.dart';
 import 'package:career_canvas/core/models/skills.dart';
 import 'package:career_canvas/core/network/api_client.dart';
+import 'package:career_canvas/core/utils/AppCache.dart';
 import 'package:career_canvas/src/profile/domain/models/UploadLanguage.dart';
 import 'package:career_canvas/src/profile/domain/repository/userprofile_repo.dart';
+import 'package:career_canvas/src/profile/presentation/getx/controllers/user_profile_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -16,12 +19,19 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<UserProfileData?> getUserProfile() async {
+    if (getIt<UserProfileController>().isOnline.value == false &&
+        Appcache.userProfile != null) {
+      return Appcache.userProfile;
+    }
     try {
       final response = await apiClient.get(
         ApiClient.userBase,
         useToken: true,
       );
-      return UserProfileData.fromMap(response.data['data']);
+      UserProfileData userProfile =
+          UserProfileData.fromMap(response.data['data']);
+      Appcache.setUserProfile(userProfile);
+      return userProfile;
     } on DioException catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
@@ -38,6 +48,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> addEducation(UploadEducation education) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       // print(education.toMap());
       Response response = await apiClient.post(
@@ -71,6 +84,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> addExperiance(UploadExperiance experiance) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       Response response = await apiClient.post(
         ApiClient.userBase + '/occupations',
@@ -97,6 +113,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateAboutMe(String aboutMe) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.put(
         ApiClient.userBase + '/about-me',
@@ -121,6 +140,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateSkills(List<String> skills) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.put(
         ApiClient.userBase + '/skills',
@@ -143,6 +165,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateLanguage(List<String> languages) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.put(
         ApiClient.userBase + '/languages',
@@ -165,6 +190,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateInterest(List<String> interests) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.put(
         ApiClient.userBase + '/interests',
@@ -187,6 +215,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> updateGoals(List<String> goals) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.put(
         ApiClient.userBase + '/goals',
@@ -212,6 +243,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteResume(Resume resume) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       await apiClient.delete(
         ApiClient.userBase + '/resumes/${resume.id}?key=${resume.key}',
@@ -234,6 +268,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteEducation(Education education) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       String url = ApiClient.userBase + "/educations/${education.id}";
       if (education.certificate != null) {
@@ -269,6 +306,9 @@ class UserProfileRepository_API_Impl extends UserProfileRepository {
 
   @override
   Future<String> deleteExperiance(Experiance experiance) async {
+    if (getIt<UserProfileController>().isOnline.value == false) {
+      return "You Are Offline";
+    }
     try {
       String url = ApiClient.userBase + "/occupations/${experiance.id}";
       await apiClient.delete(

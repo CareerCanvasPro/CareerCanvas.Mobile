@@ -1,3 +1,5 @@
+import 'package:career_canvas/core/utils/AppCache.dart';
+import 'package:career_canvas/core/utils/ConnectivityService.dart';
 import 'package:career_canvas/features/Career/domain/repository/CoursesRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository/JobsRepository.dart';
 import 'package:career_canvas/features/Career/domain/repository_impl/CoursesRepository_API_Impl.dart';
@@ -71,57 +73,63 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GlobalSearchController>(() =>
       GlobalSearchController(
           getIt<CoursesRepository>(), getIt<JobsRepository>()));
+  getIt.registerLazySingleton<ConnectivityService>(
+    () => ConnectivityService(),
+  );
 
   getIt.registerLazySingleton<UserProfileRepository>(
     () => UserProfileRepository_API_Impl(getIt<ApiClient>()),
   );
 
   getIt.registerLazySingleton<UserProfileController>(
-    () => UserProfileController(getIt<UserProfileRepository>()),
+    () => UserProfileController(
+      getIt<UserProfileRepository>(),
+      getIt<ConnectivityService>(),
+    ),
   );
   getIt.registerLazySingleton<ProfileSettingsController>(
     () => ProfileSettingsController(),
   );
 
-  final dbPath = await getDatabasesPath();
+  // final dbPath = await getDatabasesPath();
 
   // Initialize the database
-  final database = await openDatabase(
-    '$dbPath/app.db',
-    version: 2, // Increment the version
-    onCreate: (db, version) async {
-      await db.execute('''
-      CREATE TABLE IF NOT EXISTS ${Constants.usersTable} (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        birth_date TEXT,
-        userName TEXT UNIQUE NOT NULL,
-        is_active TEXT,
-        sync_status TEXT NOT NULL DEFAULT 'pending'
-      )
-    ''');
-    },
-    onUpgrade: (db, oldVersion, newVersion) async {
-      if (oldVersion < 2) {
-        await db.execute('''
-        ALTER TABLE ${Constants.usersTable}
-        ADD COLUMN birth_date TEXT
-      ''');
-      }
-    },
-  );
+  // final database = await openDatabase(
+  //   '$dbPath/app.db',
+  //   version: 2, // Increment the version
+  //   onCreate: (db, version) async {
+  //     await db.execute('''
+  //     CREATE TABLE IF NOT EXISTS ${Constants.usersTable} (
+  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //       name TEXT NOT NULL,
+  //       email TEXT NOT NULL,
+  //       birth_date TEXT,
+  //       userName TEXT UNIQUE NOT NULL,
+  //       is_active TEXT,
+  //       sync_status TEXT NOT NULL DEFAULT 'pending'
+  //     )
+  //   ''');
+  //   },
+  //   onUpgrade: (db, oldVersion, newVersion) async {
+  //     if (oldVersion < 2) {
+  //       await db.execute('''
+  //       ALTER TABLE ${Constants.usersTable}
+  //       ADD COLUMN birth_date TEXT
+  //     ''');
+  //     }
+  //   },
+  // );
 
   // Register the database
-  getIt.registerSingleton<Database>(database);
+  // getIt.registerSingleton<Database>(database);
 
   // Register UserLocalDataSource only once
-  getIt.registerLazySingleton<UserLocalDataSource>(
-    () => UserLocalDataSource(getIt<Database>()),
-  );
+  // getIt.registerLazySingleton<UserLocalDataSource>(
+  //   () => UserLocalDataSource(getIt<Database>()),
+  // );
 
   // Register NetworkInfo
-  getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
+  // getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
   // Register UserRemoteDataSource
   getIt.registerLazySingleton<UserRemoteDataSource>(
