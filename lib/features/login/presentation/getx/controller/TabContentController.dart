@@ -42,8 +42,9 @@ class EmailController extends GetxController {
         Dio(
           BaseOptions(
             baseUrl: ApiClient.authBase,
-            connectTimeout: const Duration(seconds: 5),
-            receiveTimeout: const Duration(seconds: 5),
+            connectTimeout: const Duration(seconds: 300),
+            receiveTimeout: const Duration(seconds: 300),
+            sendTimeout: const Duration(seconds: 300),
           ),
         ),
       );
